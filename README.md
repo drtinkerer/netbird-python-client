@@ -46,26 +46,26 @@ from netbird import APIClient
 
 # Initialize the client
 client = APIClient(
-    host=\"api.netbird.io\",
-    api_token=\"your-api-token-here\"
+    host="api.netbird.io",
+    api_token="your-api-token-here"
 )
 
 # List all peers
 peers = client.peers.list()
-print(f\"Found {len(peers)} peers\")
+print(f"Found {len(peers)} peers")
 
 # Get current user
 user = client.users.get_current()
-print(f\"Logged in as: {user['name']}\")
+print(f"Logged in as: {user['name']}")
 
 # Create a new group
 from netbird.models import GroupCreate
 group_data = GroupCreate(
-    name=\"Development Team\",
-    peers=[\"peer-1\", \"peer-2\"]
+    name="Development Team",
+    peers=["peer-1", "peer-2"]
 )
 group = client.groups.create(group_data)
-print(f\"Created group: {group['name']}\")
+print(f"Created group: {group['name']}")
 ```
 
 ## Authentication
@@ -75,24 +75,24 @@ NetBird uses token-based authentication. You can use either a personal access to
 ### Personal Access Token (Recommended)
 ```python
 client = APIClient(
-    host=\"api.netbird.io\",
-    api_token=\"your-personal-access-token\"
+    host="api.netbird.io",
+    api_token="your-personal-access-token"
 )
 ```
 
 ### Service User Token
 ```python
 client = APIClient(
-    host=\"api.netbird.io\",
-    api_token=\"your-service-user-token\"
+    host="api.netbird.io",
+    api_token="your-service-user-token"
 )
 ```
 
 ### Self-Hosted NetBird
 ```python
 client = APIClient(
-    host=\"netbird.yourcompany.com:33073\",
-    api_token=\"your-token\",
+    host="netbird.yourcompany.com:33073",
+    api_token="your-token",
     use_ssl=True  # or False for HTTP
 )
 ```
@@ -105,19 +105,19 @@ from netbird.models import UserCreate, UserRole
 
 # Create a new user
 user_data = UserCreate(
-    email=\"john@example.com\",
-    name=\"John Doe\",
+    email="john@example.com",
+    name="John Doe",
     role=UserRole.USER,
-    auto_groups=[\"group-developers\"]
+    auto_groups=["group-developers"]
 )
 user = client.users.create(user_data)
-print(f\"Created user: {user['name']} ({user['email']})\")
+print(f"Created user: {user['name']} ({user['email']})")
 
 # Update user role
 from netbird.models import UserUpdate
 update_data = UserUpdate(role=UserRole.ADMIN)
 updated_user = client.users.update(user['id'], update_data)
-print(f\"Updated user role to: {updated_user['role']}\")
+print(f"Updated user role to: {updated_user['role']}")
 ```
 
 ### Network Management
@@ -126,27 +126,27 @@ from netbird.models import NetworkCreate, PolicyCreate, PolicyRule
 
 # Create a network
 network_data = NetworkCreate(
-    name=\"Production Network\",
-    description=\"Main production environment\"
+    name="Production Network",
+    description="Main production environment"
 )
 network = client.networks.create(network_data)
-print(f\"Created network: {network['name']}\")
+print(f"Created network: {network['name']}")
 
 # Create access policy
 rule = PolicyRule(
-    name=\"Allow SSH\",
-    action=\"accept\",
-    protocol=\"tcp\", 
-    ports=[\"22\"],
-    sources=[\"group-admins\"],
-    destinations=[\"group-servers\"]
+    name="Allow SSH",
+    action="accept",
+    protocol="tcp", 
+    ports=["22"],
+    sources=["group-admins"],
+    destinations=["group-servers"]
 )
 policy_data = PolicyCreate(
-    name=\"Admin SSH Access\",
+    name="Admin SSH Access",
     rules=[rule]
 )
 policy = client.policies.create(policy_data)
-print(f\"Created policy: {policy['name']}\")
+print(f"Created policy: {policy['name']}")
 ```
 
 ### Setup Key Management
@@ -155,15 +155,15 @@ from netbird.models import SetupKeyCreate
 
 # Create a reusable setup key
 key_data = SetupKeyCreate(
-    name=\"Development Environment\",
-    type=\"reusable\",
+    name="Development Environment",
+    type="reusable",
     expires_in=86400,  # 24 hours
     usage_limit=10,
-    auto_groups=[\"group-dev\"]
+    auto_groups=["group-dev"]
 )
 setup_key = client.setup_keys.create(key_data)
-print(f\"Setup key: {setup_key['key']}\")
-print(f\"Key valid: {setup_key['valid']}\")
+print(f"Setup key: {setup_key['key']}")
+print(f"Key valid: {setup_key['valid']}")
 ```
 
 ### Event Monitoring
@@ -171,17 +171,17 @@ print(f\"Key valid: {setup_key['valid']}\")
 # Get audit events
 audit_events = client.events.get_audit_events()
 for event in audit_events[-10:]:  # Last 10 events
-    print(f\"{event['timestamp']}: {event['activity']}\")
+    print(f"{event['timestamp']}: {event['activity']}")
     if event.get('initiator_name'):
-        print(f\"  Initiated by: {event['initiator_name']}\")
+        print(f"  Initiated by: {event['initiator_name']}")
 
 # Get network traffic events (cloud-only)
 traffic_events = client.events.get_network_traffic_events(
-    protocol=\"tcp\",
+    protocol="tcp",
     page_size=100
 )
 for traffic in traffic_events[:5]:
-    print(f\"Traffic: {traffic['source_ip']} -> {traffic['destination_ip']}\")
+    print(f"Traffic: {traffic['source_ip']} -> {traffic['destination_ip']}")
 ```
 
 ## Error Handling
@@ -199,26 +199,26 @@ from netbird.exceptions import (
 )
 
 try:
-    user = client.users.get(\"invalid-user-id\")
+    user = client.users.get("invalid-user-id")
 except NetBirdNotFoundError:
-    print(\"User not found\")
+    print("User not found")
 except NetBirdAuthenticationError:
-    print(\"Invalid API token\")
+    print("Invalid API token")
 except NetBirdRateLimitError as e:
-    print(f\"Rate limited. Retry after {e.retry_after} seconds\")
+    print(f"Rate limited. Retry after {e.retry_after} seconds")
 except NetBirdAPIError as e:
-    print(f\"API error: {e.message}\")
+    print(f"API error: {e.message}")
 ```
 
 ## Configuration Options
 
 ```python
 client = APIClient(
-    host=\"api.netbird.io\",
-    api_token=\"your-token\",
+    host="api.netbird.io",
+    api_token="your-token",
     use_ssl=True,           # Use HTTPS (default: True)
     timeout=30.0,           # Request timeout in seconds (default: 30)
-    base_path=\"/api\"        # API base path (default: \"/api\")
+    base_path="/api"        # API base path (default: "/api")
 )
 ```
 
@@ -232,7 +232,7 @@ git clone https://github.com/netbirdio/netbird-python-client.git
 cd netbird-python-client
 
 # Install development dependencies
-pip install -e \".[dev]\"
+pip install -e ".[dev]"
 
 # Run tests
 pytest
@@ -323,7 +323,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Support
 
-- **GitHub Issues**: [Report bugs or request features](https://github.com/netbirdio/netbird-python-client/issues)
+- **GitHub Issues**: [Report bugs or request features](https://github.com/drtinkerer/netbird-python-client/issues)
 - **NetBird Community**: [Join the discussion](https://github.com/netbirdio/netbird/discussions)
 - **Documentation**: [API Documentation](https://docs.netbird.io/api)
 
@@ -333,4 +333,4 @@ See [CHANGELOG.md](CHANGELOG.md) for a detailed history of changes.
 
 ---
 
-Made with ❤️ by [Bhushan Rane](https://github.com/bhushanrane) | Contributed to the NetBird community
+Made with ❤️ by [Bhushan Rane](https://github.com/drtinkerer)
