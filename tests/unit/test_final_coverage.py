@@ -3,11 +3,10 @@ Final tests to achieve 100% coverage.
 """
 
 import pytest
-from unittest.mock import Mock
 from typing import TYPE_CHECKING
+from unittest.mock import Mock
 
 from netbird import APIClient
-from netbird.models import NetworkResource, NetworkRouter
 
 
 class TestNetworksFinalMethods:
@@ -36,7 +35,7 @@ class TestNetworksFinalMethods:
         
         self.mock_client.get.assert_called_once_with("networks/network-123/resources")
         assert len(resources) == 1
-        assert isinstance(resources[0], NetworkResource)
+        assert isinstance(resources[0], dict)
     
     def test_get_resource(self):
         """Test getting a specific network resource."""
@@ -52,8 +51,8 @@ class TestNetworksFinalMethods:
         resource = self.networks_resource.get_resource("network-123", "resource-123")
         
         self.mock_client.get.assert_called_once_with("networks/network-123/resources/resource-123")
-        assert isinstance(resource, NetworkResource)
-        assert resource.id == "resource-123"
+        assert isinstance(resource, dict)
+        assert resource["id"] == "resource-123"
     
     def test_list_routers(self):
         """Test listing network routers."""
@@ -73,7 +72,7 @@ class TestNetworksFinalMethods:
         
         self.mock_client.get.assert_called_once_with("networks/network-123/routers")
         assert len(routers) == 1
-        assert isinstance(routers[0], NetworkRouter)
+        assert isinstance(routers[0], dict)
 
 
 class TestTypeCheckingImport:

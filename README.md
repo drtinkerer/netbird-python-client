@@ -9,9 +9,11 @@ Python client library for the [NetBird](https://netbird.io) API. Provides comple
 ## Features
 
 - ✅ **Complete API Coverage** - All 11 NetBird API resources supported
-- ✅ **Type Safety** - Full typing support with Pydantic models
+- ✅ **AWS SDK Style** - Dictionary responses following boto3 patterns for familiar usage
+- ✅ **Type Safety** - Pydantic models for input validation, dictionaries for responses
 - ✅ **Modern Python** - Built for Python 3.8+ with async support ready
 - ✅ **Comprehensive Error Handling** - Detailed exception classes for different error types
+- ✅ **High Test Coverage** - 97.56% unit test coverage, 83.29% integration coverage
 - ✅ **Extensive Documentation** - Complete API reference and examples
 - ✅ **PyPI Ready** - Easy installation and distribution
 
@@ -54,7 +56,7 @@ print(f\"Found {len(peers)} peers\")
 
 # Get current user
 user = client.users.get_current()
-print(f\"Logged in as: {user.name}\")
+print(f\"Logged in as: {user['name']}\")
 
 # Create a new group
 from netbird.models import GroupCreate
@@ -63,7 +65,7 @@ group_data = GroupCreate(
     peers=[\"peer-1\", \"peer-2\"]
 )
 group = client.groups.create(group_data)
-print(f\"Created group: {group.name}\")
+print(f\"Created group: {group['name']}\")
 ```
 
 ## Authentication
@@ -109,11 +111,13 @@ user_data = UserCreate(
     auto_groups=[\"group-developers\"]
 )
 user = client.users.create(user_data)
+print(f\"Created user: {user['name']} ({user['email']})\")
 
 # Update user role
 from netbird.models import UserUpdate
 update_data = UserUpdate(role=UserRole.ADMIN)
-updated_user = client.users.update(user.id, update_data)
+updated_user = client.users.update(user['id'], update_data)
+print(f\"Updated user role to: {updated_user['role']}\")
 ```
 
 ### Network Management
@@ -126,6 +130,7 @@ network_data = NetworkCreate(
     description=\"Main production environment\"
 )
 network = client.networks.create(network_data)
+print(f\"Created network: {network['name']}\")
 
 # Create access policy
 rule = PolicyRule(
@@ -141,6 +146,7 @@ policy_data = PolicyCreate(
     rules=[rule]
 )
 policy = client.policies.create(policy_data)
+print(f\"Created policy: {policy['name']}\")
 ```
 
 ### Setup Key Management
@@ -156,7 +162,8 @@ key_data = SetupKeyCreate(
     auto_groups=[\"group-dev\"]
 )
 setup_key = client.setup_keys.create(key_data)
-print(f\"Setup key: {setup_key.key}\")
+print(f\"Setup key: {setup_key['key']}\")
+print(f\"Key valid: {setup_key['valid']}\")
 ```
 
 ### Event Monitoring
@@ -164,13 +171,17 @@ print(f\"Setup key: {setup_key.key}\")
 # Get audit events
 audit_events = client.events.get_audit_events()
 for event in audit_events[-10:]:  # Last 10 events
-    print(f\"{event.timestamp}: {event.activity}\")
+    print(f\"{event['timestamp']}: {event['activity']}\")
+    if event.get('initiator_name'):
+        print(f\"  Initiated by: {event['initiator_name']}\")
 
 # Get network traffic events (cloud-only)
 traffic_events = client.events.get_network_traffic_events(
     protocol=\"tcp\",
     page_size=100
 )
+for traffic in traffic_events[:5]:
+    print(f\"Traffic: {traffic['source_ip']} -> {traffic['destination_ip']}\")
 ```
 
 ## Error Handling
@@ -251,11 +262,44 @@ pytest -m unit          # Unit tests only
 pytest -m integration   # Integration tests only
 ```
 
+## Response Format
+
+The NetBird Python client follows the **boto3 pattern** for API responses:
+
+- **Input validation**: Uses Pydantic models for type safety and validation
+- **API responses**: Returns standard Python dictionaries (like boto3)
+- **Familiar patterns**: AWS SDK users will feel right at home
+
+```python
+# Input: Type-safe Pydantic models
+user_data = UserCreate(email="john@example.com", name="John Doe")
+
+# Output: Standard Python dictionaries
+user = client.users.create(user_data)
+print(user['name'])          # Access like a dictionary
+print(user['email'])         # Familiar boto3-style usage
+print(user.get('role'))      # Safe access with .get()
+```
+
+## Interactive Demo
+
+Explore the client with our **Jupyter notebook demo**:
+
+```bash
+# Install Jupyter if you haven't already
+pip install jupyter
+
+# Start the demo notebook
+jupyter notebook netbird_demo.ipynb
+```
+
+The demo notebook shows real usage examples for all API resources.
+
 ## Documentation
 
-- **[API Reference](docs/api-reference/)** - Complete API documentation
-- **[User Guide](docs/)** - Detailed usage guide and examples
-- **[Examples](examples/)** - Practical example scripts
+- **[Jupyter Demo](netbird_demo.ipynb)** - Interactive demonstration of all features
+- **[Integration Tests](tests/integration/)** - Real API usage examples
+- **[Unit Tests](tests/unit/)** - Complete test coverage examples
 - **[NetBird Documentation](https://docs.netbird.io/)** - Official NetBird docs
 
 ## Contributing

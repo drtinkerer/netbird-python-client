@@ -1,0 +1,17 @@
+{
+  "id": "user-123",
+  "email": "test@example.com",
+  "name": "Test User",
+  "role": "user",
+  "status": "active",
+  "is_service_user": false,
+  "is_blocked": false,
+  "auto_groups": ["group-1"],
+  "issued": "2023-01-01T00:00:00Z",
+  "permissions": {
+    "view_groups": true,
+    "manage_peers": false
+  },
+  "is_current": true,
+  "last_login": "2023-01-01T10:00:00Z"
+}

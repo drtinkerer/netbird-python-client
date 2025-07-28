@@ -11,13 +11,14 @@ Required environment variables:
 
 import pytest
 import time
+import random
 from uuid import uuid4
 
 from netbird.exceptions import NetBirdAPIError, NetBirdNotFoundError
 from netbird.models import (
     GroupCreate, GroupUpdate,
     SetupKeyCreate, SetupKeyUpdate,
-    PolicyCreate, PolicyUpdate,
+    PolicyCreate, PolicyUpdate, PolicyRule,
     RouteCreate, RouteUpdate,
 )
 
@@ -38,37 +39,37 @@ class TestCRUDIntegration:
         )
         created_group = integration_client.groups.create(group_data)
         
-        assert created_group.name == group_name
-        assert created_group.id is not None
-        assert created_group.peers_count == 0
+        assert created_group['name'] == group_name
+        assert created_group['id'] is not None
+        assert created_group['peers_count'] == 0
         
         try:
             # READ
-            fetched_group = integration_client.groups.get(created_group.id)
-            assert fetched_group.id == created_group.id
-            assert fetched_group.name == group_name
+            fetched_group = integration_client.groups.get(created_group['id'])
+            assert fetched_group['id'] == created_group['id']
+            assert fetched_group['name'] == group_name
             
             # UPDATE
             update_data = GroupUpdate(name=f"{group_name}-updated")
-            updated_group = integration_client.groups.update(created_group.id, update_data)
-            assert updated_group.name == f"{group_name}-updated"
+            updated_group = integration_client.groups.update(created_group['id'], update_data)
+            assert updated_group['name'] == f"{group_name}-updated"
             
             # Verify update persisted
-            refetched_group = integration_client.groups.get(created_group.id)
-            assert refetched_group.name == f"{group_name}-updated"
+            refetched_group = integration_client.groups.get(created_group['id'])
+            assert refetched_group['name'] == f"{group_name}-updated"
             
         finally:
             # DELETE (cleanup)
-            integration_client.groups.delete(created_group.id)
+            integration_client.groups.delete(created_group['id'])
             
             # Verify deletion
             with pytest.raises(NetBirdNotFoundError):
-                integration_client.groups.get(created_group.id)
+                integration_client.groups.get(created_group['id'])
     
     def test_setup_key_lifecycle(self, integration_client):
         """Test setup key lifecycle."""
-        pytest.skip("Setup key update API has complex validation rules - skipping for now")
-    
+        pytest.skip("Skipping due to persistent 'autogroups field is invalid' error")
+
     def test_policy_lifecycle(self, integration_client):
         """Test policy lifecycle."""
         policy_name = f"test-policy-{uuid4().hex[:8]}"
@@ -78,40 +79,109 @@ class TestCRUDIntegration:
             name=policy_name,
             description="Integration test policy",
             enabled=True,
-            rules=[]
+            rules=[
+                PolicyRule(
+                    name="Allow all",
+                    action="accept",
+                    protocol="all",
+                    sources=[],
+                    destinations=[],
+                )
+            ]
         )
         created_policy = integration_client.policies.create(policy_data)
         
-        assert created_policy.name == policy_name
-        assert created_policy.enabled is True
-        assert len(created_policy.rules) == 0
+        assert created_policy['name'] == policy_name
+        assert created_policy['enabled'] is True
+        assert len(created_policy['rules']) == 1
         
         try:
             # READ
-            fetched_policy = integration_client.policies.get(created_policy.id)
-            assert fetched_policy.id == created_policy.id
-            assert fetched_policy.name == policy_name
+            fetched_policy = integration_client.policies.get(created_policy['id'])
+            assert fetched_policy['id'] == created_policy['id']
+            assert fetched_policy['name'] == policy_name
             
             # UPDATE
             update_data = PolicyUpdate(
+                name=policy_name,
                 description="Updated integration test policy",
-                enabled=False
+                enabled=False,
+                rules=[
+                    PolicyRule(
+                        name="Allow all",
+                        action="accept",
+                        protocol="all",
+                        sources=[],
+                        destinations=[],
+                    )
+                ]
             )
-            updated_policy = integration_client.policies.update(created_policy.id, update_data)
-            assert updated_policy.description == "Updated integration test policy"
-            assert updated_policy.enabled is False
+            updated_policy = integration_client.policies.update(created_policy['id'], update_data)
+            assert updated_policy['description'] == "Updated integration test policy"
+            assert updated_policy['enabled'] is False
             
         finally:
             # DELETE (cleanup)
-            integration_client.policies.delete(created_policy.id)
+            integration_client.policies.delete(created_policy['id'])
             
             # Verify deletion
             with pytest.raises(NetBirdNotFoundError):
-                integration_client.policies.get(created_policy.id)
+                integration_client.policies.get(created_policy['id'])
     
-    def test_route_lifecycle(self, integration_client):
-        """Test route lifecycle."""
-        pytest.skip("Route API requires specific peer/group configuration - skipping for now")
+    # def test_route_lifecycle(self, integration_client):
+    #     """Test route lifecycle."""
+    #     peers = integration_client.peers.list()
+    #     if not peers:
+    #         pytest.skip("No peers available to create a route")
+    # 
+    #     peer_id = peers[0].id
+    #     route_network = f"192.168.{random.randint(0, 255)}.0/24"
+    #     group_name = f"test-group-{uuid4().hex[:8]}"
+    #     
+    #     # CREATE GROUP
+    #     group_data = GroupCreate(name=group_name, peers=[])
+    #     created_group = integration_client.groups.create(group_data)
+    # 
+    #     # CREATE
+    #     route_data = RouteCreate(
+    #         description="Integration test route",
+    #         network=route_network,
+    #         network_type="ipv4",
+    #         peer=peer_id,
+    #         metric=100,
+    #         network_id="dummy",
+    #         groups=[created_group.id]
+    #     )
+    #     created_route = integration_client.routes.create(route_data)
+    # 
+    #     assert created_route.network_id == route_network
+    #     assert created_route.peer == peer_id
+    # 
+    #     try:
+    #         # READ
+    #         fetched_route = integration_client.routes.get(created_route.id)
+    #         assert fetched_route.id == created_route.id
+    #         assert fetched_route.network_id == route_network
+    # 
+    #         # UPDATE
+    #         update_data = RouteUpdate(
+    #             description="Updated integration test route",
+    #             enabled=False,
+    #         )
+    #         updated_route = integration_client.routes.update(created_route.id, update_data)
+    #         assert updated_route.description == "Updated integration test route"
+    #         assert updated_route.enabled is False
+    # 
+    #     finally:
+    #         # DELETE (cleanup)
+    #         integration_client.routes.delete(created_route.id)
+    #         integration_client.groups.delete(created_group.id)
+    # 
+    #         # Verify deletion
+    #         with pytest.raises(NetBirdNotFoundError):
+    #             integration_client.routes.get(created_route.id)
+    #         with pytest.raises(NetBirdNotFoundError):
+    #             integration_client.groups.get(created_group.id)
 
 
 @pytest.mark.integration
@@ -135,7 +205,7 @@ class TestErrorScenarios:
                 
         finally:
             # Cleanup
-            integration_client.groups.delete(first_group.id)
+            integration_client.groups.delete(first_group['id'])
     
     def test_invalid_network_range_in_route(self, integration_client):
         """Test that invalid network ranges are rejected by the server."""
@@ -188,16 +258,16 @@ class TestDataConsistency:
             assert len(updated_groups) == initial_count + 1
             
             # Verify the new group is in the list
-            group_ids = [g.id for g in updated_groups]
-            assert created_group.id in group_ids
+            group_ids = [g['id'] for g in updated_groups]
+            assert created_group['id'] in group_ids
             
             # Find our group in the list
-            our_group = next(g for g in updated_groups if g.id == created_group.id)
-            assert our_group.name == group_name
+            our_group = next(g for g in updated_groups if g['id'] == created_group['id'])
+            assert our_group['name'] == group_name
             
         finally:
             # Cleanup
-            integration_client.groups.delete(created_group.id)
+            integration_client.groups.delete(created_group['id'])
             
             # Verify count returned to original
             final_groups = integration_client.groups.list()
@@ -215,16 +285,16 @@ class TestDataConsistency:
             # Perform multiple rapid updates
             for i in range(3):
                 update_data = GroupUpdate(name=f"{group_name}-update-{i}")
-                updated_group = integration_client.groups.update(created_group.id, update_data)
-                assert updated_group.name == f"{group_name}-update-{i}"
+                updated_group = integration_client.groups.update(created_group['id'], update_data)
+                assert updated_group['name'] == f"{group_name}-update-{i}"
                 
                 # Small delay to avoid rate limiting
                 time.sleep(0.1)
             
             # Verify final state
-            final_group = integration_client.groups.get(created_group.id)
-            assert final_group.name == f"{group_name}-update-2"
+            final_group = integration_client.groups.get(created_group['id'])
+            assert final_group['name'] == f"{group_name}-update-2"
             
         finally:
             # Cleanup
-            integration_client.groups.delete(created_group.id)
+            integration_client.groups.delete(created_group['id'])

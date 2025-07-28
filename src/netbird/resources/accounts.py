@@ -2,9 +2,9 @@
 Accounts resource handler for NetBird API.
 """
 
-from typing import List
+from typing import Dict, List, Any
 
-from ..models import Account, AccountSettings
+from ..models import AccountSettings
 from .base import BaseResource
 
 
@@ -15,23 +15,23 @@ class AccountsResource(BaseResource):
     updating settings, and account deletion.
     """
     
-    def list(self) -> List[Account]:
+    def list(self) -> List[Dict[str, Any]]:
         """List all accounts.
         
         Returns a list of accounts. Always returns a list of one account
         as users can only access their own account.
         
         Returns:
-            List of Account objects
+            List of account dictionaries
             
         Example:
             >>> accounts = client.accounts.list()
             >>> print(f"Account ID: {accounts[0].id}")
         """
         data = self.client.get("accounts")
-        return self._parse_list_response(data, Account)
+        return self._parse_list_response(data)
     
-    def update(self, account_id: str, settings: AccountSettings) -> Account:
+    def update(self, account_id: str, settings: AccountSettings) -> Dict[str, Any]:
         """Update account settings.
         
         Args:
@@ -39,7 +39,7 @@ class AccountsResource(BaseResource):
             settings: Account settings to update
             
         Returns:
-            Updated Account object
+            Updated account dictionary
             
         Example:
             >>> settings = AccountSettings(
@@ -52,7 +52,7 @@ class AccountsResource(BaseResource):
             f"accounts/{account_id}",
             data={"settings": settings.model_dump(exclude_unset=True)}
         )
-        return self._parse_response(data, Account)
+        return self._parse_response(data)
     
     def delete(self, account_id: str) -> None:
         """Delete an account.

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "user-1",
+    "email": "user1@example.com",
+    "name": "Test User 1",
+    "role": "user",
+    "status": "active",
+    "auto_groups": ["group-1"],
+    "is_service_user": false,
+    "is_blocked": false,
+    "issued": "2023-01-01T00:00:00Z",
+    "permissions": {
+      "view_groups": true,
+      "manage_peers": false
+    }
+  },
+  {
+    "id": "user-2", 
+    "email": "admin@example.com",
+    "name": "Test Admin",
+    "role": "admin",
+    "status": "active",
+    "auto_groups": ["group-1", "group-2"],
+    "is_service_user": false,
+    "is_blocked": false,
+    "issued": "2023-01-01T00:00:00Z",
+    "permissions": {
+      "view_groups": true,
+      "manage_peers": true
+    }
+  }
+]

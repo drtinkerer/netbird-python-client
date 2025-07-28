@@ -1,0 +1,19 @@
+[
+  {
+    "id": "key-123",
+    "key": "setup-key-value",
+    "name": "test-key",
+    "expires": "2024-01-01T00:00:00Z",
+    "type": "reusable",
+    "valid": true,
+    "revoked": false,
+    "used_times": 0,
+    "last_used": null,
+    "state": "valid",
+    "auto_groups": ["group-1"],
+    "updated_at": "2023-01-01T00:00:00Z",
+    "usage_limit": 10,
+    "ephemeral": false,
+    "allow_extra_dns_labels": false
+  }
+]

@@ -2,7 +2,6 @@
 Peer models for NetBird API.
 """
 
-from datetime import datetime
 from typing import List, Optional, Dict, Any
 
 from pydantic import Field, IPvAnyAddress
@@ -63,7 +62,7 @@ class Peer(BaseModel):
     
     id: ResourceId = Field(..., description="Unique peer identifier")
     name: str = Field(..., description="Peer name")
-    ip: str = Field(..., description="Peer IP address")
+    ip: IPvAnyAddress = Field(..., description="Peer IP address")
     connection_ip: Optional[str] = Field(None, description="Connection IP address")
     connected: bool = Field(..., description="Connection status")
     last_seen: Optional[str] = Field(None, description="Last seen timestamp")

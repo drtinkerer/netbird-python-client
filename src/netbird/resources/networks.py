@@ -2,9 +2,9 @@
 Networks resource handler for NetBird API.
 """
 
-from typing import List
+from typing import Dict, List, Any
 
-from ..models import Network, NetworkCreate, NetworkResource, NetworkRouter, NetworkUpdate
+from ..models import NetworkCreate, NetworkUpdate
 from .base import BaseResource
 
 
@@ -16,11 +16,11 @@ class NetworksResource(BaseResource):
     managing network resources and routers.
     """
     
-    def list(self) -> List[Network]:
+    def list(self) -> List[Dict[str, Any]]:
         """List all networks.
         
         Returns:
-            List of Network objects
+            List of network dictionaries
             
         Example:
             >>> networks = client.networks.list()
@@ -28,16 +28,16 @@ class NetworksResource(BaseResource):
             ...     print(f"Network: {network.name}")
         """
         data = self.client.get("networks")
-        return self._parse_list_response(data, Network)
+        return self._parse_list_response(data)
     
-    def create(self, network_data: NetworkCreate) -> Network:
+    def create(self, network_data: NetworkCreate) -> Dict[str, Any]:
         """Create a new network.
         
         Args:
             network_data: Network creation data
             
         Returns:
-            Created Network object
+            Created network dictionary
             
         Example:
             >>> network_data = NetworkCreate(
@@ -50,25 +50,25 @@ class NetworksResource(BaseResource):
             "networks",
             data=network_data.model_dump(exclude_unset=True)
         )
-        return self._parse_response(data, Network)
+        return self._parse_response(data)
     
-    def get(self, network_id: str) -> Network:
+    def get(self, network_id: str) -> Dict[str, Any]:
         """Retrieve a specific network.
         
         Args:
             network_id: Unique network identifier
             
         Returns:
-            Network object
+            Network dictionary
             
         Example:
             >>> network = client.networks.get("network-123")
             >>> print(f"Network: {network.name}")
         """
         data = self.client.get(f"networks/{network_id}")
-        return self._parse_response(data, Network)
+        return self._parse_response(data)
     
-    def update(self, network_id: str, network_data: NetworkUpdate) -> Network:
+    def update(self, network_id: str, network_data: NetworkUpdate) -> Dict[str, Any]:
         """Update a network.
         
         Args:
@@ -76,7 +76,7 @@ class NetworksResource(BaseResource):
             network_data: Network update data
             
         Returns:
-            Updated Network object
+            Updated network dictionary
             
         Example:
             >>> network_data = NetworkUpdate(
@@ -88,7 +88,7 @@ class NetworksResource(BaseResource):
             f"networks/{network_id}",
             data=network_data.model_dump(exclude_unset=True)
         )
-        return self._parse_response(data, Network)
+        return self._parse_response(data)
     
     def delete(self, network_id: str) -> None:
         """Delete a network.
@@ -103,22 +103,22 @@ class NetworksResource(BaseResource):
     
     # Network Resources
     
-    def list_resources(self, network_id: str) -> List[NetworkResource]:
+    def list_resources(self, network_id: str) -> List[Dict[str, Any]]:
         """List all resources in a network.
         
         Args:
             network_id: Unique network identifier
             
         Returns:
-            List of NetworkResource objects
+            List of network resource dictionaries
             
         Example:
             >>> resources = client.networks.list_resources("network-123")
         """
         data = self.client.get(f"networks/{network_id}/resources")
-        return self._parse_list_response(data, NetworkResource)
+        return self._parse_list_response(data)
     
-    def create_resource(self, network_id: str, resource_data: dict) -> NetworkResource:
+    def create_resource(self, network_id: str, resource_data: dict) -> Dict[str, Any]:
         """Create a network resource.
         
         Args:
@@ -126,12 +126,12 @@ class NetworksResource(BaseResource):
             resource_data: Resource creation data
             
         Returns:
-            Created NetworkResource object
+            Created network resource dictionary
         """
         data = self.client.post(f"networks/{network_id}/resources", data=resource_data)
-        return self._parse_response(data, NetworkResource)
+        return self._parse_response(data)
     
-    def get_resource(self, network_id: str, resource_id: str) -> NetworkResource:
+    def get_resource(self, network_id: str, resource_id: str) -> Dict[str, Any]:
         """Get a specific network resource.
         
         Args:
@@ -139,12 +139,12 @@ class NetworksResource(BaseResource):
             resource_id: Unique resource identifier
             
         Returns:
-            NetworkResource object
+            Network resource dictionary
         """
         data = self.client.get(f"networks/{network_id}/resources/{resource_id}")
-        return self._parse_response(data, NetworkResource)
+        return self._parse_response(data)
     
-    def update_resource(self, network_id: str, resource_id: str, resource_data: dict) -> NetworkResource:
+    def update_resource(self, network_id: str, resource_id: str, resource_data: dict) -> Dict[str, Any]:
         """Update a network resource.
         
         Args:
@@ -153,10 +153,10 @@ class NetworksResource(BaseResource):
             resource_data: Resource update data
             
         Returns:
-            Updated NetworkResource object
+            Updated network resource dictionary
         """
         data = self.client.put(f"networks/{network_id}/resources/{resource_id}", data=resource_data)
-        return self._parse_response(data, NetworkResource)
+        return self._parse_response(data)
     
     def delete_resource(self, network_id: str, resource_id: str) -> None:
         """Delete a network resource.
@@ -169,19 +169,19 @@ class NetworksResource(BaseResource):
     
     # Network Routers
     
-    def list_routers(self, network_id: str) -> List[NetworkRouter]:
+    def list_routers(self, network_id: str) -> List[Dict[str, Any]]:
         """List all routers in a network.
         
         Args:
             network_id: Unique network identifier
             
         Returns:
-            List of NetworkRouter objects
+            List of network router dictionaries
         """
         data = self.client.get(f"networks/{network_id}/routers")
-        return self._parse_list_response(data, NetworkRouter)
+        return self._parse_list_response(data)
     
-    def create_router(self, network_id: str, router_data: dict) -> NetworkRouter:
+    def create_router(self, network_id: str, router_data: dict) -> Dict[str, Any]:
         """Create a network router.
         
         Args:
@@ -189,12 +189,12 @@ class NetworksResource(BaseResource):
             router_data: Router creation data
             
         Returns:
-            Created NetworkRouter object
+            Created network router dictionary
         """
         data = self.client.post(f"networks/{network_id}/routers", data=router_data)
-        return self._parse_response(data, NetworkRouter)
+        return self._parse_response(data)
     
-    def get_router(self, network_id: str, router_id: str) -> NetworkRouter:
+    def get_router(self, network_id: str, router_id: str) -> Dict[str, Any]:
         """Get a specific network router.
         
         Args:
@@ -202,12 +202,12 @@ class NetworksResource(BaseResource):
             router_id: Unique router identifier
             
         Returns:
-            NetworkRouter object
+            Network router dictionary
         """
         data = self.client.get(f"networks/{network_id}/routers/{router_id}")
-        return self._parse_response(data, NetworkRouter)
+        return self._parse_response(data)
     
-    def update_router(self, network_id: str, router_id: str, router_data: dict) -> NetworkRouter:
+    def update_router(self, network_id: str, router_id: str, router_data: dict) -> Dict[str, Any]:
         """Update a network router.
         
         Args:
@@ -216,10 +216,10 @@ class NetworksResource(BaseResource):
             router_data: Router update data
             
         Returns:
-            Updated NetworkRouter object
+            Updated network router dictionary
         """
         data = self.client.put(f"networks/{network_id}/routers/{router_id}", data=router_data)
-        return self._parse_response(data, NetworkRouter)
+        return self._parse_response(data)
     
     def delete_router(self, network_id: str, router_id: str) -> None:
         """Delete a network router.

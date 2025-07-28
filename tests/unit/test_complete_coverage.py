@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 
 from netbird import APIClient
 from netbird.models import NetworkResource, NetworkRouter
+# Note: These imports are kept for input validation, but responses are now dictionaries
 from netbird.resources.base import BaseResource
 
 
@@ -73,10 +74,10 @@ class TestBaseResourceCompleteCode:
         MockModel.model_validate.side_effect = mock_instances
         
         data = [{"id": "1"}, {"id": "2"}]
-        result = resource._parse_response(data, MockModel)
+        result = resource._parse_response(data)
         
-        # Should return list of parsed objects
-        assert result == mock_instances
+        # Should return list of dictionaries directly
+        assert result == data
     
     def test_parse_response_with_other_data(self):
         """Test parsing response with non-dict, non-list data."""
@@ -85,11 +86,10 @@ class TestBaseResourceCompleteCode:
         
         MockModel = Mock()
         data = "simple string"
-        result = resource._parse_response(data, MockModel)
+        result = resource._parse_response(data)
         
-        # Should return data as-is
+        # Should return data as-is (for non-dict, non-list data)
         assert result == "simple string"
-        MockModel.model_validate.assert_not_called()
 
 
 class TestEventsResourceCompleteCode:
@@ -148,31 +148,30 @@ class TestGroupsResourceCompleteCode:
     
     def test_get_group(self):
         """Test getting a specific group."""
-        from netbird.models import Group
         
         mock_group_data = {
             "id": "group-123",
             "name": "test-group",
             "peers_count": 5,
-            "peers": ["peer-1", "peer-2"]
+            "peers": [{"id": "peer-1"}, {"id": "peer-2"}]
         }
         self.mock_client.get.return_value = mock_group_data
         
         group = self.groups_resource.get("group-123")
         
         self.mock_client.get.assert_called_once_with("groups/group-123")
-        assert isinstance(group, Group)
-        assert group.id == "group-123"
+        assert isinstance(group, dict)
+        assert group["id"] == "group-123"
     
     def test_update_group(self):
         """Test updating a group."""
-        from netbird.models import Group, GroupUpdate
+        from netbird.models import GroupUpdate
         
         mock_group_data = {
             "id": "group-123", 
             "name": "updated-group",
             "peers_count": 3,
-            "peers": ["peer-1", "peer-2", "peer-3"]
+            "peers": [{"id": "peer-1"}, {"id": "peer-2"}, {"id": "peer-3"}]
         }
         self.mock_client.put.return_value = mock_group_data
         
@@ -183,7 +182,7 @@ class TestGroupsResourceCompleteCode:
             "groups/group-123",
             data=update_data.model_dump(exclude_unset=True)
         )
-        assert group.name == "updated-group"
+        assert group["name"] == "updated-group"
     
     def test_delete_group(self):
         """Test deleting a group."""
@@ -203,7 +202,6 @@ class TestNetworksResourceCompleteCode:
     
     def test_get_network(self):
         """Test getting a specific network."""
-        from netbird.models import Network
         
         mock_network_data = {
             "id": "network-123",
@@ -215,12 +213,12 @@ class TestNetworksResourceCompleteCode:
         network = self.networks_resource.get("network-123")
         
         self.mock_client.get.assert_called_once_with("networks/network-123")
-        assert isinstance(network, Network)
-        assert network.id == "network-123"
+        assert isinstance(network, dict)
+        assert network["id"] == "network-123"
     
     def test_update_network(self):
         """Test updating a network."""
-        from netbird.models import Network, NetworkUpdate
+        from netbird.models import NetworkUpdate
         
         mock_network_data = {
             "id": "network-123",
@@ -236,7 +234,7 @@ class TestNetworksResourceCompleteCode:
             "networks/network-123",
             data=update_data.model_dump(exclude_unset=True)
         )
-        assert network.name == "updated-network"
+        assert network["name"] == "updated-network"
     
     def test_delete_network(self):
         """Test deleting a network."""
@@ -264,7 +262,7 @@ class TestNetworksResourceCompleteCode:
         resource = self.networks_resource.create_resource("network-123", resource_data)
         
         self.mock_client.post.assert_called_once_with("networks/network-123/resources", data=resource_data)
-        assert isinstance(resource, NetworkResource)
+        assert isinstance(resource, dict)
     
     def test_update_resource(self):
         """Test updating a network resource."""
@@ -281,7 +279,7 @@ class TestNetworksResourceCompleteCode:
         resource = self.networks_resource.update_resource("network-123", "resource-123", resource_data)
         
         self.mock_client.put.assert_called_once_with("networks/network-123/resources/resource-123", data=resource_data)
-        assert isinstance(resource, NetworkResource)
+        assert isinstance(resource, dict)
     
     def test_delete_resource(self):
         """Test deleting a network resource."""
@@ -309,7 +307,7 @@ class TestNetworksResourceCompleteCode:
         router = self.networks_resource.create_router("network-123", router_data)
         
         self.mock_client.post.assert_called_once_with("networks/network-123/routers", data=router_data)
-        assert isinstance(router, NetworkRouter)
+        assert isinstance(router, dict)
     
     def test_get_router(self):
         """Test getting a network router."""
@@ -326,7 +324,7 @@ class TestNetworksResourceCompleteCode:
         router = self.networks_resource.get_router("network-123", "router-123")
         
         self.mock_client.get.assert_called_once_with("networks/network-123/routers/router-123")
-        assert isinstance(router, NetworkRouter)
+        assert isinstance(router, dict)
     
     def test_update_router(self):
         """Test updating a network router."""
@@ -344,7 +342,7 @@ class TestNetworksResourceCompleteCode:
         router = self.networks_resource.update_router("network-123", "router-123", router_data)
         
         self.mock_client.put.assert_called_once_with("networks/network-123/routers/router-123", data=router_data)
-        assert isinstance(router, NetworkRouter)
+        assert isinstance(router, dict)
     
     def test_delete_router(self):
         """Test deleting a network router."""
@@ -390,7 +388,6 @@ class TestSetupKeysResourceCompleteCode:
             "valid": True,
             "revoked": False,
             "used_times": 0,
-            "expires_in": 86400,
             "state": "valid",
             "updated_at": "2023-01-01T00:00:00Z",
             "ephemeral": False
@@ -400,12 +397,12 @@ class TestSetupKeysResourceCompleteCode:
         key = self.setup_keys_resource.get("key-123")
         
         self.mock_client.get.assert_called_once_with("setup-keys/key-123")
-        assert isinstance(key, SetupKey)
-        assert key.id == "key-123"
+        assert isinstance(key, dict)
+        assert key["id"] == "key-123"
     
     def test_update_setup_key(self):
         """Test updating a setup key."""
-        from netbird.models import SetupKey, SetupKeyUpdate
+        from netbird.models import SetupKeyUpdate
         
         mock_key_data = {
             "id": "key-123",
@@ -415,7 +412,6 @@ class TestSetupKeysResourceCompleteCode:
             "valid": False,
             "revoked": True,
             "used_times": 5,
-            "expires_in": 86400,
             "state": "revoked",
             "updated_at": "2023-01-01T00:00:00Z",
             "ephemeral": False
@@ -429,7 +425,7 @@ class TestSetupKeysResourceCompleteCode:
             "setup-keys/key-123",
             data=update_data.model_dump(exclude_unset=True)
         )
-        assert key.revoked
+        assert key["revoked"]
     
     def test_delete_setup_key(self):
         """Test deleting a setup key."""
@@ -463,8 +459,8 @@ class TestTokensResourceCompleteCode:
         token = self.tokens_resource.get("user-123", "token-123")
         
         self.mock_client.get.assert_called_once_with("users/user-123/tokens/token-123")
-        assert isinstance(token, Token)
-        assert token.id == "token-123"
+        assert isinstance(token, dict)
+        assert token["id"] == "token-123"
     
     def test_delete_token(self):
         """Test deleting a token."""

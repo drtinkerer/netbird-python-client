@@ -2,9 +2,7 @@
 Events resource handler for NetBird API.
 """
 
-from typing import List, Optional
-
-from ..models import AuditEvent, NetworkTrafficEvent
+from typing import Dict, List, Optional, Any
 from .base import BaseResource
 
 
@@ -14,11 +12,11 @@ class EventsResource(BaseResource):
     Provides methods to retrieve audit events and network traffic events.
     """
     
-    def get_audit_events(self) -> List[AuditEvent]:
+    def get_audit_events(self) -> List[Dict[str, Any]]:
         """Retrieve all audit events.
         
         Returns:
-            List of AuditEvent objects
+            List of audit event dictionaries
             
         Example:
             >>> events = client.events.get_audit_events()
@@ -26,7 +24,7 @@ class EventsResource(BaseResource):
             ...     print(f"{event.timestamp}: {event.activity}")
         """
         data = self.client.get("events/audit")
-        return self._parse_list_response(data, AuditEvent)
+        return self._parse_list_response(data)
     
     def get_network_traffic_events(
         self,
@@ -41,7 +39,7 @@ class EventsResource(BaseResource):
         search: Optional[str] = None,
         start_date: Optional[str] = None,
         end_date: Optional[str] = None,
-    ) -> List[NetworkTrafficEvent]:
+    ) -> List[Dict[str, Any]]:
         """Retrieve network traffic events with optional filtering.
         
         This endpoint is marked as "cloud-only experimental" in the API.
@@ -60,7 +58,7 @@ class EventsResource(BaseResource):
             end_date: End date filter
             
         Returns:
-            List of NetworkTrafficEvent objects
+            List of network traffic event dictionaries
             
         Example:
             >>> # Get all traffic events
@@ -98,4 +96,4 @@ class EventsResource(BaseResource):
             params["end_date"] = end_date
         
         data = self.client.get("events/network-traffic", params=params or None)
-        return self._parse_list_response(data, NetworkTrafficEvent)
+        return self._parse_list_response(data)

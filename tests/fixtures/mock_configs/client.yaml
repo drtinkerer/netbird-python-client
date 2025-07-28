@@ -1,0 +1,39 @@
+# Mock NetBird client configurations for testing
+
+default_client:
+  host: "api.netbird.io"
+  api_token: "test-token-123"
+  use_ssl: true
+  timeout: 30.0
+  base_path: "/api"
+
+test_client:
+  host: "test.netbird.io"
+  api_token: "test-token-456"
+  use_ssl: true
+  timeout: 10.0
+  base_path: "/api/v1"
+
+local_client:
+  host: "localhost:8080"
+  api_token: "local-token"
+  use_ssl: false
+  timeout: 5.0
+  base_path: "/api"
+
+# Environment configurations
+environments:
+  development:
+    host: "dev.netbird.io"
+    use_ssl: true
+    timeout: 30.0
+  
+  staging:
+    host: "staging.netbird.io"
+    use_ssl: true
+    timeout: 15.0
+  
+  production:
+    host: "api.netbird.io"
+    use_ssl: true
+    timeout: 10.0

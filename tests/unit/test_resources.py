@@ -7,12 +7,11 @@ from unittest.mock import Mock, MagicMock
 
 from netbird import APIClient
 from netbird.models import (
-    User, UserCreate, UserUpdate,
-    Peer, PeerUpdate,
-    Group, GroupCreate,
-    Token, TokenCreate,
-    SetupKey, SetupKeyCreate,
-    Account,
+    UserCreate, UserUpdate,
+    PeerUpdate,
+    GroupCreate,
+    TokenCreate,
+    SetupKeyCreate,
 )
 from netbird.resources.users import UsersResource
 from netbird.resources.peers import PeersResource
@@ -58,9 +57,9 @@ class TestUsersResource:
         # Verify
         self.mock_client.get.assert_called_once_with("users")
         assert len(users) == 2
-        assert all(isinstance(user, User) for user in users)
-        assert users[0].email == "user1@example.com"
-        assert users[1].role == "admin"
+        assert all(isinstance(user, dict) for user in users)
+        assert users[0]["email"] == "user1@example.com"
+        assert users[1]["role"] == "admin"
     
     def test_create_user(self):
         """Test creating a user."""
@@ -89,8 +88,8 @@ class TestUsersResource:
             "users",
             data=user_data.model_dump(exclude_unset=True)
         )
-        assert isinstance(user, User)
-        assert user.email == "new@example.com"
+        assert isinstance(user, dict)
+        assert user["email"] == "new@example.com"
     
     def test_get_user(self):
         """Test getting a specific user."""
@@ -106,8 +105,8 @@ class TestUsersResource:
         user = self.users_resource.get("user-123")
         
         self.mock_client.get.assert_called_once_with("users/user-123")
-        assert isinstance(user, User)
-        assert user.id == "user-123"
+        assert isinstance(user, dict)
+        assert user["id"] == "user-123"
     
     def test_update_user(self):
         """Test updating a user."""
@@ -127,8 +126,8 @@ class TestUsersResource:
             "users/user-123",
             data=update_data.model_dump(exclude_unset=True)
         )
-        assert user.name == "Updated User"
-        assert user.role == "admin"
+        assert user["name"] == "Updated User"
+        assert user["role"] == "admin"
     
     def test_delete_user(self):
         """Test deleting a user."""
@@ -156,7 +155,7 @@ class TestUsersResource:
         user = self.users_resource.get_current()
         
         self.mock_client.get.assert_called_once_with("users/current")
-        assert user.id == "current-user"
+        assert user["id"] == "current-user"
 
 
 class TestPeersResource:
@@ -176,7 +175,7 @@ class TestPeersResource:
                 "ip": "10.0.0.1",
                 "connected": True,
                 "ssh_enabled": False,
-                "approved": True
+                "approval_required": True
             }
         ]
         self.mock_client.get.return_value = mock_peers_data
@@ -185,7 +184,7 @@ class TestPeersResource:
         
         self.mock_client.get.assert_called_once_with("peers", params=None)
         assert len(peers) == 1
-        assert isinstance(peers[0], Peer)
+        assert isinstance(peers[0], dict)
     
     def test_list_peers_with_filters(self):
         """Test listing peers with name and IP filters."""
@@ -205,14 +204,14 @@ class TestPeersResource:
             "ip": "10.0.0.1",
             "connected": True,
             "ssh_enabled": True,
-            "approved": True
+            "approval_required": True
         }
         self.mock_client.get.return_value = mock_peer_data
         
         peer = self.peers_resource.get("peer-123")
         
         self.mock_client.get.assert_called_once_with("peers/peer-123")
-        assert peer.name == "test-peer"
+        assert peer["name"] == "test-peer"
     
     def test_update_peer(self):
         """Test updating a peer."""
@@ -222,7 +221,7 @@ class TestPeersResource:
             "ip": "10.0.0.1",
             "connected": True,
             "ssh_enabled": True,
-            "approved": True
+            "approval_required": True
         }
         self.mock_client.put.return_value = mock_peer_data
         
@@ -233,7 +232,7 @@ class TestPeersResource:
             "peers/peer-123",
             data=update_data.model_dump(exclude_unset=True)
         )
-        assert peer.name == "updated-peer"
+        assert peer["name"] == "updated-peer"
     
     def test_get_accessible_peers(self):
         """Test getting accessible peers."""
@@ -244,7 +243,7 @@ class TestPeersResource:
                 "ip": "10.0.0.2",
                 "connected": True,
                 "ssh_enabled": False,
-                "approved": True
+                "approval_required": True
             }
         ]
         self.mock_client.get.return_value = mock_peers_data
@@ -253,6 +252,7 @@ class TestPeersResource:
         
         self.mock_client.get.assert_called_once_with("peers/peer-123/accessible-peers")
         assert len(peers) == 1
+        assert isinstance(peers[0], dict)
 
 
 class TestGroupsResource:
@@ -270,7 +270,7 @@ class TestGroupsResource:
                 "id": "group-1",
                 "name": "developers",
                 "peers_count": 5,
-                "peers": ["peer-1", "peer-2"]
+                "peers": [{"id": "peer-1"}, {"id": "peer-2"}]
             }
         ]
         self.mock_client.get.return_value = mock_groups_data
@@ -279,7 +279,7 @@ class TestGroupsResource:
         
         self.mock_client.get.assert_called_once_with("groups")
         assert len(groups) == 1
-        assert isinstance(groups[0], Group)
+        assert isinstance(groups[0], dict)
     
     def test_create_group(self):
         """Test creating a group."""
@@ -298,7 +298,7 @@ class TestGroupsResource:
             "groups",
             data=group_data.model_dump(exclude_unset=True)
         )
-        assert group.name == "new-group"
+        assert group["name"] == "new-group"
 
 
 class TestAccountsResource:
@@ -323,7 +323,7 @@ class TestAccountsResource:
         
         self.mock_client.get.assert_called_once_with("accounts")
         assert len(accounts) == 1
-        assert isinstance(accounts[0], Account)
+        assert isinstance(accounts[0], dict)
 
 
 class TestTokensResource:
@@ -351,7 +351,7 @@ class TestTokensResource:
         
         self.mock_client.get.assert_called_once_with("users/user-123/tokens")
         assert len(tokens) == 1
-        assert isinstance(tokens[0], Token)
+        assert isinstance(tokens[0], dict)
     
     def test_create_token(self):
         """Test creating a token."""
@@ -371,7 +371,7 @@ class TestTokensResource:
             "users/user-123/tokens",
             data=token_data.model_dump()
         )
-        assert token.name == "new-token"
+        assert token["name"] == "new-token"
 
 
 class TestSetupKeysResource:
@@ -393,7 +393,6 @@ class TestSetupKeysResource:
                 "valid": True,
                 "revoked": False,
                 "used_times": 0,
-                "expires_in": 86400,
                 "state": "valid",
                 "updated_at": "2023-01-01T00:00:00Z",
                 "ephemeral": False
@@ -405,7 +404,7 @@ class TestSetupKeysResource:
         
         self.mock_client.get.assert_called_once_with("setup-keys")
         assert len(keys) == 1
-        assert isinstance(keys[0], SetupKey)
+        assert isinstance(keys[0], dict)
     
     def test_create_setup_key(self):
         """Test creating a setup key."""
@@ -417,7 +416,6 @@ class TestSetupKeysResource:
             "valid": True,
             "revoked": False,
             "used_times": 0,
-            "expires_in": 3600,
             "state": "valid",
             "updated_at": "2023-01-01T00:00:00Z",
             "ephemeral": False
@@ -435,14 +433,14 @@ class TestSetupKeysResource:
             "setup-keys",
             data=key_data.model_dump(exclude_unset=True)
         )
-        assert key.name == "new-key"
+        assert key["name"] == "new-key"
 
 
 class TestBaseResourceParsing:
     """Test base resource parsing functionality."""
     
     def test_parse_response_dict(self):
-        """Test parsing dictionary response."""
+        """Test parsing dictionary response (should return dict directly)."""
         from netbird.resources.base import BaseResource
         
         mock_client = Mock()
@@ -450,18 +448,16 @@ class TestBaseResourceParsing:
         
         data = {"id": "test-123", "name": "Test"}
         
-        # Mock model class
+        # Mock model class (not used anymore)
         MockModel = Mock()
-        mock_instance = Mock()
-        MockModel.model_validate.return_value = mock_instance
         
-        result = resource._parse_response(data, MockModel)
+        result = resource._parse_response(data)
         
-        MockModel.model_validate.assert_called_once_with(data)
-        assert result == mock_instance
+        # Should return dictionary directly without model validation
+        assert result == data
     
     def test_parse_list_response(self):
-        """Test parsing list response."""
+        """Test parsing list response (should return list of dicts directly)."""
         from netbird.resources.base import BaseResource
         
         mock_client = Mock()
@@ -469,22 +465,23 @@ class TestBaseResourceParsing:
         
         data = [{"id": "1", "name": "One"}, {"id": "2", "name": "Two"}]
         
-        # Mock model class
+        # Mock model class (not used anymore)
         MockModel = Mock()
-        mock_instances = [Mock(), Mock()]
-        MockModel.model_validate.side_effect = mock_instances
         
-        result = resource._parse_list_response(data, MockModel)
+        result = resource._parse_list_response(data)
         
-        assert MockModel.model_validate.call_count == 2
-        assert result == mock_instances
+        # Should return list of dictionaries directly without model validation
+        assert result == data
     
     def test_parse_list_response_invalid_data(self):
-        """Test parsing non-list data raises error."""
+        """Test parsing non-list data (should handle gracefully now)."""
         from netbird.resources.base import BaseResource
         
         mock_client = Mock()
         resource = BaseResource(mock_client)
         
+        # This test is no longer relevant since we return dictionaries directly
+        # The _parse_list_response method should handle non-list data gracefully
+        # The method now raises ValueError for non-list data
         with pytest.raises(ValueError, match="Expected list response"):
-            resource._parse_list_response({"not": "a list"}, Mock)
+            resource._parse_list_response({"not": "a list"})

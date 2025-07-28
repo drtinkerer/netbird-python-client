@@ -2,9 +2,9 @@
 Tokens resource handler for NetBird API.
 """
 
-from typing import List
+from typing import Dict, List, Any
 
-from ..models import Token, TokenCreate
+from ..models import TokenCreate
 from .base import BaseResource
 
 
@@ -15,14 +15,14 @@ class TokensResource(BaseResource):
     creating, retrieving, and deleting tokens.
     """
     
-    def list(self, user_id: str) -> List[Token]:
+    def list(self, user_id: str) -> List[Dict[str, Any]]:
         """List all tokens for a user.
         
         Args:
             user_id: Unique user identifier
             
         Returns:
-            List of Token objects
+            List of token dictionaries
             
         Example:
             >>> tokens = client.tokens.list("user-123")
@@ -30,9 +30,9 @@ class TokensResource(BaseResource):
             ...     print(f"Token: {token.name}")
         """
         data = self.client.get(f"users/{user_id}/tokens")
-        return self._parse_list_response(data, Token)
+        return self._parse_list_response(data)
     
-    def create(self, user_id: str, token_data: TokenCreate) -> Token:
+    def create(self, user_id: str, token_data: TokenCreate) -> Dict[str, Any]:
         """Create a new token for a user.
         
         Args:
@@ -40,7 +40,7 @@ class TokensResource(BaseResource):
             token_data: Token creation data
             
         Returns:
-            Created Token object
+            Created token dictionary
             
         Example:
             >>> token_data = TokenCreate(
@@ -53,9 +53,9 @@ class TokensResource(BaseResource):
             f"users/{user_id}/tokens",
             data=token_data.model_dump()
         )
-        return self._parse_response(data, Token)
+        return self._parse_response(data)
     
-    def get(self, user_id: str, token_id: str) -> Token:
+    def get(self, user_id: str, token_id: str) -> Dict[str, Any]:
         """Retrieve a specific token.
         
         Args:
@@ -63,14 +63,14 @@ class TokensResource(BaseResource):
             token_id: Unique token identifier
             
         Returns:
-            Token object
+            Token dictionary
             
         Example:
             >>> token = client.tokens.get("user-123", "token-456")
             >>> print(f"Token expires: {token.expiration_date}")
         """
         data = self.client.get(f"users/{user_id}/tokens/{token_id}")
-        return self._parse_response(data, Token)
+        return self._parse_response(data)
     
     def delete(self, user_id: str, token_id: str) -> None:
         """Delete a token.

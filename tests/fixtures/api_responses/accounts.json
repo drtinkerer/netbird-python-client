@@ -1,0 +1,26 @@
+[
+  {
+    "id": "account-123",
+    "domain": "example.netbird.io",
+    "domain_category": "private",
+    "created_at": "2023-01-01T00:00:00Z",
+    "created_by": "user-123",
+    "settings": {
+      "peer_login_expiration": 86400,
+      "peer_login_expiration_enabled": true,
+      "peer_inactivity_expiration": 3600,
+      "peer_inactivity_expiration_enabled": false,
+      "groups_propagation_enabled": true,
+      "jwt_groups_enabled": false,
+      "jwt_groups_claim_name": "",
+      "jwt_allow_groups": [],
+      "regular_users_view_blocked": false,
+      "routing_peer_dns_resolution_enabled": true,
+      "lazy_connection_enabled": false,
+      "extra": {
+        "network_traffic_logs_enabled": false,
+        "peer_approval_enabled": false
+      }
+    }
+  }
+]

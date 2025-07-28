@@ -1,0 +1,38 @@
+[
+  {
+    "id": "peer-123",
+    "name": "test-peer",
+    "ip": "10.0.0.1",
+    "connection_ip": "192.168.1.100",
+    "connected": true,
+    "last_seen": "2023-01-01T12:00:00Z",
+    "os": "Linux Ubuntu 22.04",
+    "version": "0.21.0",
+    "groups": [
+      {
+        "id": "group-1",
+        "name": "All Users",
+        "peers_count": 4,
+        "resources_count": 1
+      }
+    ],
+    "user_id": "user-123",
+    "hostname": "test-machine",
+    "ui_version": "0.21.0",
+    "dns_label": "test-peer.netbird.selfhosted",
+    "ssh_enabled": false,
+    "login_expiration_enabled": true,
+    "login_expired": false,
+    "approval_required": false,
+    "accessible_peers_count": 3,
+    "city_name": "San Francisco",
+    "country_code": "US",
+    "ephemeral": false,
+    "extra_dns_labels": [],
+    "geoname_id": 5391959,
+    "inactivity_expiration_enabled": false,
+    "kernel_version": "5.15.0-76-generic",
+    "last_login": "2023-01-01T10:00:00Z",
+    "serial_number": "VM-12345"
+  }
+]

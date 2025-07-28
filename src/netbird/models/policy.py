@@ -32,8 +32,8 @@ class PolicyRule(BaseModel):
     action: PolicyAction = Field(..., description="Policy action")
     protocol: Protocol = Field(..., description="Network protocol")
     ports: Optional[List[str]] = Field(None, description="Port list")
-    sources: List[Dict[str, Any]] = Field(..., description="Source group objects")
-    destinations: List[Dict[str, Any]] = Field(..., description="Destination group objects")
+    sources: Optional[List[Dict[str, Any]]] = Field(None, description="Source group objects")
+    destinations: Optional[List[Dict[str, Any]]] = Field(None, description="Destination group objects")
     bidirectional: bool = Field(False, description="Bidirectional rule")
 
 

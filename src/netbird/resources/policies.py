@@ -2,9 +2,9 @@
 Policies resource handler for NetBird API.
 """
 
-from typing import List
+from typing import Dict, List, Any
 
-from ..models import Policy, PolicyCreate, PolicyUpdate
+from ..models import PolicyCreate, PolicyUpdate
 from .base import BaseResource
 
 
@@ -15,11 +15,11 @@ class PoliciesResource(BaseResource):
     listing, creating, retrieving, updating, and deleting policies.
     """
     
-    def list(self) -> List[Policy]:
+    def list(self) -> List[Dict[str, Any]]:
         """List all policies.
         
         Returns:
-            List of Policy objects
+            List of policy dictionaries
             
         Example:
             >>> policies = client.policies.list()
@@ -27,16 +27,16 @@ class PoliciesResource(BaseResource):
             ...     print(f"Policy: {policy.name} (Enabled: {policy.enabled})")
         """
         data = self.client.get("policies")
-        return self._parse_list_response(data, Policy)
+        return self._parse_list_response(data)
     
-    def create(self, policy_data: PolicyCreate) -> Policy:
+    def create(self, policy_data: PolicyCreate) -> Dict[str, Any]:
         """Create a new policy.
         
         Args:
             policy_data: Policy creation data
             
         Returns:
-            Created Policy object
+            Created policy dictionary
             
         Example:
             >>> from netbird.models import PolicyRule, PolicyCreate
@@ -59,25 +59,25 @@ class PoliciesResource(BaseResource):
             "policies",
             data=policy_data.model_dump(exclude_unset=True)
         )
-        return self._parse_response(data, Policy)
+        return self._parse_response(data)
     
-    def get(self, policy_id: str) -> Policy:
+    def get(self, policy_id: str) -> Dict[str, Any]:
         """Retrieve a specific policy.
         
         Args:
             policy_id: Unique policy identifier
             
         Returns:
-            Policy object
+            Policy dictionary
             
         Example:
             >>> policy = client.policies.get("policy-123")
             >>> print(f"Policy: {policy.name}")
         """
         data = self.client.get(f"policies/{policy_id}")
-        return self._parse_response(data, Policy)
+        return self._parse_response(data)
     
-    def update(self, policy_id: str, policy_data: PolicyUpdate) -> Policy:
+    def update(self, policy_id: str, policy_data: PolicyUpdate) -> Dict[str, Any]:
         """Update a policy.
         
         Args:
@@ -85,7 +85,7 @@ class PoliciesResource(BaseResource):
             policy_data: Policy update data
             
         Returns:
-            Updated Policy object
+            Updated policy dictionary
             
         Example:
             >>> policy_data = PolicyUpdate(
@@ -98,7 +98,7 @@ class PoliciesResource(BaseResource):
             f"policies/{policy_id}",
             data=policy_data.model_dump(exclude_unset=True)
         )
-        return self._parse_response(data, Policy)
+        return self._parse_response(data)
     
     def delete(self, policy_id: str) -> None:
         """Delete a policy.

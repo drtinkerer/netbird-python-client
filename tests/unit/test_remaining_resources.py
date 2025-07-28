@@ -7,11 +7,9 @@ from unittest.mock import Mock
 
 from netbird import APIClient
 from netbird.models import (
-    Policy, PolicyCreate, PolicyUpdate,
-    Route, RouteCreate, RouteUpdate,
-    DNSNameserverGroup, DNSSettings,
-    AuditEvent, NetworkTrafficEvent,
-    Network, NetworkCreate,
+    PolicyCreate, PolicyUpdate,
+    RouteCreate, RouteUpdate,
+    NetworkCreate,
 )
 from netbird.resources.policies import PoliciesResource
 from netbird.resources.routes import RoutesResource
@@ -45,7 +43,7 @@ class TestPoliciesResource:
         
         self.mock_client.get.assert_called_once_with("policies")
         assert len(policies) == 1
-        assert isinstance(policies[0], Policy)
+        assert isinstance(policies[0], dict)
     
     def test_create_policy(self):
         """Test creating a policy."""
@@ -69,7 +67,7 @@ class TestPoliciesResource:
             "policies",
             data=policy_data.model_dump(exclude_unset=True)
         )
-        assert policy.name == "new-policy"
+        assert policy["name"] == "new-policy"
     
     def test_get_policy(self):
         """Test getting a specific policy."""
@@ -84,7 +82,7 @@ class TestPoliciesResource:
         policy = self.policies_resource.get("policy-123")
         
         self.mock_client.get.assert_called_once_with("policies/policy-123")
-        assert policy.name == "test-policy"
+        assert policy["name"] == "test-policy"
     
     def test_update_policy(self):
         """Test updating a policy."""
@@ -103,8 +101,8 @@ class TestPoliciesResource:
             "policies/policy-123",
             data=update_data.model_dump(exclude_unset=True)
         )
-        assert policy.name == "updated-policy"
-        assert not policy.enabled
+        assert policy["name"] == "updated-policy"
+        assert not policy["enabled"]
     
     def test_delete_policy(self):
         """Test deleting a policy."""
@@ -140,7 +138,7 @@ class TestRoutesResource:
         
         self.mock_client.get.assert_called_once_with("routes")
         assert len(routes) == 1
-        assert isinstance(routes[0], Route)
+        assert isinstance(routes[0], dict)
     
     def test_create_route(self):
         """Test creating a route."""
@@ -168,7 +166,7 @@ class TestRoutesResource:
             "routes",
             data=route_data.model_dump(exclude_unset=True)
         )
-        assert route.description == "Test route"
+        assert route["description"] == "Test route"
     
     def test_get_route(self):
         """Test getting a specific route."""
@@ -186,7 +184,7 @@ class TestRoutesResource:
         route = self.routes_resource.get("route-123")
         
         self.mock_client.get.assert_called_once_with("routes/route-123")
-        assert route.network_id == "192.168.1.0/24"
+        assert route["network_id"] == "192.168.1.0/24"
     
     def test_update_route(self):
         """Test updating a route."""
@@ -209,8 +207,8 @@ class TestRoutesResource:
             "routes/route-123",
             data=update_data.model_dump(exclude_unset=True)
         )
-        assert route.description == "Updated route"
-        assert not route.enabled
+        assert route["description"] == "Updated route"
+        assert not route["enabled"]
     
     def test_delete_route(self):
         """Test deleting a route."""
@@ -244,7 +242,7 @@ class TestDNSResource:
         
         self.mock_client.get.assert_called_once_with("dns/nameservers")
         assert len(ns_groups) == 1
-        assert isinstance(ns_groups[0], DNSNameserverGroup)
+        assert isinstance(ns_groups[0], dict)
     
     def test_create_nameserver_group(self):
         """Test creating a nameserver group."""
@@ -265,7 +263,7 @@ class TestDNSResource:
         ns_group = self.dns_resource.create_nameserver_group(ns_data)
         
         self.mock_client.post.assert_called_once_with("dns/nameservers", data=ns_data)
-        assert ns_group.name == "new-dns"
+        assert ns_group["name"] == "new-dns"
     
     def test_get_nameserver_group(self):
         """Test getting a specific nameserver group."""
@@ -281,7 +279,7 @@ class TestDNSResource:
         ns_group = self.dns_resource.get_nameserver_group("ns-123")
         
         self.mock_client.get.assert_called_once_with("dns/nameservers/ns-123")
-        assert ns_group.name == "test-dns"
+        assert ns_group["name"] == "test-dns"
     
     def test_update_nameserver_group(self):
         """Test updating a nameserver group."""
@@ -298,8 +296,8 @@ class TestDNSResource:
         ns_group = self.dns_resource.update_nameserver_group("ns-123", update_data)
         
         self.mock_client.put.assert_called_once_with("dns/nameservers/ns-123", data=update_data)
-        assert ns_group.name == "updated-dns"
-        assert not ns_group.enabled
+        assert ns_group["name"] == "updated-dns"
+        assert not ns_group["enabled"]
     
     def test_delete_nameserver_group(self):
         """Test deleting a nameserver group."""
@@ -317,8 +315,8 @@ class TestDNSResource:
         settings = self.dns_resource.get_settings()
         
         self.mock_client.get.assert_called_once_with("dns/settings")
-        assert isinstance(settings, DNSSettings)
-        assert len(settings.disabled_management_groups) == 2
+        assert isinstance(settings, dict)
+        assert len(settings["disabled_management_groups"]) == 2
     
     def test_update_settings(self):
         """Test updating DNS settings."""
@@ -331,7 +329,7 @@ class TestDNSResource:
         settings = self.dns_resource.update_settings(update_data)
         
         self.mock_client.put.assert_called_once_with("dns/settings", data=update_data)
-        assert len(settings.disabled_management_groups) == 1
+        assert len(settings["disabled_management_groups"]) == 1
 
 
 class TestEventsResource:
@@ -357,7 +355,7 @@ class TestEventsResource:
         
         self.mock_client.get.assert_called_once_with("events/audit")
         assert len(events) == 1
-        assert isinstance(events[0], AuditEvent)
+        assert isinstance(events[0], dict)
     
     def test_get_network_traffic_events_no_params(self):
         """Test getting network traffic events without parameters."""
@@ -384,7 +382,7 @@ class TestEventsResource:
         
         self.mock_client.get.assert_called_once_with("events/network-traffic", params=None)
         assert len(events) == 1
-        assert isinstance(events[0], NetworkTrafficEvent)
+        assert isinstance(events[0], dict)
     
     def test_get_network_traffic_events_with_params(self):
         """Test getting network traffic events with parameters."""
@@ -432,7 +430,7 @@ class TestNetworksResource:
         
         self.mock_client.get.assert_called_once_with("networks")
         assert len(networks) == 1
-        assert isinstance(networks[0], Network)
+        assert isinstance(networks[0], dict)
     
     def test_create_network(self):
         """Test creating a network."""
@@ -450,7 +448,7 @@ class TestNetworksResource:
             "networks",
             data=network_data.model_dump(exclude_unset=True)
         )
-        assert network.name == "new-network"
+        assert network["name"] == "new-network"
 
 
 class TestAccountsResourceUpdate:
@@ -486,7 +484,7 @@ class TestAccountsResourceUpdate:
             "accounts/account-123",
             data={"settings": settings.model_dump(exclude_unset=True)}
         )
-        assert account.domain == "example.com"
+        assert account["domain"] == "example.com"
     
     def test_delete_account(self):
         """Test deleting an account."""

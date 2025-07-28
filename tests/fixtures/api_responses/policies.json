@@ -1,0 +1,37 @@
+[
+  {
+    "id": "policy-123",
+    "name": "test-policy",
+    "description": "Test policy",
+    "enabled": true,
+    "source_posture_checks": [],
+    "rules": [
+      {
+        "id": "rule-1",
+        "name": "Allow SSH",
+        "description": "Allow SSH connections",
+        "enabled": true,
+        "action": "accept",
+        "protocol": "tcp",
+        "ports": ["22"],
+        "sources": [
+          {
+            "id": "group-1",
+            "name": "Source Group",
+            "peers_count": 2,
+            "resources_count": 0
+          }
+        ],
+        "destinations": [
+          {
+            "id": "group-2",
+            "name": "Destination Group", 
+            "peers_count": 1,
+            "resources_count": 1
+          }
+        ],
+        "bidirectional": false
+      }
+    ]
+  }
+]

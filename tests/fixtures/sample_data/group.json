@@ -1,0 +1,23 @@
+{
+  "id": "group-123",
+  "name": "test-group",
+  "peers_count": 2,
+  "peers": [
+    {
+      "id": "peer-1",
+      "name": "Test Peer One"
+    },
+    {
+      "id": "peer-2",
+      "name": "Test Peer Two"
+    }
+  ],
+  "resources": [
+    {
+      "id": "resource-1",
+      "type": "host"
+    }
+  ],
+  "resources_count": 1,
+  "issued": "api"
+}

@@ -2,9 +2,9 @@
 Groups resource handler for NetBird API.
 """
 
-from typing import List
+from typing import Dict, List, Any
 
-from ..models import Group, GroupCreate, GroupUpdate
+from ..models import GroupCreate, GroupUpdate
 from .base import BaseResource
 
 
@@ -15,11 +15,11 @@ class GroupsResource(BaseResource):
     creating, retrieving, updating, and deleting groups.
     """
     
-    def list(self) -> List[Group]:
+    def list(self) -> List[Dict[str, Any]]:
         """List all groups.
         
         Returns:
-            List of Group objects
+            List of group dictionaries
             
         Example:
             >>> groups = client.groups.list()
@@ -27,16 +27,16 @@ class GroupsResource(BaseResource):
             ...     print(f"Group: {group.name} ({group.peers_count} peers)")
         """
         data = self.client.get("groups")
-        return self._parse_list_response(data, Group)
+        return self._parse_list_response(data)
     
-    def create(self, group_data: GroupCreate) -> Group:
+    def create(self, group_data: GroupCreate) -> Dict[str, Any]:
         """Create a new group.
         
         Args:
             group_data: Group creation data
             
         Returns:
-            Created Group object
+            Created group dictionary
             
         Example:
             >>> group_data = GroupCreate(
@@ -49,25 +49,25 @@ class GroupsResource(BaseResource):
             "groups",
             data=group_data.model_dump(exclude_unset=True)
         )
-        return self._parse_response(data, Group)
+        return self._parse_response(data)
     
-    def get(self, group_id: str) -> Group:
+    def get(self, group_id: str) -> Dict[str, Any]:
         """Retrieve a specific group.
         
         Args:
             group_id: Unique group identifier
             
         Returns:
-            Group object
+            Group dictionary
             
         Example:
             >>> group = client.groups.get("group-123")
             >>> print(f"Group: {group.name}")
         """
         data = self.client.get(f"groups/{group_id}")
-        return self._parse_response(data, Group)
+        return self._parse_response(data)
     
-    def update(self, group_id: str, group_data: GroupUpdate) -> Group:
+    def update(self, group_id: str, group_data: GroupUpdate) -> Dict[str, Any]:
         """Update a group.
         
         Args:
@@ -75,7 +75,7 @@ class GroupsResource(BaseResource):
             group_data: Group update data
             
         Returns:
-            Updated Group object
+            Updated group dictionary
             
         Example:
             >>> group_data = GroupUpdate(
@@ -88,7 +88,7 @@ class GroupsResource(BaseResource):
             f"groups/{group_id}",
             data=group_data.model_dump(exclude_unset=True)
         )
-        return self._parse_response(data, Group)
+        return self._parse_response(data)
     
     def delete(self, group_id: str) -> None:
         """Delete a group.

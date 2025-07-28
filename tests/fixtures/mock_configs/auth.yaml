@@ -1,0 +1,32 @@
+# Mock authentication configurations for testing
+
+token_auth:
+  valid_token: "nb_1234567890abcdef"
+  invalid_token: "invalid-token"
+  expired_token: "expired-token-123"
+  
+test_tokens:
+  admin_token: "admin-token-123"
+  user_token: "user-token-456"
+  service_token: "service-token-789"
+
+# Mock authentication scenarios
+auth_scenarios:
+  successful_auth:
+    token: "valid-test-token"
+    expected_status: 200
+    
+  invalid_auth:
+    token: "invalid-token"
+    expected_status: 401
+    expected_error: "authentication failed"
+    
+  expired_auth:
+    token: "expired-token"
+    expected_status: 401
+    expected_error: "token expired"
+    
+  rate_limited:
+    token: "valid-token"
+    expected_status: 429
+    expected_error: "rate limit exceeded"

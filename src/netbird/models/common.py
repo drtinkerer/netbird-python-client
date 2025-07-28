@@ -4,7 +4,7 @@ Common types and base models for NetBird API.
 
 from datetime import datetime
 from enum import Enum
-from typing import NewType
+from typing import NewType, Any
 
 from pydantic import BaseModel as PydanticBaseModel
 from pydantic import ConfigDict
@@ -52,6 +52,15 @@ class NetworkType(str, Enum):
     IPV6 = "ipv6"
     DOMAIN = "domain"
 
+    @classmethod
+    def _missing_(cls, value: object) -> Any:
+        if isinstance(value, str):
+            value = value.lower()
+            for member in cls:
+                if member.value == value:
+                    return member
+        return None
+
 
 class Protocol(str, Enum):
     """Network protocol enumeration."""
@@ -60,11 +69,29 @@ class Protocol(str, Enum):
     ICMP = "icmp"
     ALL = "all"
 
+    @classmethod
+    def _missing_(cls, value: object) -> Any:
+        if isinstance(value, str):
+            value = value.lower()
+            for member in cls:
+                if member.value == value:
+                    return member
+        return None
+
 
 class PolicyAction(str, Enum):
     """Policy action enumeration."""
     ACCEPT = "accept"
     DROP = "drop"
+
+    @classmethod
+    def _missing_(cls, value: object) -> Any:
+        if isinstance(value, str):
+            value = value.lower()
+            for member in cls:
+                if member.value == value:
+                    return member
+        return None
 
 
 class TrafficDirection(str, Enum):

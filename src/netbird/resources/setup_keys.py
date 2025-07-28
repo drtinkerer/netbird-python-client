@@ -2,9 +2,9 @@
 Setup keys resource handler for NetBird API.
 """
 
-from typing import List
+from typing import Dict, List, Any
 
-from ..models import SetupKey, SetupKeyCreate, SetupKeyUpdate
+from ..models import SetupKeyCreate, SetupKeyUpdate
 from .base import BaseResource
 
 
@@ -15,11 +15,11 @@ class SetupKeysResource(BaseResource):
     creating, retrieving, updating, and deleting setup keys.
     """
     
-    def list(self) -> List[SetupKey]:
+    def list(self) -> List[Dict[str, Any]]:
         """List all setup keys.
         
         Returns:
-            List of SetupKey objects
+            List of setup key dictionaries
             
         Example:
             >>> keys = client.setup_keys.list()
@@ -27,16 +27,16 @@ class SetupKeysResource(BaseResource):
             ...     print(f"Key: {key.name} (Type: {key.type})")
         """
         data = self.client.get("setup-keys")
-        return self._parse_list_response(data, SetupKey)
+        return self._parse_list_response(data)
     
-    def create(self, key_data: SetupKeyCreate) -> SetupKey:
+    def create(self, key_data: SetupKeyCreate) -> Dict[str, Any]:
         """Create a new setup key.
         
         Args:
             key_data: Setup key creation data
             
         Returns:
-            Created SetupKey object
+            Created setup key dictionary
             
         Example:
             >>> key_data = SetupKeyCreate(
@@ -51,25 +51,25 @@ class SetupKeysResource(BaseResource):
             "setup-keys",
             data=key_data.model_dump(exclude_unset=True)
         )
-        return self._parse_response(data, SetupKey)
+        return self._parse_response(data)
     
-    def get(self, key_id: str) -> SetupKey:
+    def get(self, key_id: str) -> Dict[str, Any]:
         """Retrieve a specific setup key.
         
         Args:
             key_id: Unique setup key identifier
             
         Returns:
-            SetupKey object
+            Setup key dictionary
             
         Example:
             >>> key = client.setup_keys.get("key-123")
             >>> print(f"Key: {key.name} - Valid: {key.valid}")
         """
         data = self.client.get(f"setup-keys/{key_id}")
-        return self._parse_response(data, SetupKey)
+        return self._parse_response(data)
     
-    def update(self, key_id: str, key_data: SetupKeyUpdate) -> SetupKey:
+    def update(self, key_id: str, key_data: SetupKeyUpdate) -> Dict[str, Any]:
         """Update a setup key.
         
         Args:
@@ -77,7 +77,7 @@ class SetupKeysResource(BaseResource):
             key_data: Setup key update data
             
         Returns:
-            Updated SetupKey object
+            Updated setup key dictionary
             
         Example:
             >>> key_data = SetupKeyUpdate(revoked=True)
@@ -87,7 +87,7 @@ class SetupKeysResource(BaseResource):
             f"setup-keys/{key_id}",
             data=key_data.model_dump(exclude_unset=True)
         )
-        return self._parse_response(data, SetupKey)
+        return self._parse_response(data)
     
     def delete(self, key_id: str) -> None:
         """Delete a setup key.

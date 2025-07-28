@@ -2,14 +2,10 @@
 Base resource class for NetBird API resources.
 """
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, TypeVar
-
-from pydantic import BaseModel
+from typing import TYPE_CHECKING, Any, Dict, List
 
 if TYPE_CHECKING:
     from ..client import APIClient
-
-T = TypeVar("T", bound=BaseModel)
 
 
 class BaseResource:
@@ -21,17 +17,12 @@ class BaseResource:
     def __init__(self, client: "APIClient") -> None:
         self.client = client
     
-    def _parse_response(self, data: Any, model_class: Type[T]) -> T:
-        """Parse API response data into a Pydantic model."""
-        if isinstance(data, dict):
-            return model_class.model_validate(data)
-        elif isinstance(data, list):
-            return [model_class.model_validate(item) for item in data]
-        else:
-            return data
+    def _parse_response(self, data: Any) -> Dict[str, Any]:
+        """Parse API response data and return as dictionary (boto3 style)."""
+        return data
     
-    def _parse_list_response(self, data: Any, model_class: Type[T]) -> List[T]:
-        """Parse API response data into a list of Pydantic models."""
+    def _parse_list_response(self, data: Any) -> List[Dict[str, Any]]:
+        """Parse API response data and return as list of dictionaries (boto3 style)."""
         if not isinstance(data, list):
             raise ValueError("Expected list response")
-        return [model_class.model_validate(item) for item in data]
+        return data

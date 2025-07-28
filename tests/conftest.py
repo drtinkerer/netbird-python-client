@@ -7,6 +7,7 @@ import pytest
 from unittest.mock import Mock
 
 from netbird import APIClient
+from tests.fixtures import load_sample_data, load_mock_config, load_api_response
 
 
 @pytest.fixture
@@ -43,82 +44,62 @@ def integration_client():
 @pytest.fixture
 def sample_user_data():
     """Sample user data for testing."""
-    return {
-        "id": "user-123",
-        "email": "test@example.com",
-        "name": "Test User",
-        "role": "user",
-        "status": "active",
-        "is_service_user": False,
-        "is_blocked": False
-    }
+    return load_sample_data("user")
 
 
 @pytest.fixture
 def sample_peer_data():
     """Sample peer data for testing."""
-    return {
-        "id": "peer-123",
-        "name": "test-peer",
-        "ip": "10.0.0.1",
-        "connected": True,
-        "os": "linux",
-        "user_id": "user-123",
-        "ssh_enabled": False,
-        "approved": True
-    }
+    return load_sample_data("peer")
 
 
 @pytest.fixture
 def sample_group_data():
     """Sample group data for testing."""
-    return {
-        "id": "group-123",
-        "name": "test-group",
-        "peers_count": 2,
-        "peers": ["peer-1", "peer-2"]
-    }
+    return load_sample_data("group")
 
 
 @pytest.fixture
 def sample_setup_key_data():
     """Sample setup key data for testing."""
-    return {
-        "id": "key-123",
-        "key": "setup-key-value",
-        "name": "test-key",
-        "type": "reusable",
-        "valid": True,
-        "revoked": False,
-        "used_times": 0,
-        "expires_in": 86400,
-        "state": "valid",
-        "ephemeral": False
-    }
+    return load_api_response("setup_keys")[0]
 
 
 @pytest.fixture
 def sample_policy_data():
     """Sample policy data for testing."""
-    return {
-        "id": "policy-123",
-        "name": "test-policy",
-        "description": "Test policy",
-        "enabled": True,
-        "rules": [
-            {
-                "id": "rule-1",
-                "name": "Allow SSH",
-                "action": "accept",
-                "protocol": "tcp",
-                "ports": ["22"],
-                "sources": ["group-1"],
-                "destinations": ["group-2"],
-                "enabled": True,
-                "bidirectional": False
-            }
-        ]
-    }
+    return load_api_response("policies")[0]
+
+
+# New industry-standard fixtures using file-based data
+@pytest.fixture
+def mock_users_response():
+    """Mock API response for users endpoint."""
+    return load_api_response("users")
+
+
+@pytest.fixture
+def mock_peers_response():
+    """Mock API response for peers endpoint."""
+    return load_api_response("peers")
+
+
+@pytest.fixture
+def mock_groups_response():
+    """Mock API response for groups endpoint."""
+    return load_api_response("groups")
+
+
+@pytest.fixture
+def client_configs():
+    """Mock client configurations."""
+    return load_mock_config("client")
+
+
+@pytest.fixture
+def auth_configs():
+    """Mock authentication configurations."""
+    return load_mock_config("auth")
 
 
 @pytest.fixture
