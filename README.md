@@ -1,15 +1,18 @@
 # NetBird Python Client
 
-[![PyPI version](https://badge.fury.io/py/netbird-client.svg)](https://badge.fury.io/py/netbird-client)
-[![Python Support](https://img.shields.io/pypi/pyversions/netbird-client.svg)](https://pypi.org/project/netbird-client/)
+[![PyPI version](https://badge.fury.io/py/netbird.svg)](https://badge.fury.io/py/netbird)
+[![Python Support](https://img.shields.io/pypi/pyversions/netbird.svg)](https://pypi.org/project/netbird/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Python client library for the [NetBird](https://netbird.io) API. Provides complete access to all NetBird API resources with a simple, intuitive interface.
 
+This client follows the same upstream schemas as the official NetBird REST APIs, ensuring full compatibility and consistency with the NetBird ecosystem.
+
 ## Features
 
 - ✅ **Complete API Coverage** - All 11 NetBird API resources supported
-- ✅ **AWS SDK Style** - Dictionary responses following boto3 patterns for familiar usage
+- ✅ **Upstream Schema Compliance** - Follows official NetBird REST API schemas exactly
+- ✅ **Dictionary Responses** - Clean dictionary responses for easy data access
 - ✅ **Type Safety** - Pydantic models for input validation, dictionaries for responses
 - ✅ **Modern Python** - Built for Python 3.8+ with async support ready
 - ✅ **Comprehensive Error Handling** - Detailed exception classes for different error types
@@ -264,11 +267,11 @@ pytest -m integration   # Integration tests only
 
 ## Response Format
 
-The NetBird Python client follows the **boto3 pattern** for API responses:
+The NetBird Python client provides clean and intuitive API responses:
 
 - **Input validation**: Uses Pydantic models for type safety and validation
-- **API responses**: Returns standard Python dictionaries (like boto3)
-- **Familiar patterns**: AWS SDK users will feel right at home
+- **API responses**: Returns standard Python dictionaries for easy access
+- **Familiar patterns**: Simple dictionary-based responses
 
 ```python
 # Input: Type-safe Pydantic models
@@ -277,7 +280,7 @@ user_data = UserCreate(email="john@example.com", name="John Doe")
 # Output: Standard Python dictionaries
 user = client.users.create(user_data)
 print(user['name'])          # Access like a dictionary
-print(user['email'])         # Familiar boto3-style usage
+print(user['email'])         # Easy dictionary access
 print(user.get('role'))      # Safe access with .get()
 ```
 
