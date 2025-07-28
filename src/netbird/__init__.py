@@ -12,7 +12,7 @@ Example:
     >>> users = client.users.list()
 """
 
-__version__ = "0.1.0"
+__version__ = "1.0.0"
 
 from .client import APIClient
 from .exceptions import (
