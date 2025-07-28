@@ -36,7 +36,7 @@ Python client library for the [NetBird](https://netbird.io) API. Provides comple
 ## Installation
 
 ```bash
-pip install netbird-client
+pip install netbird
 ```
 
 ## Quick Start
