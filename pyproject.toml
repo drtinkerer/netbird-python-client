@@ -3,14 +3,14 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "netbird-client"
+name = "netbird"
 dynamic = ["version"]
 description = "Python client for the NetBird API"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.8"
 authors = [
-    {name = "Bhushan Rane", email = "your.email@example.com"},
+    {name = "Bhushan Rane", email = "eulersidentity2718@gmail.com"},
 ]
 keywords = ["netbird", "vpn", "mesh", "networking", "api", "client"]
 classifiers = [
@@ -56,11 +56,11 @@ docs = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/netbirdio/netbird-python-client"
-Repository = "https://github.com/netbirdio/netbird-python-client"
-Documentation = "https://netbird-python-client.readthedocs.io"
-Issues = "https://github.com/netbirdio/netbird-python-client/issues"
-Changelog = "https://github.com/netbirdio/netbird-python-client/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/drtinkerer/netbird-python-client"
+Repository = "https://github.com/drtinkerer/netbird-python-client"
+Documentation = "https://github.com/drtinkerer/netbird-python-client"
+Issues = "https://github.com/drtinkerer/netbird-python-client/issues"
+Changelog = "https://github.com/drtinkerer/netbird-python-client/blob/main/CHANGELOG.md"
 
 [tool.hatch.version]
 path = "src/netbird/__init__.py"
