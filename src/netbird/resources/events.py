@@ -21,7 +21,7 @@ class EventsResource(BaseResource):
         Example:
             >>> events = client.events.get_audit_events()
             >>> for event in events:
-            ...     print(f"{event.timestamp}: {event.activity}")
+            ...     print(f"{event['timestamp']}: {event['activity']}")
         """
         data = self.client.get("events/audit")
         return self._parse_list_response(data)

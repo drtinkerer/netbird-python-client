@@ -24,7 +24,7 @@ class RoutesResource(BaseResource):
         Example:
             >>> routes = client.routes.list()
             >>> for route in routes:
-            ...     print(f"Route: {route.network} (Enabled: {route.enabled})")
+            ...     print(f"Route: {route['network']} (Enabled: {route['enabled']})")
         """
         data = self.client.get("routes")
         return self._parse_list_response(data)
@@ -65,7 +65,7 @@ class RoutesResource(BaseResource):
             
         Example:
             >>> route = client.routes.get("route-123")
-            >>> print(f"Route: {route.network}")
+            >>> print(f"Route: {route['network']}")
         """
         data = self.client.get(f"routes/{route_id}")
         return self._parse_response(data)

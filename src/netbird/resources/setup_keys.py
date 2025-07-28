@@ -24,7 +24,7 @@ class SetupKeysResource(BaseResource):
         Example:
             >>> keys = client.setup_keys.list()
             >>> for key in keys:
-            ...     print(f"Key: {key.name} (Type: {key.type})")
+            ...     print(f"Key: {key['name']} (Type: {key['type']})")
         """
         data = self.client.get("setup-keys")
         return self._parse_list_response(data)
@@ -64,7 +64,7 @@ class SetupKeysResource(BaseResource):
             
         Example:
             >>> key = client.setup_keys.get("key-123")
-            >>> print(f"Key: {key.name} - Valid: {key.valid}")
+            >>> print(f"Key: {key['name']} - Valid: {key['valid']}")
         """
         data = self.client.get(f"setup-keys/{key_id}")
         return self._parse_response(data)

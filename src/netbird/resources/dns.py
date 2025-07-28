@@ -24,7 +24,7 @@ class DNSResource(BaseResource):
         Example:
             >>> nameservers = client.dns.list_nameserver_groups()
             >>> for ns in nameservers:
-            ...     print(f"Nameserver Group: {ns.name}")
+            ...     print(f"Nameserver Group: {ns['name']}")
         """
         data = self.client.get("dns/nameservers")
         return self._parse_list_response(data)
@@ -61,7 +61,7 @@ class DNSResource(BaseResource):
             
         Example:
             >>> ns_group = client.dns.get_nameserver_group("ns-group-123")
-            >>> print(f"Nameservers: {ns_group.nameservers}")
+            >>> print(f"Nameservers: {ns_group['nameservers']}")
         """
         data = self.client.get(f"dns/nameservers/{group_id}")
         return self._parse_response(data)
@@ -107,7 +107,7 @@ class DNSResource(BaseResource):
             
         Example:
             >>> settings = client.dns.get_settings()
-            >>> print(f"Disabled groups: {settings.disabled_management_groups}")
+            >>> print(f"Disabled groups: {settings['disabled_management_groups']}")
         """
         data = self.client.get("dns/settings")
         return self._parse_response(data)

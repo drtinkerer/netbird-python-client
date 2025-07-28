@@ -25,7 +25,7 @@ class NetworksResource(BaseResource):
         Example:
             >>> networks = client.networks.list()
             >>> for network in networks:
-            ...     print(f"Network: {network.name}")
+            ...     print(f"Network: {network['name']}")
         """
         data = self.client.get("networks")
         return self._parse_list_response(data)
@@ -63,7 +63,7 @@ class NetworksResource(BaseResource):
             
         Example:
             >>> network = client.networks.get("network-123")
-            >>> print(f"Network: {network.name}")
+            >>> print(f"Network: {network['name']}")
         """
         data = self.client.get(f"networks/{network_id}")
         return self._parse_response(data)

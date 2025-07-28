@@ -63,9 +63,9 @@ pytest -m "integration and not slow" -v
 def test_get_current_user(self, integration_client):
     user = integration_client.users.get_current()  # Real API call
     
-    assert user.id is not None
-    assert user.email is not None
-    assert user.role in ["admin", "user", "owner"]
+    assert user['id'] is not None
+    assert user['email'] is not None
+    assert user['role'] in ["admin", "user", "owner"]
 ```
 
 ### 2. CRUD Integration Tests (`test_crud_integration.py`) 
@@ -82,14 +82,31 @@ def test_group_lifecycle(self, integration_client):
     created_group = integration_client.groups.create(group_data)
     
     # READ
-    fetched_group = integration_client.groups.get(created_group.id)
+    fetched_group = integration_client.groups.get(created_group['id'])
     
     # UPDATE
     update_data = GroupUpdate(name="updated-name")
-    updated_group = integration_client.groups.update(created_group.id, update_data)
+    updated_group = integration_client.groups.update(created_group['id'], update_data)
     
     # DELETE
-    integration_client.groups.delete(created_group.id)
+    integration_client.groups.delete(created_group['id'])
+```
+
+## Response Format (Important!)
+
+The NetBird Python client uses **dictionary responses** (boto3 style):
+
+```python
+# API responses are dictionaries
+user = client.users.get_current()
+print(user['name'])          # Dictionary access
+print(user['email'])         # Familiar AWS SDK patterns
+print(user.get('role'))      # Safe access with .get()
+
+# Input validation still uses Pydantic models
+user_data = UserCreate(email="test@example.com", name="Test User")
+created_user = client.users.create(user_data)
+print(f"Created: {created_user['name']}")  # Response is a dictionary
 ```
 
 ## Key Differences from Unit Tests
@@ -102,6 +119,7 @@ def test_group_lifecycle(self, integration_client):
 | **Side Effects** | None | Can modify server data |
 | **Environment** | Any | Requires test server |
 | **Purpose** | Test code logic | Test real integration |
+| **Response Format** | Mock dictionaries | Real API dictionaries |
 
 ## Best Practices
 
@@ -157,7 +175,7 @@ client = APIClient(host="api.netbird.io", api_token=token)
 
 try:
     user = client.users.get_current()
-    print(f"Token works! User: {user.email}")
+    print(f"Token works! User: {user['email']}")
 except Exception as e:
     print(f"Token error: {e}")
 ```

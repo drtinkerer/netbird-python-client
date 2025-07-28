@@ -27,7 +27,7 @@ class TokensResource(BaseResource):
         Example:
             >>> tokens = client.tokens.list("user-123")
             >>> for token in tokens:
-            ...     print(f"Token: {token.name}")
+            ...     print(f"Token: {token['name']}")
         """
         data = self.client.get(f"users/{user_id}/tokens")
         return self._parse_list_response(data)
@@ -67,7 +67,7 @@ class TokensResource(BaseResource):
             
         Example:
             >>> token = client.tokens.get("user-123", "token-456")
-            >>> print(f"Token expires: {token.expiration_date}")
+            >>> print(f"Token expires: {token['expiration_date']}")
         """
         data = self.client.get(f"users/{user_id}/tokens/{token_id}")
         return self._parse_response(data)

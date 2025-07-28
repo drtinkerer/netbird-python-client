@@ -55,7 +55,7 @@ class PeersResource(BaseResource):
             
         Example:
             >>> peer = client.peers.get("peer-123")
-            >>> print(f"Peer: {peer.name} ({peer.ip})")
+            >>> print(f"Peer: {peer['name']} ({peer['ip']})")
         """
         data = self.client.get(f"peers/{peer_id}")
         return self._parse_response(data)

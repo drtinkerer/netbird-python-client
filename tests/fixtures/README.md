@@ -91,17 +91,24 @@ token = auth_config["token_auth"]["valid_token"]
 def sample_user_data():
     return load_sample_data("user")
 
-# In test files
-def test_user_model(sample_user_data):
-    user = User.model_validate(sample_user_data)
-    assert user.email == "test@example.com"
+# In test files - for response validation
+def test_user_response(sample_user_data):
+    # Fixtures contain dictionary data (like API responses)
+    assert isinstance(sample_user_data, dict)
+    assert sample_user_data['email'] == "test@example.com"
+    assert 'id' in sample_user_data
+    
+    # For input validation, use Pydantic models
+    user_create = UserCreate(**sample_user_data)
+    assert user_create.email == "test@example.com"
 ```
 
 ## File Formats
 
 ### JSON Files (api_responses/, sample_data/)
-- **Purpose**: Store realistic API response data
-- **Usage**: Model validation, API response mocking
+- **Purpose**: Store realistic API response data as dictionaries (boto3 style)
+- **Usage**: Response validation, API response mocking, dictionary access testing
+- **Format**: Standard Python dictionaries matching actual API responses
 - **Example**: `api_responses/users.json`
 
 ### YAML Files (mock_configs/)

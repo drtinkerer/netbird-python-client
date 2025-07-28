@@ -24,7 +24,7 @@ class PoliciesResource(BaseResource):
         Example:
             >>> policies = client.policies.list()
             >>> for policy in policies:
-            ...     print(f"Policy: {policy.name} (Enabled: {policy.enabled})")
+            ...     print(f"Policy: {policy['name']} (Enabled: {policy['enabled']})")
         """
         data = self.client.get("policies")
         return self._parse_list_response(data)
@@ -72,7 +72,7 @@ class PoliciesResource(BaseResource):
             
         Example:
             >>> policy = client.policies.get("policy-123")
-            >>> print(f"Policy: {policy.name}")
+            >>> print(f"Policy: {policy['name']}")
         """
         data = self.client.get(f"policies/{policy_id}")
         return self._parse_response(data)

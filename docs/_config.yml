@@ -1,0 +1,90 @@
+# Jekyll Configuration for NetBird Python Client Documentation
+
+# Site settings
+title: "NetBird Python Client"
+description: "Official Python client library for the NetBird API"
+baseurl: "/netbird-python-client"
+url: "https://bhushanrane.github.io"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+theme: minima
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Custom settings
+author:
+  name: "Bhushan Rane"
+  github: "bhushanrane"
+
+repository: "bhushanrane/netbird-python-client"
+
+# Navigation
+header_pages:
+  - guides/quickstart.md
+  - guides/installation.md
+  - api/index.md
+  - examples/index.md
+  - guides/contributing.md
+
+# Code highlighting
+kramdown:
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    css_class: 'highlight'
+    span:
+      line_numbers: false
+    block:
+      line_numbers: true
+
+# Collections
+collections:
+  api:
+    output: true
+    permalink: /:collection/:name/
+  guides:
+    output: true
+    permalink: /:collection/:name/
+  examples:
+    output: true
+    permalink: /:collection/:name/
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "page"
+  - scope:
+      path: ""
+      type: "api"
+    values:
+      layout: "api"
+  - scope:
+      path: ""
+      type: "guides"
+    values:
+      layout: "guide"
+  - scope:
+      path: ""
+      type: "examples"
+    values:
+      layout: "example"
+
+# Exclude from processing
+exclude:
+  - vendor
+  - .bundle
+  - .sass-cache
+  - _site
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - "*.gem"
+  - "*.gemspec"

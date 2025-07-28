@@ -24,7 +24,7 @@ class GroupsResource(BaseResource):
         Example:
             >>> groups = client.groups.list()
             >>> for group in groups:
-            ...     print(f"Group: {group.name} ({group.peers_count} peers)")
+            ...     print(f"Group: {group['name']} ({group['peers_count']} peers)")
         """
         data = self.client.get("groups")
         return self._parse_list_response(data)
@@ -62,7 +62,7 @@ class GroupsResource(BaseResource):
             
         Example:
             >>> group = client.groups.get("group-123")
-            >>> print(f"Group: {group.name}")
+            >>> print(f"Group: {group['name']}")
         """
         data = self.client.get(f"groups/{group_id}")
         return self._parse_response(data)
