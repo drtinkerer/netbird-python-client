@@ -18,7 +18,7 @@ from .users import UsersResource
 
 __all__ = [
     "AccountsResource",
-    "UsersResource", 
+    "UsersResource",
     "TokensResource",
     "PeersResource",
     "SetupKeysResource",

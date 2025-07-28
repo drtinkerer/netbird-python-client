@@ -12,7 +12,7 @@ from .common import BaseModel, ConnectionType, Protocol, ResourceId, TrafficDire
 
 class AuditEvent(BaseModel):
     """Audit event model.
-    
+
     Attributes:
         timestamp: Event timestamp
         activity: Activity description
@@ -24,7 +24,7 @@ class AuditEvent(BaseModel):
         target_id: ID of the target
         meta: Additional event metadata
     """
-    
+
     timestamp: str = Field(..., description="Event timestamp")
     activity: str = Field(..., description="Activity description")
     activity_code: Optional[str] = Field(None, description="Activity code")
@@ -38,7 +38,7 @@ class AuditEvent(BaseModel):
 
 class NetworkTrafficEvent(BaseModel):
     """Network traffic event model.
-    
+
     Attributes:
         timestamp: Event timestamp
         source_ip: Source IP address
@@ -56,7 +56,7 @@ class NetworkTrafficEvent(BaseModel):
         connection_type: Connection type (relay/p2p)
         allowed: Whether traffic was allowed
     """
-    
+
     timestamp: datetime = Field(..., description="Event timestamp")
     source_ip: IPvAnyAddress = Field(..., description="Source IP address")
     destination_ip: IPvAnyAddress = Field(..., description="Destination IP address")

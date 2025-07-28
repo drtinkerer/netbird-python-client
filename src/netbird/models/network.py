@@ -11,31 +11,31 @@ from .common import BaseModel, ResourceId
 
 class NetworkCreate(BaseModel):
     """Model for creating a network.
-    
+
     Attributes:
         name: Network name
         description: Network description
     """
-    
+
     name: str = Field(..., description="Network name")
     description: Optional[str] = Field(None, description="Network description")
 
 
 class NetworkUpdate(BaseModel):
     """Model for updating a network.
-    
+
     Attributes:
         name: Network name
         description: Network description
     """
-    
+
     name: Optional[str] = Field(None, description="Network name")
     description: Optional[str] = Field(None, description="Network description")
 
 
 class NetworkResource(BaseModel):
     """Network resource model.
-    
+
     Attributes:
         id: Resource identifier
         name: Resource name
@@ -44,7 +44,7 @@ class NetworkResource(BaseModel):
         enabled: Whether resource is enabled
         groups: Associated group IDs
     """
-    
+
     id: ResourceId = Field(..., description="Resource identifier")
     name: str = Field(..., description="Resource name")
     description: Optional[str] = Field(None, description="Resource description")
@@ -55,7 +55,7 @@ class NetworkResource(BaseModel):
 
 class NetworkRouter(BaseModel):
     """Network router model.
-    
+
     Attributes:
         id: Router identifier
         name: Router name
@@ -66,12 +66,14 @@ class NetworkRouter(BaseModel):
         masquerade: Whether masquerading is enabled
         enabled: Whether router is enabled
     """
-    
+
     id: ResourceId = Field(..., description="Router identifier")
     name: str = Field(..., description="Router name")
     description: Optional[str] = Field(None, description="Router description")
     peer: Optional[ResourceId] = Field(None, description="Associated peer ID")
-    peer_groups: Optional[List[ResourceId]] = Field(None, description="Associated peer group IDs")
+    peer_groups: Optional[List[ResourceId]] = Field(
+        None, description="Associated peer group IDs"
+    )
     metric: int = Field(9999, description="Router metric")
     masquerade: bool = Field(False, description="Masquerading enabled")
     enabled: bool = Field(True, description="Router enabled status")
@@ -79,7 +81,7 @@ class NetworkRouter(BaseModel):
 
 class Network(BaseModel):
     """NetBird network model.
-    
+
     Attributes:
         id: Unique network identifier
         name: Network name
@@ -89,11 +91,15 @@ class Network(BaseModel):
         policies: List of associated policy IDs
         routing_peers_count: Number of routing peers
     """
-    
+
     id: ResourceId = Field(..., description="Unique network identifier")
     name: str = Field(..., description="Network name")
     description: Optional[str] = Field(None, description="Network description")
     routers: Optional[List[str]] = Field(None, description="Router IDs")
     resources: Optional[List[str]] = Field(None, description="Resource IDs")
-    policies: Optional[List[ResourceId]] = Field(None, description="Associated policy IDs")
-    routing_peers_count: Optional[int] = Field(None, description="Number of routing peers")
+    policies: Optional[List[ResourceId]] = Field(
+        None, description="Associated policy IDs"
+    )
+    routing_peers_count: Optional[int] = Field(
+        None, description="Number of routing peers"
+    )

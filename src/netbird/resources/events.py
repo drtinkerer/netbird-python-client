@@ -2,22 +2,23 @@
 Events resource handler for NetBird API.
 """
 
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional
+
 from .base import BaseResource
 
 
 class EventsResource(BaseResource):
     """Handler for NetBird events API endpoints.
-    
+
     Provides methods to retrieve audit events and network traffic events.
     """
-    
+
     def get_audit_events(self) -> List[Dict[str, Any]]:
         """Retrieve all audit events.
-        
+
         Returns:
             List of audit event dictionaries
-            
+
         Example:
             >>> events = client.events.get_audit_events()
             >>> for event in events:
@@ -25,7 +26,7 @@ class EventsResource(BaseResource):
         """
         data = self.client.get("events/audit")
         return self._parse_list_response(data)
-    
+
     def get_network_traffic_events(
         self,
         page: Optional[int] = None,
@@ -41,9 +42,9 @@ class EventsResource(BaseResource):
         end_date: Optional[str] = None,
     ) -> List[Dict[str, Any]]:
         """Retrieve network traffic events with optional filtering.
-        
+
         This endpoint is marked as "cloud-only experimental" in the API.
-        
+
         Args:
             page: Page number for pagination
             page_size: Number of events per page
@@ -56,14 +57,14 @@ class EventsResource(BaseResource):
             search: Search term
             start_date: Start date filter
             end_date: End date filter
-            
+
         Returns:
             List of network traffic event dictionaries
-            
+
         Example:
             >>> # Get all traffic events
             >>> events = client.events.get_network_traffic_events()
-            >>> 
+            >>>
             >>> # Filter by protocol and user
             >>> events = client.events.get_network_traffic_events(
             ...     protocol="tcp",
@@ -71,7 +72,7 @@ class EventsResource(BaseResource):
             ...     page_size=50
             ... )
         """
-        params = {}
+        params: Dict[str, Any] = {}
         if page is not None:
             params["page"] = page
         if page_size is not None:
@@ -94,6 +95,6 @@ class EventsResource(BaseResource):
             params["start_date"] = start_date
         if end_date:
             params["end_date"] = end_date
-        
+
         data = self.client.get("events/network-traffic", params=params or None)
         return self._parse_list_response(data)

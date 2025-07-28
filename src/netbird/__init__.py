@@ -27,7 +27,7 @@ from .exceptions import (
 __all__ = [
     "APIClient",
     "NetBirdAPIError",
-    "NetBirdAuthenticationError", 
+    "NetBirdAuthenticationError",
     "NetBirdNotFoundError",
     "NetBirdRateLimitError",
     "NetBirdServerError",

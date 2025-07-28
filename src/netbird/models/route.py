@@ -11,7 +11,7 @@ from .common import BaseModel, NetworkType, ResourceId
 
 class RouteCreate(BaseModel):
     """Model for creating a route.
-    
+
     Attributes:
         description: Route description
         network_id: Network identifier
@@ -27,7 +27,7 @@ class RouteCreate(BaseModel):
         keep_route: Whether to keep route on disconnect
         access_control_groups: Access control group IDs
     """
-    
+
     description: Optional[str] = Field(None, description="Route description")
     network_id: str = Field(..., description="Network identifier")
     enabled: bool = Field(True, description="Route enabled status")
@@ -38,14 +38,18 @@ class RouteCreate(BaseModel):
     domains: Optional[List[str]] = Field(None, description="Domain list")
     metric: int = Field(9999, description="Route metric")
     masquerade: bool = Field(False, description="Masquerading enabled")
-    groups: Optional[List[ResourceId]] = Field(None, description="Group IDs with access")
+    groups: Optional[List[ResourceId]] = Field(
+        None, description="Group IDs with access"
+    )
     keep_route: bool = Field(False, description="Keep route on disconnect")
-    access_control_groups: Optional[List[ResourceId]] = Field(None, description="Access control group IDs")
+    access_control_groups: Optional[List[ResourceId]] = Field(
+        None, description="Access control group IDs"
+    )
 
 
 class RouteUpdate(BaseModel):
     """Model for updating a route.
-    
+
     Attributes:
         description: Route description
         enabled: Whether route is enabled
@@ -59,7 +63,7 @@ class RouteUpdate(BaseModel):
         keep_route: Whether to keep route on disconnect
         access_control_groups: Access control group IDs
     """
-    
+
     description: Optional[str] = Field(None, description="Route description")
     enabled: Optional[bool] = Field(None, description="Route enabled status")
     peer: Optional[ResourceId] = Field(None, description="Peer ID for route")
@@ -68,14 +72,18 @@ class RouteUpdate(BaseModel):
     domains: Optional[List[str]] = Field(None, description="Domain list")
     metric: Optional[int] = Field(None, description="Route metric")
     masquerade: Optional[bool] = Field(None, description="Masquerading enabled")
-    groups: Optional[List[ResourceId]] = Field(None, description="Group IDs with access")
+    groups: Optional[List[ResourceId]] = Field(
+        None, description="Group IDs with access"
+    )
     keep_route: Optional[bool] = Field(None, description="Keep route on disconnect")
-    access_control_groups: Optional[List[ResourceId]] = Field(None, description="Access control group IDs")
+    access_control_groups: Optional[List[ResourceId]] = Field(
+        None, description="Access control group IDs"
+    )
 
 
 class Route(BaseModel):
     """NetBird route model.
-    
+
     Attributes:
         id: Unique route identifier
         description: Route description
@@ -92,7 +100,7 @@ class Route(BaseModel):
         keep_route: Whether to keep route on disconnect
         access_control_groups: Access control group IDs
     """
-    
+
     id: ResourceId = Field(..., description="Unique route identifier")
     description: Optional[str] = Field(None, description="Route description")
     network_id: str = Field(..., description="Network identifier")
@@ -104,6 +112,10 @@ class Route(BaseModel):
     domains: Optional[List[str]] = Field(None, description="Domain list")
     metric: int = Field(..., description="Route metric")
     masquerade: bool = Field(..., description="Masquerading enabled")
-    groups: Optional[List[ResourceId]] = Field(None, description="Group IDs with access")
+    groups: Optional[List[ResourceId]] = Field(
+        None, description="Group IDs with access"
+    )
     keep_route: bool = Field(..., description="Keep route on disconnect")
-    access_control_groups: Optional[List[ResourceId]] = Field(None, description="Access control group IDs")
+    access_control_groups: Optional[List[ResourceId]] = Field(
+        None, description="Access control group IDs"
+    )
