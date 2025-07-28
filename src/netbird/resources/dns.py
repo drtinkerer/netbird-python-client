@@ -84,11 +84,11 @@ class DNSResource(BaseResource):
             ...     "enabled": False,
             ...     "description": "Disabled for maintenance"
             ... }
-            >>> ns_group = client.dns.update_nameserver_group("ns-group-123", nameserver_data)
+            >>> ns_group = client.dns.update_nameserver_group(
+            ...     "ns-group-123", nameserver_data
+            ... )
         """
-        data = self.client.put(
-            f"dns/nameservers/{group_id}", data=nameserver_data
-        )
+        data = self.client.put(f"dns/nameservers/{group_id}", data=nameserver_data)
         return self._parse_response(data)
 
     def delete_nameserver_group(self, group_id: str) -> None:

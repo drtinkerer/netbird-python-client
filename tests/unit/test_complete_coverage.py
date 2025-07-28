@@ -2,13 +2,9 @@
 Tests to achieve 100% code coverage.
 """
 
-from typing import TYPE_CHECKING
 from unittest.mock import Mock, patch
 
-import pytest
-
 from netbird import APIClient
-from netbird.models import NetworkResource, NetworkRouter
 
 # Note: These imports are kept for input validation, but responses are now dictionaries
 from netbird.resources.base import BaseResource
@@ -28,7 +24,7 @@ class TestClientCompleteCode:
             mock_response.content = b"{}"
             mock_delete.return_value = mock_response
 
-            result = client.delete("test-path", params={"key": "value"})
+            client.delete("test-path", params={"key": "value"})
 
             mock_delete.assert_called_once_with(
                 "https://api.netbird.io/api/test-path", params={"key": "value"}
@@ -71,10 +67,7 @@ class TestBaseResourceCompleteCode:
         mock_client = Mock()
         resource = BaseResource(mock_client)
 
-        # Mock model class
-        MockModel = Mock()
-        mock_instances = [Mock(), Mock()]
-        MockModel.model_validate.side_effect = mock_instances
+        # Mock model class for testing
 
         data = [{"id": "1"}, {"id": "2"}]
         result = resource._parse_response(data)
@@ -87,7 +80,7 @@ class TestBaseResourceCompleteCode:
         mock_client = Mock()
         resource = BaseResource(mock_client)
 
-        MockModel = Mock()
+        # Test with simple string data
         data = "simple string"
         result = resource._parse_response(data)
 
@@ -111,7 +104,7 @@ class TestEventsResourceCompleteCode:
         self.mock_client.get.return_value = mock_events_data
 
         # Test with all parameters that were missing coverage
-        events = self.events_resource.get_network_traffic_events(
+        self.events_resource.get_network_traffic_events(
             page=1,
             page_size=50,
             user_id="user-123",
@@ -270,9 +263,7 @@ class TestNetworksResourceCompleteCode:
             "enabled": True,
             "groups": [],
         }
-        resource = self.networks_resource.create_resource(
-            "network-123", resource_data
-        )
+        resource = self.networks_resource.create_resource("network-123", resource_data)
 
         self.mock_client.post.assert_called_once_with(
             "networks/network-123/resources", data=resource_data
@@ -325,9 +316,7 @@ class TestNetworksResourceCompleteCode:
             "peer": "peer-123",
             "metric": 100,
         }
-        router = self.networks_resource.create_router(
-            "network-123", router_data
-        )
+        router = self.networks_resource.create_router("network-123", router_data)
 
         self.mock_client.post.assert_called_once_with(
             "networks/network-123/routers", data=router_data
@@ -413,7 +402,6 @@ class TestSetupKeysResourceCompleteCode:
 
     def test_get_setup_key(self):
         """Test getting a specific setup key."""
-        from netbird.models import SetupKey
 
         mock_key_data = {
             "id": "key-123",
@@ -481,7 +469,6 @@ class TestTokensResourceCompleteCode:
 
     def test_get_token(self):
         """Test getting a specific token."""
-        from netbird.models import Token
 
         mock_token_data = {
             "id": "token-123",
@@ -494,9 +481,7 @@ class TestTokensResourceCompleteCode:
 
         token = self.tokens_resource.get("user-123", "token-123")
 
-        self.mock_client.get.assert_called_once_with(
-            "users/user-123/tokens/token-123"
-        )
+        self.mock_client.get.assert_called_once_with("users/user-123/tokens/token-123")
         assert isinstance(token, dict)
         assert token["id"] == "token-123"
 

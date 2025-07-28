@@ -34,17 +34,13 @@ def test_client():
 def integration_client():
     """Create a client for integration tests (requires environment variables)."""
     # Try both test and regular env var names
-    api_token = os.getenv("NETBIRD_TEST_TOKEN") or os.getenv(
-        "NETBIRD_API_TOKEN"
-    )
+    api_token = os.getenv("NETBIRD_TEST_TOKEN") or os.getenv("NETBIRD_API_TOKEN")
     if not api_token:
         pytest.skip(
             "NETBIRD_TEST_TOKEN or NETBIRD_API_TOKEN environment variable not set"
         )
 
-    host = os.getenv("NETBIRD_TEST_HOST") or os.getenv(
-        "NETBIRD_HOST", "api.netbird.io"
-    )
+    host = os.getenv("NETBIRD_TEST_HOST") or os.getenv("NETBIRD_HOST", "api.netbird.io")
 
     return APIClient(host=host, api_token=api_token)
 
@@ -165,7 +161,5 @@ def sample_token_data():
 def pytest_configure(config):
     """Configure pytest markers."""
     config.addinivalue_line("markers", "unit: mark test as a unit test")
-    config.addinivalue_line(
-        "markers", "integration: mark test as an integration test"
-    )
+    config.addinivalue_line("markers", "integration: mark test as an integration test")
     config.addinivalue_line("markers", "slow: mark test as slow running")

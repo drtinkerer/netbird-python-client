@@ -4,8 +4,6 @@ Unit tests for remaining resource handlers to improve coverage.
 
 from unittest.mock import Mock
 
-import pytest
-
 from netbird import APIClient
 from netbird.models import (
     NetworkCreate,
@@ -260,9 +258,7 @@ class TestDNSResource:
         }
         ns_group = self.dns_resource.create_nameserver_group(ns_data)
 
-        self.mock_client.post.assert_called_once_with(
-            "dns/nameservers", data=ns_data
-        )
+        self.mock_client.post.assert_called_once_with("dns/nameservers", data=ns_data)
         assert ns_group["name"] == "new-dns"
 
     def test_get_nameserver_group(self):
@@ -293,9 +289,7 @@ class TestDNSResource:
         self.mock_client.put.return_value = mock_ns_group_data
 
         update_data = {"name": "updated-dns", "enabled": False}
-        ns_group = self.dns_resource.update_nameserver_group(
-            "ns-123", update_data
-        )
+        ns_group = self.dns_resource.update_nameserver_group("ns-123", update_data)
 
         self.mock_client.put.assert_called_once_with(
             "dns/nameservers/ns-123", data=update_data
@@ -307,15 +301,11 @@ class TestDNSResource:
         """Test deleting a nameserver group."""
         self.dns_resource.delete_nameserver_group("ns-123")
 
-        self.mock_client.delete.assert_called_once_with(
-            "dns/nameservers/ns-123"
-        )
+        self.mock_client.delete.assert_called_once_with("dns/nameservers/ns-123")
 
     def test_get_settings(self):
         """Test getting DNS settings."""
-        mock_settings_data = {
-            "disabled_management_groups": ["group-1", "group-2"]
-        }
+        mock_settings_data = {"disabled_management_groups": ["group-1", "group-2"]}
         self.mock_client.get.return_value = mock_settings_data
 
         settings = self.dns_resource.get_settings()
@@ -332,9 +322,7 @@ class TestDNSResource:
         update_data = {"disabled_management_groups": ["group-3"]}
         settings = self.dns_resource.update_settings(update_data)
 
-        self.mock_client.put.assert_called_once_with(
-            "dns/settings", data=update_data
-        )
+        self.mock_client.put.assert_called_once_with("dns/settings", data=update_data)
         assert len(settings["disabled_management_groups"]) == 1
 
 
@@ -397,7 +385,7 @@ class TestEventsResource:
         mock_events_data = []
         self.mock_client.get.return_value = mock_events_data
 
-        events = self.events_resource.get_network_traffic_events(
+        self.events_resource.get_network_traffic_events(
             page=1,
             page_size=50,
             user_id="user-123",
@@ -451,9 +439,7 @@ class TestNetworksResource:
         }
         self.mock_client.post.return_value = mock_network_data
 
-        network_data = NetworkCreate(
-            name="new-network", description="New network"
-        )
+        network_data = NetworkCreate(name="new-network", description="New network")
         network = self.networks_resource.create(network_data)
 
         self.mock_client.post.assert_called_once_with(

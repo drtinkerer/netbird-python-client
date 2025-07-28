@@ -76,9 +76,7 @@ class PoliciesResource(BaseResource):
         data = self.client.get(f"policies/{policy_id}")
         return self._parse_response(data)
 
-    def update(
-        self, policy_id: str, policy_data: PolicyUpdate
-    ) -> Dict[str, Any]:
+    def update(self, policy_id: str, policy_data: PolicyUpdate) -> Dict[str, Any]:
         """Update a policy.
 
         Args:

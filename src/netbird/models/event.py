@@ -65,22 +65,16 @@ class NetworkTrafficEvent(BaseModel):
 
     timestamp: datetime = Field(..., description="Event timestamp")
     source_ip: IPvAnyAddress = Field(..., description="Source IP address")
-    destination_ip: IPvAnyAddress = Field(
-        ..., description="Destination IP address"
-    )
+    destination_ip: IPvAnyAddress = Field(..., description="Destination IP address")
     source_port: int = Field(..., description="Source port")
     destination_port: int = Field(..., description="Destination port")
     protocol: Protocol = Field(..., description="Network protocol")
     bytes_sent: int = Field(..., description="Bytes sent")
     bytes_received: int = Field(..., description="Bytes received")
-    user_id: Optional[ResourceId] = Field(
-        None, description="Associated user ID"
-    )
+    user_id: Optional[ResourceId] = Field(None, description="Associated user ID")
     peer_id: ResourceId = Field(..., description="Associated peer ID")
     reporter_id: ResourceId = Field(..., description="Reporter peer ID")
-    policy_id: Optional[ResourceId] = Field(
-        None, description="Applied policy ID"
-    )
+    policy_id: Optional[ResourceId] = Field(None, description="Applied policy ID")
     direction: TrafficDirection = Field(..., description="Traffic direction")
     connection_type: ConnectionType = Field(..., description="Connection type")
     allowed: bool = Field(..., description="Traffic allowed status")

@@ -5,8 +5,6 @@ Final tests to achieve 100% coverage.
 from typing import TYPE_CHECKING
 from unittest.mock import Mock
 
-import pytest
-
 from netbird import APIClient
 
 
@@ -35,9 +33,7 @@ class TestNetworksFinalMethods:
 
         resources = self.networks_resource.list_resources("network-123")
 
-        self.mock_client.get.assert_called_once_with(
-            "networks/network-123/resources"
-        )
+        self.mock_client.get.assert_called_once_with("networks/network-123/resources")
         assert len(resources) == 1
         assert isinstance(resources[0], dict)
 
@@ -52,9 +48,7 @@ class TestNetworksFinalMethods:
         }
         self.mock_client.get.return_value = mock_resource_data
 
-        resource = self.networks_resource.get_resource(
-            "network-123", "resource-123"
-        )
+        resource = self.networks_resource.get_resource("network-123", "resource-123")
 
         self.mock_client.get.assert_called_once_with(
             "networks/network-123/resources/resource-123"
@@ -78,9 +72,7 @@ class TestNetworksFinalMethods:
 
         routers = self.networks_resource.list_routers("network-123")
 
-        self.mock_client.get.assert_called_once_with(
-            "networks/network-123/routers"
-        )
+        self.mock_client.get.assert_called_once_with("networks/network-123/routers")
         assert len(routers) == 1
         assert isinstance(routers[0], dict)
 
@@ -106,13 +98,7 @@ class TestTypeCheckingImport:
     def test_direct_type_checking_import(self):
         """Directly test the TYPE_CHECKING import in base.py."""
         # This should trigger the import of APIClient within TYPE_CHECKING block
-        import importlib.util
-        import sys
-
         # Temporarily set TYPE_CHECKING to True to force the import
-        old_type_checking = getattr(
-            sys.modules.get("typing", None), "TYPE_CHECKING", None
-        )
 
         # Import the base module to execute the TYPE_CHECKING block
         from netbird.resources import base

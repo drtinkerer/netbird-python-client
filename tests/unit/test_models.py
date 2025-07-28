@@ -2,33 +2,17 @@
 Unit tests for Pydantic models.
 """
 
-from datetime import datetime
-
 import pytest
 from pydantic import ValidationError
 
 from netbird.models import (
-    Account,
-    AccountSettings,
-    AuditEvent,
-    DNSNameserverGroup,
-    DNSSettings,
-    Group,
     GroupCreate,
-    GroupUpdate,
-    NetworkTrafficEvent,
     Peer,
     PeerUpdate,
-    Policy,
     PolicyCreate,
     PolicyRule,
-    Route,
     RouteCreate,
-    RouteUpdate,
-    SetupKey,
     SetupKeyCreate,
-    SetupKeyUpdate,
-    Token,
     TokenCreate,
     User,
     UserCreate,
@@ -36,7 +20,6 @@ from netbird.models import (
 )
 from netbird.models.common import (
     NetworkType,
-    Protocol,
     SetupKeyType,
     UserRole,
     UserStatus,
@@ -163,9 +146,7 @@ class TestGroupModels:
 
     def test_group_create_model(self):
         """Test GroupCreate model."""
-        group = GroupCreate(
-            name="new-group", peers=["peer-1", "peer-2", "peer-3"]
-        )
+        group = GroupCreate(name="new-group", peers=["peer-1", "peer-2", "peer-3"])
 
         assert group.name == "new-group"
         assert len(group.peers) == 3
@@ -334,7 +315,10 @@ class TestAccountModels:
     """Test Account-related models."""
 
     def test_account_settings_dictionary_structure(self):
-        """Test AccountSettings dictionary structure (API responses are now dictionaries)."""
+        """Test AccountSettings dictionary structure.
+
+        API responses are now dictionaries.
+        """
         settings_data = {
             "peer_login_expiration": 3600,
             "peer_login_expiration_enabled": True,
@@ -361,7 +345,10 @@ class TestDNSModels:
     """Test DNS-related models."""
 
     def test_dns_nameserver_group_dictionary_structure(self):
-        """Test DNSNameserverGroup dictionary structure (API responses are now dictionaries)."""
+        """Test DNSNameserverGroup dictionary structure.
+
+        API responses are now dictionaries.
+        """
         ns_group_data = {
             "id": "ns-123",
             "name": "corporate-dns",
@@ -376,7 +363,10 @@ class TestDNSModels:
         assert ns_group_data["enabled"]
 
     def test_dns_settings_dictionary_structure(self):
-        """Test DNSSettings dictionary structure (API responses are now dictionaries)."""
+        """Test DNSSettings dictionary structure.
+
+        API responses are now dictionaries.
+        """
         settings_data = {"disabled_management_groups": ["group-1", "group-2"]}
 
         # API responses are now dictionaries, not Pydantic models
@@ -401,7 +391,10 @@ class TestEventModels:
         assert event_data["target_id"] is None
 
     def test_network_traffic_event_dictionary_structure(self):
-        """Test NetworkTrafficEvent dictionary structure (API responses are now dictionaries)."""
+        """Test NetworkTrafficEvent dictionary structure.
+
+        API responses are now dictionaries.
+        """
         event_data = {
             "timestamp": "2023-01-01T00:00:00Z",
             "source_ip": "10.0.0.1",

@@ -19,9 +19,7 @@ class GroupCreate(BaseModel):
     """
 
     name: str = Field(..., description="Group name")
-    peers: Optional[List[ResourceId]] = Field(
-        None, description="Peer IDs in group"
-    )
+    peers: Optional[List[ResourceId]] = Field(None, description="Peer IDs in group")
     resources: Optional[List[Dict[str, Any]]] = Field(
         None, description="Network resources"
     )
@@ -37,9 +35,7 @@ class GroupUpdate(BaseModel):
     """
 
     name: Optional[str] = Field(None, description="Group name")
-    peers: Optional[List[ResourceId]] = Field(
-        None, description="Peer IDs in group"
-    )
+    peers: Optional[List[ResourceId]] = Field(None, description="Peer IDs in group")
     resources: Optional[List[Dict[str, Any]]] = Field(
         None, description="Network resources"
     )

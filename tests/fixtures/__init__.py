@@ -22,7 +22,8 @@ class FixtureLoader:
         """Load JSON fixture file.
 
         Args:
-            filename: Path relative to fixtures directory (e.g., 'api_responses/user.json')
+            filename: Path relative to fixtures directory
+                (e.g., 'api_responses/user.json')
 
         Returns:
             Parsed JSON data
@@ -38,7 +39,8 @@ class FixtureLoader:
         """Load YAML fixture file.
 
         Args:
-            filename: Path relative to fixtures directory (e.g., 'mock_configs/netbird.yaml')
+            filename: Path relative to fixtures directory
+                (e.g., 'mock_configs/netbird.yaml')
 
         Returns:
             Parsed YAML data

@@ -23,24 +23,16 @@ class DNSNameserverGroup(BaseModel):
         search_domains_enabled: Whether search domains are enabled
     """
 
-    id: ResourceId = Field(
-        ..., description="Unique nameserver group identifier"
-    )
+    id: ResourceId = Field(..., description="Unique nameserver group identifier")
     name: str = Field(..., description="Nameserver group name")
-    description: Optional[str] = Field(
-        None, description="Nameserver group description"
-    )
-    nameservers: List[IPvAnyAddress] = Field(
-        ..., description="Nameserver IP addresses"
-    )
+    description: Optional[str] = Field(None, description="Nameserver group description")
+    nameservers: List[IPvAnyAddress] = Field(..., description="Nameserver IP addresses")
     enabled: bool = Field(True, description="Nameserver group enabled status")
     groups: Optional[List[ResourceId]] = Field(
         None, description="Group IDs using this nameserver"
     )
     domains: Optional[List[str]] = Field(None, description="Domain list")
-    search_domains_enabled: bool = Field(
-        False, description="Search domains enabled"
-    )
+    search_domains_enabled: bool = Field(False, description="Search domains enabled")
 
 
 class DNSSettings(BaseModel):

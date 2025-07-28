@@ -196,9 +196,7 @@ class TestBasicIntegration:
 
         from netbird import APIClient
 
-        api_token = os.getenv("NETBIRD_TEST_TOKEN") or os.getenv(
-            "NETBIRD_API_TOKEN"
-        )
+        api_token = os.getenv("NETBIRD_TEST_TOKEN") or os.getenv("NETBIRD_API_TOKEN")
         host = os.getenv("NETBIRD_TEST_HOST") or os.getenv(
             "NETBIRD_HOST", "api.netbird.io"
         )

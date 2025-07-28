@@ -5,11 +5,6 @@ This file shows how to use fixture files instead of inline test data.
 Industry standard approach for professional test suites.
 """
 
-from unittest.mock import Mock
-
-import pytest
-
-from netbird import APIClient
 from tests.fixtures import (
     load_api_response,
     load_mock_config,
@@ -21,7 +16,10 @@ class TestFixturesDemo:
     """Demonstrate industry-standard fixture usage."""
 
     def test_user_dictionary_with_fixture_file(self):
-        """Test User dictionary data from fixture file (API responses are now dictionaries)."""
+        """Test User dictionary data from fixture file.
+
+        API responses are now dictionaries.
+        """
         # Load test data from fixture file
         user_data = load_sample_data("user")
 
@@ -32,7 +30,10 @@ class TestFixturesDemo:
         assert user_data["is_current"] is True
 
     def test_peer_dictionary_with_fixture_file(self):
-        """Test Peer dictionary data from fixture file (API responses are now dictionaries)."""
+        """Test Peer dictionary data from fixture file.
+
+        API responses are now dictionaries.
+        """
         peer_data = load_sample_data("peer")
 
         # API responses are now dictionaries, not Pydantic models
@@ -43,7 +44,10 @@ class TestFixturesDemo:
         assert len(peer_data["groups"]) == 1
 
     def test_api_response_fixture(self):
-        """Test using API response fixtures (API responses are now dictionaries)."""
+        """Test using API response fixtures.
+
+        API responses are now dictionaries.
+        """
         users_response = load_api_response("users")
 
         assert isinstance(users_response, list)
@@ -72,10 +76,11 @@ class TestFixturesDemo:
         assert "valid_token" in tokens
         assert "invalid_token" in tokens
 
-    def test_pytest_fixtures_integration(
-        self, mock_users_response, client_configs
-    ):
-        """Test integration with pytest fixtures (API responses are now dictionaries)."""
+    def test_pytest_fixtures_integration(self, mock_users_response, client_configs):
+        """Test integration with pytest fixtures.
+
+        API responses are now dictionaries.
+        """
         # These fixtures are loaded from files via conftest.py
         assert len(mock_users_response) == 2
         assert "environments" in client_configs

@@ -30,9 +30,7 @@ class SetupKeyCreate(BaseModel):
     )
     usage_limit: Optional[int] = Field(None, description="Usage limit")
     ephemeral: bool = Field(False, description="Ephemeral peers flag")
-    allow_extra_dns_labels: bool = Field(
-        False, description="Allow extra DNS labels"
-    )
+    allow_extra_dns_labels: bool = Field(False, description="Allow extra DNS labels")
 
 
 class SetupKeyUpdate(BaseModel):
@@ -83,9 +81,7 @@ class SetupKey(BaseModel):
     auto_groups: Optional[List[ResourceId]] = Field(
         None, description="Auto-assigned group IDs"
     )
-    updated_at: Optional[str] = Field(
-        None, description="Last update timestamp"
-    )
+    updated_at: Optional[str] = Field(None, description="Last update timestamp")
     usage_limit: Optional[int] = Field(None, description="Usage limit")
     ephemeral: bool = Field(False, description="Ephemeral peers flag")
     allow_extra_dns_labels: Optional[bool] = Field(

@@ -49,9 +49,7 @@ class TokensResource(BaseResource):
             ... )
             >>> token = client.tokens.create("user-123", token_data)
         """
-        data = self.client.post(
-            f"users/{user_id}/tokens", data=token_data.model_dump()
-        )
+        data = self.client.post(f"users/{user_id}/tokens", data=token_data.model_dump())
         return self._parse_response(data)
 
     def get(self, user_id: str, token_id: str) -> Dict[str, Any]:

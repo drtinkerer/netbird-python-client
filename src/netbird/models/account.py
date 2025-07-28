@@ -2,7 +2,7 @@
 Account models for NetBird API.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 from pydantic import Field
 
@@ -15,7 +15,8 @@ class AccountSettings(BaseModel):
     Attributes:
         peer_login_expiration: Peer login expiration settings
         peer_login_expiration_enabled: Whether peer login expiration is enabled
-        peer_inactivity_expiration_enabled: Whether peer inactivity expiration is enabled
+        peer_inactivity_expiration_enabled: Whether peer inactivity expiration
+            is enabled
         user_view_restrictions: User view restriction settings
         group_propagation_enabled: Whether group propagation is enabled
         jwt_groups_enabled: Whether JWT groups are enabled
@@ -44,15 +45,11 @@ class AccountSettings(BaseModel):
     jwt_groups_claim_name: Optional[str] = Field(
         None, description="JWT groups claim name"
     )
-    dns_resolution_enabled: bool = Field(
-        True, description="Enable DNS resolution"
-    )
+    dns_resolution_enabled: bool = Field(True, description="Enable DNS resolution")
     network_traffic_logging_enabled: bool = Field(
         False, description="Enable network traffic logging"
     )
-    lazy_connection_enabled: bool = Field(
-        False, description="Enable lazy connection"
-    )
+    lazy_connection_enabled: bool = Field(False, description="Enable lazy connection")
 
 
 class Account(BaseModel):
@@ -70,12 +67,6 @@ class Account(BaseModel):
     id: ResourceId = Field(..., description="Unique account identifier")
     domain: str = Field(..., description="Account domain")
     domain_category: Optional[str] = Field(None, description="Domain category")
-    created_at: Optional[str] = Field(
-        None, description="Account creation timestamp"
-    )
-    created_by: Optional[str] = Field(
-        None, description="User who created the account"
-    )
-    settings: Optional[Dict[str, Any]] = Field(
-        None, description="Account settings"
-    )
+    created_at: Optional[str] = Field(None, description="Account creation timestamp")
+    created_by: Optional[str] = Field(None, description="User who created the account")
+    settings: Optional[Dict[str, Any]] = Field(None, description="Account settings")

@@ -4,9 +4,8 @@ NetBird API Client
 Core client implementation for the NetBird API.
 """
 
-import asyncio
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
-from urllib.parse import urljoin, urlparse
+from typing import TYPE_CHECKING, Any, Dict, Optional
+from urllib.parse import urljoin
 
 import httpx
 from httpx import Response
@@ -222,18 +221,14 @@ class APIClient:
 
         # Extract error message
         error_msg = (
-            data.get("message")
-            or data.get("error")
-            or f"HTTP {response.status_code}"
+            data.get("message") or data.get("error") or f"HTTP {response.status_code}"
         )
 
         # Map status codes to exceptions
         if response.status_code in [400, 409, 422]:
             raise NetBirdValidationError(error_msg, response.status_code, data)
         elif response.status_code == 401:
-            raise NetBirdAuthenticationError(
-                error_msg, response.status_code, data
-            )
+            raise NetBirdAuthenticationError(error_msg, response.status_code, data)
         elif response.status_code == 404:
             raise NetBirdNotFoundError(error_msg, response.status_code, data)
         elif response.status_code == 429:

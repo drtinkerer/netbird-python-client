@@ -9,13 +9,12 @@ Required environment variables:
 - NETBIRD_TEST_HOST: NetBird API host (optional, defaults to api.netbird.io)
 """
 
-import random
 import time
 from uuid import uuid4
 
 import pytest
 
-from netbird.exceptions import NetBirdAPIError, NetBirdNotFoundError
+from netbird.exceptions import NetBirdNotFoundError
 from netbird.models import (
     GroupCreate,
     GroupUpdate,
@@ -23,9 +22,6 @@ from netbird.models import (
     PolicyRule,
     PolicyUpdate,
     RouteCreate,
-    RouteUpdate,
-    SetupKeyCreate,
-    SetupKeyUpdate,
 )
 
 
@@ -60,9 +56,7 @@ class TestCRUDIntegration:
             assert updated_group["name"] == f"{group_name}-updated"
 
             # Verify update persisted
-            refetched_group = integration_client.groups.get(
-                created_group["id"]
-            )
+            refetched_group = integration_client.groups.get(created_group["id"])
             assert refetched_group["name"] == f"{group_name}-updated"
 
         finally:
@@ -75,9 +69,7 @@ class TestCRUDIntegration:
 
     def test_setup_key_lifecycle(self, integration_client):
         """Test setup key lifecycle."""
-        pytest.skip(
-            "Skipping due to persistent 'autogroups field is invalid' error"
-        )
+        pytest.skip("Skipping due to persistent 'autogroups field is invalid' error")
 
     def test_policy_lifecycle(self, integration_client):
         """Test policy lifecycle."""
@@ -106,9 +98,7 @@ class TestCRUDIntegration:
 
         try:
             # READ
-            fetched_policy = integration_client.policies.get(
-                created_policy["id"]
-            )
+            fetched_policy = integration_client.policies.get(created_policy["id"])
             assert fetched_policy["id"] == created_policy["id"]
             assert fetched_policy["name"] == policy_name
 
@@ -130,10 +120,7 @@ class TestCRUDIntegration:
             updated_policy = integration_client.policies.update(
                 created_policy["id"], update_data
             )
-            assert (
-                updated_policy["description"]
-                == "Updated integration test policy"
-            )
+            assert updated_policy["description"] == "Updated integration test policy"
             assert updated_policy["enabled"] is False
 
         finally:
@@ -184,7 +171,9 @@ class TestCRUDIntegration:
     #             description="Updated integration test route",
     #             enabled=False,
     #         )
-    #         updated_route = integration_client.routes.update(created_route.id, update_data)
+    #         updated_route = integration_client.routes.update(
+    #             created_route.id, update_data
+    #         )
     #         assert updated_route.description == "Updated integration test route"
     #         assert updated_route.enabled is False
     #
