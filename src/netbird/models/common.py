@@ -6,8 +6,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, NewType
 
-from pydantic import BaseModel as PydanticBaseModel
-from pydantic import ConfigDict
+from pydantic import BaseModel as PydanticBaseModel, ConfigDict
 
 
 class BaseModel(PydanticBaseModel):
