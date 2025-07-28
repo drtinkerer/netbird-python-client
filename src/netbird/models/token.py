@@ -19,7 +19,9 @@ class TokenCreate(BaseModel):
     """
 
     name: str = Field(..., description="Token name")
-    expires_in: int = Field(..., description="Token expiration in days", ge=1, le=365)
+    expires_in: int = Field(
+        ..., description="Token expiration in days", ge=1, le=365
+    )
 
 
 class Token(BaseModel):
@@ -39,4 +41,6 @@ class Token(BaseModel):
     creation_date: datetime = Field(..., description="Token creation date")
     expiration_date: datetime = Field(..., description="Token expiration date")
     created_by: ResourceId = Field(..., description="Creator user ID")
-    last_used: Optional[datetime] = Field(None, description="Last used timestamp")
+    last_used: Optional[datetime] = Field(
+        None, description="Last used timestamp"
+    )

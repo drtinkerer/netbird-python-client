@@ -10,7 +10,11 @@ from unittest.mock import Mock
 import pytest
 
 from netbird import APIClient
-from tests.fixtures import load_api_response, load_mock_config, load_sample_data
+from tests.fixtures import (
+    load_api_response,
+    load_mock_config,
+    load_sample_data,
+)
 
 
 class TestFixturesDemo:
@@ -68,7 +72,9 @@ class TestFixturesDemo:
         assert "valid_token" in tokens
         assert "invalid_token" in tokens
 
-    def test_pytest_fixtures_integration(self, mock_users_response, client_configs):
+    def test_pytest_fixtures_integration(
+        self, mock_users_response, client_configs
+    ):
         """Test integration with pytest fixtures (API responses are now dictionaries)."""
         # These fixtures are loaded from files via conftest.py
         assert len(mock_users_response) == 2

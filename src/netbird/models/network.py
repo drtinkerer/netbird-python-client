@@ -47,10 +47,14 @@ class NetworkResource(BaseModel):
 
     id: ResourceId = Field(..., description="Resource identifier")
     name: str = Field(..., description="Resource name")
-    description: Optional[str] = Field(None, description="Resource description")
+    description: Optional[str] = Field(
+        None, description="Resource description"
+    )
     address: str = Field(..., description="Resource address")
     enabled: bool = Field(True, description="Resource enabled status")
-    groups: Optional[List[ResourceId]] = Field(None, description="Associated group IDs")
+    groups: Optional[List[ResourceId]] = Field(
+        None, description="Associated group IDs"
+    )
 
 
 class NetworkRouter(BaseModel):

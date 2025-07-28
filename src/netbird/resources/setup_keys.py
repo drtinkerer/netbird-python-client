@@ -83,7 +83,8 @@ class SetupKeysResource(BaseResource):
             >>> key = client.setup_keys.update("key-123", key_data)
         """
         data = self.client.put(
-            f"setup-keys/{key_id}", data=key_data.model_dump(exclude_unset=True)
+            f"setup-keys/{key_id}",
+            data=key_data.model_dump(exclude_unset=True),
         )
         return self._parse_response(data)
 

@@ -48,8 +48,13 @@ class TestAPIClient:
         client = APIClient(host="api.netbird.io", api_token="test-token")
 
         assert client._build_url("users") == "https://api.netbird.io/api/users"
-        assert client._build_url("/users") == "https://api.netbird.io/api/users"
-        assert client._build_url("users/123") == "https://api.netbird.io/api/users/123"
+        assert (
+            client._build_url("/users") == "https://api.netbird.io/api/users"
+        )
+        assert (
+            client._build_url("users/123")
+            == "https://api.netbird.io/api/users/123"
+        )
 
     def test_handle_response_success(self):
         """Test successful response handling."""
@@ -209,12 +214,16 @@ class TestAPIClient:
 
         assert result == {"id": "123", "name": "Test User"}
         mock_post.assert_called_once_with(
-            "https://api.netbird.io/api/users", json={"name": "Test User"}, params=None
+            "https://api.netbird.io/api/users",
+            json={"name": "Test User"},
+            params=None,
         )
 
     def test_context_manager(self):
         """Test client as context manager."""
-        with APIClient(host="api.netbird.io", api_token="test-token") as client:
+        with APIClient(
+            host="api.netbird.io", api_token="test-token"
+        ) as client:
             assert client.host == "api.netbird.io"
 
         # Client should be closed after context exit

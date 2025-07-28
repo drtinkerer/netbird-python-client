@@ -35,7 +35,10 @@ class TestNetBirdAPIError:
 
     def test_initialization_with_response_data(self):
         """Test error initialization with response data."""
-        response_data = {"error": "validation_failed", "details": "Invalid email"}
+        response_data = {
+            "error": "validation_failed",
+            "details": "Invalid email",
+        }
         error = NetBirdAPIError("Test error", response_data=response_data)
 
         assert error.response_data == response_data
@@ -70,7 +73,9 @@ class TestNetBirdAuthenticationError:
     def test_initialization_with_parameters(self):
         """Test authentication error with parameters."""
         error = NetBirdAuthenticationError(
-            "Invalid token", status_code=401, response_data={"error": "invalid_token"}
+            "Invalid token",
+            status_code=401,
+            response_data={"error": "invalid_token"},
         )
 
         assert error.message == "Invalid token"

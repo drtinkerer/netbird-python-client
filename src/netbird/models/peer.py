@@ -69,7 +69,9 @@ class Peer(BaseModel):
     id: ResourceId = Field(..., description="Unique peer identifier")
     name: str = Field(..., description="Peer name")
     ip: IPvAnyAddress = Field(..., description="Peer IP address")
-    connection_ip: Optional[str] = Field(None, description="Connection IP address")
+    connection_ip: Optional[str] = Field(
+        None, description="Connection IP address"
+    )
     connected: bool = Field(..., description="Connection status")
     last_seen: Optional[str] = Field(None, description="Last seen timestamp")
     os: Optional[str] = Field(None, description="Operating system")
@@ -77,7 +79,9 @@ class Peer(BaseModel):
     groups: Optional[List[Dict[str, Any]]] = Field(
         None, description="Group objects with details"
     )
-    user_id: Optional[ResourceId] = Field(None, description="Associated user ID")
+    user_id: Optional[ResourceId] = Field(
+        None, description="Associated user ID"
+    )
     hostname: Optional[str] = Field(None, description="Peer hostname")
     ui_version: Optional[str] = Field(None, description="UI version")
     dns_label: Optional[str] = Field(None, description="DNS label")
@@ -86,13 +90,19 @@ class Peer(BaseModel):
         False, description="Login expiration enabled"
     )
     login_expired: bool = Field(False, description="Login expired status")
-    approval_required: bool = Field(False, description="Approval required flag")
+    approval_required: bool = Field(
+        False, description="Approval required flag"
+    )
     accessible_peers_count: Optional[int] = Field(
         None, description="Number of accessible peers"
     )
     city_name: Optional[str] = Field(None, description="Geographic city name")
-    country_code: Optional[str] = Field(None, description="Geographic country code")
-    ephemeral: Optional[bool] = Field(None, description="Whether peer is ephemeral")
+    country_code: Optional[str] = Field(
+        None, description="Geographic country code"
+    )
+    ephemeral: Optional[bool] = Field(
+        None, description="Whether peer is ephemeral"
+    )
     extra_dns_labels: Optional[List[str]] = Field(
         None, description="Additional DNS labels"
     )
@@ -100,6 +110,10 @@ class Peer(BaseModel):
     inactivity_expiration_enabled: Optional[bool] = Field(
         None, description="Inactivity expiration enabled"
     )
-    kernel_version: Optional[str] = Field(None, description="OS kernel version")
+    kernel_version: Optional[str] = Field(
+        None, description="OS kernel version"
+    )
     last_login: Optional[str] = Field(None, description="Last login timestamp")
-    serial_number: Optional[str] = Field(None, description="Device serial number")
+    serial_number: Optional[str] = Field(
+        None, description="Device serial number"
+    )

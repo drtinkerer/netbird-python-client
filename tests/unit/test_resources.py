@@ -76,7 +76,9 @@ class TestUsersResource:
         self.mock_client.post.return_value = mock_user_data
 
         # Create user data
-        user_data = UserCreate(email="new@example.com", name="New User", role="user")
+        user_data = UserCreate(
+            email="new@example.com", name="New User", role="user"
+        )
 
         # Call the method
         user = self.users_resource.create(user_data)
@@ -190,7 +192,9 @@ class TestPeersResource:
         peers = self.peers_resource.list(name="test-peer", ip="10.0.0.1")
 
         expected_params = {"name": "test-peer", "ip": "10.0.0.1"}
-        self.mock_client.get.assert_called_once_with("peers", params=expected_params)
+        self.mock_client.get.assert_called_once_with(
+            "peers", params=expected_params
+        )
 
     def test_get_peer(self):
         """Test getting a specific peer."""
@@ -245,7 +249,9 @@ class TestPeersResource:
 
         peers = self.peers_resource.get_accessible_peers("peer-123")
 
-        self.mock_client.get.assert_called_once_with("peers/peer-123/accessible-peers")
+        self.mock_client.get.assert_called_once_with(
+            "peers/peer-123/accessible-peers"
+        )
         assert len(peers) == 1
         assert isinstance(peers[0], dict)
 
@@ -410,7 +416,9 @@ class TestSetupKeysResource:
         }
         self.mock_client.post.return_value = mock_key_data
 
-        key_data = SetupKeyCreate(name="new-key", type="one-off", expires_in=3600)
+        key_data = SetupKeyCreate(
+            name="new-key", type="one-off", expires_in=3600
+        )
         key = self.setup_keys_resource.create(key_data)
 
         self.mock_client.post.assert_called_once_with(

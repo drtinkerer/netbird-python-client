@@ -32,7 +32,9 @@ class RouteCreate(BaseModel):
     network_id: str = Field(..., description="Network identifier")
     enabled: bool = Field(True, description="Route enabled status")
     peer: Optional[ResourceId] = Field(None, description="Peer ID for route")
-    peer_groups: Optional[List[ResourceId]] = Field(None, description="Peer group IDs")
+    peer_groups: Optional[List[ResourceId]] = Field(
+        None, description="Peer group IDs"
+    )
     network: Optional[str] = Field(None, description="Network address")
     network_type: NetworkType = Field(..., description="Network type")
     domains: Optional[List[str]] = Field(None, description="Domain list")
@@ -67,15 +69,21 @@ class RouteUpdate(BaseModel):
     description: Optional[str] = Field(None, description="Route description")
     enabled: Optional[bool] = Field(None, description="Route enabled status")
     peer: Optional[ResourceId] = Field(None, description="Peer ID for route")
-    peer_groups: Optional[List[ResourceId]] = Field(None, description="Peer group IDs")
+    peer_groups: Optional[List[ResourceId]] = Field(
+        None, description="Peer group IDs"
+    )
     network: Optional[str] = Field(None, description="Network address")
     domains: Optional[List[str]] = Field(None, description="Domain list")
     metric: Optional[int] = Field(None, description="Route metric")
-    masquerade: Optional[bool] = Field(None, description="Masquerading enabled")
+    masquerade: Optional[bool] = Field(
+        None, description="Masquerading enabled"
+    )
     groups: Optional[List[ResourceId]] = Field(
         None, description="Group IDs with access"
     )
-    keep_route: Optional[bool] = Field(None, description="Keep route on disconnect")
+    keep_route: Optional[bool] = Field(
+        None, description="Keep route on disconnect"
+    )
     access_control_groups: Optional[List[ResourceId]] = Field(
         None, description="Access control group IDs"
     )
@@ -106,7 +114,9 @@ class Route(BaseModel):
     network_id: str = Field(..., description="Network identifier")
     enabled: bool = Field(..., description="Route enabled status")
     peer: Optional[ResourceId] = Field(None, description="Peer ID for route")
-    peer_groups: Optional[List[ResourceId]] = Field(None, description="Peer group IDs")
+    peer_groups: Optional[List[ResourceId]] = Field(
+        None, description="Peer group IDs"
+    )
     network: Optional[str] = Field(None, description="Network address")
     network_type: NetworkType = Field(..., description="Network type")
     domains: Optional[List[str]] = Field(None, description="Domain list")

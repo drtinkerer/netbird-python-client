@@ -46,7 +46,9 @@ class UsersResource(BaseResource):
             ... )
             >>> user = client.users.create(user_data)
         """
-        data = self.client.post("users", data=user_data.model_dump(exclude_unset=True))
+        data = self.client.post(
+            "users", data=user_data.model_dump(exclude_unset=True)
+        )
         return self._parse_response(data)
 
     def get(self, user_id: str) -> Dict[str, Any]:

@@ -242,7 +242,8 @@ class TestNetworksResourceCompleteCode:
         network = self.networks_resource.update("network-123", update_data)
 
         self.mock_client.put.assert_called_once_with(
-            "networks/network-123", data=update_data.model_dump(exclude_unset=True)
+            "networks/network-123",
+            data=update_data.model_dump(exclude_unset=True),
         )
         assert network["name"] == "updated-network"
 
@@ -269,7 +270,9 @@ class TestNetworksResourceCompleteCode:
             "enabled": True,
             "groups": [],
         }
-        resource = self.networks_resource.create_resource("network-123", resource_data)
+        resource = self.networks_resource.create_resource(
+            "network-123", resource_data
+        )
 
         self.mock_client.post.assert_called_once_with(
             "networks/network-123/resources", data=resource_data
@@ -317,8 +320,14 @@ class TestNetworksResourceCompleteCode:
         }
         self.mock_client.post.return_value = mock_router_data
 
-        router_data = {"name": "test-router", "peer": "peer-123", "metric": 100}
-        router = self.networks_resource.create_router("network-123", router_data)
+        router_data = {
+            "name": "test-router",
+            "peer": "peer-123",
+            "metric": 100,
+        }
+        router = self.networks_resource.create_router(
+            "network-123", router_data
+        )
 
         self.mock_client.post.assert_called_once_with(
             "networks/network-123/routers", data=router_data
@@ -448,7 +457,8 @@ class TestSetupKeysResourceCompleteCode:
         key = self.setup_keys_resource.update("key-123", update_data)
 
         self.mock_client.put.assert_called_once_with(
-            "setup-keys/key-123", data=update_data.model_dump(exclude_unset=True)
+            "setup-keys/key-123",
+            data=update_data.model_dump(exclude_unset=True),
         )
         assert key["revoked"]
 
@@ -484,7 +494,9 @@ class TestTokensResourceCompleteCode:
 
         token = self.tokens_resource.get("user-123", "token-123")
 
-        self.mock_client.get.assert_called_once_with("users/user-123/tokens/token-123")
+        self.mock_client.get.assert_called_once_with(
+            "users/user-123/tokens/token-123"
+        )
         assert isinstance(token, dict)
         assert token["id"] == "token-123"
 

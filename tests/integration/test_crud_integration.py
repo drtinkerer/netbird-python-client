@@ -60,7 +60,9 @@ class TestCRUDIntegration:
             assert updated_group["name"] == f"{group_name}-updated"
 
             # Verify update persisted
-            refetched_group = integration_client.groups.get(created_group["id"])
+            refetched_group = integration_client.groups.get(
+                created_group["id"]
+            )
             assert refetched_group["name"] == f"{group_name}-updated"
 
         finally:
@@ -73,7 +75,9 @@ class TestCRUDIntegration:
 
     def test_setup_key_lifecycle(self, integration_client):
         """Test setup key lifecycle."""
-        pytest.skip("Skipping due to persistent 'autogroups field is invalid' error")
+        pytest.skip(
+            "Skipping due to persistent 'autogroups field is invalid' error"
+        )
 
     def test_policy_lifecycle(self, integration_client):
         """Test policy lifecycle."""
@@ -102,7 +106,9 @@ class TestCRUDIntegration:
 
         try:
             # READ
-            fetched_policy = integration_client.policies.get(created_policy["id"])
+            fetched_policy = integration_client.policies.get(
+                created_policy["id"]
+            )
             assert fetched_policy["id"] == created_policy["id"]
             assert fetched_policy["name"] == policy_name
 
@@ -124,7 +130,10 @@ class TestCRUDIntegration:
             updated_policy = integration_client.policies.update(
                 created_policy["id"], update_data
             )
-            assert updated_policy["description"] == "Updated integration test policy"
+            assert (
+                updated_policy["description"]
+                == "Updated integration test policy"
+            )
             assert updated_policy["enabled"] is False
 
         finally:

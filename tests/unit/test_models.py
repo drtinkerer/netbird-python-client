@@ -163,7 +163,9 @@ class TestGroupModels:
 
     def test_group_create_model(self):
         """Test GroupCreate model."""
-        group = GroupCreate(name="new-group", peers=["peer-1", "peer-2", "peer-3"])
+        group = GroupCreate(
+            name="new-group", peers=["peer-1", "peer-2", "peer-3"]
+        )
 
         assert group.name == "new-group"
         assert len(group.peers) == 3
@@ -234,7 +236,10 @@ class TestSetupKeyModels:
     def test_setup_key_create_model(self):
         """Test SetupKeyCreate model."""
         key = SetupKeyCreate(
-            name="new-key", type=SetupKeyType.ONE_OFF, expires_in=3600, usage_limit=1
+            name="new-key",
+            type=SetupKeyType.ONE_OFF,
+            expires_in=3600,
+            usage_limit=1,
         )
 
         assert key.name == "new-key"

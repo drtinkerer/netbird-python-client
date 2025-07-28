@@ -87,7 +87,8 @@ class RoutesResource(BaseResource):
             >>> route = client.routes.update("route-123", route_data)
         """
         data = self.client.put(
-            f"routes/{route_id}", data=route_data.model_dump(exclude_unset=True)
+            f"routes/{route_id}",
+            data=route_data.model_dump(exclude_unset=True),
         )
         return self._parse_response(data)
 

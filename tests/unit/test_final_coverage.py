@@ -35,7 +35,9 @@ class TestNetworksFinalMethods:
 
         resources = self.networks_resource.list_resources("network-123")
 
-        self.mock_client.get.assert_called_once_with("networks/network-123/resources")
+        self.mock_client.get.assert_called_once_with(
+            "networks/network-123/resources"
+        )
         assert len(resources) == 1
         assert isinstance(resources[0], dict)
 
@@ -50,7 +52,9 @@ class TestNetworksFinalMethods:
         }
         self.mock_client.get.return_value = mock_resource_data
 
-        resource = self.networks_resource.get_resource("network-123", "resource-123")
+        resource = self.networks_resource.get_resource(
+            "network-123", "resource-123"
+        )
 
         self.mock_client.get.assert_called_once_with(
             "networks/network-123/resources/resource-123"
@@ -74,7 +78,9 @@ class TestNetworksFinalMethods:
 
         routers = self.networks_resource.list_routers("network-123")
 
-        self.mock_client.get.assert_called_once_with("networks/network-123/routers")
+        self.mock_client.get.assert_called_once_with(
+            "networks/network-123/routers"
+        )
         assert len(routers) == 1
         assert isinstance(routers[0], dict)
 

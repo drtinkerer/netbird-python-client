@@ -31,7 +31,9 @@ class AccountsResource(BaseResource):
         data = self.client.get("accounts")
         return self._parse_list_response(data)
 
-    def update(self, account_id: str, settings: AccountSettings) -> Dict[str, Any]:
+    def update(
+        self, account_id: str, settings: AccountSettings
+    ) -> Dict[str, Any]:
         """Update account settings.
 
         Args:

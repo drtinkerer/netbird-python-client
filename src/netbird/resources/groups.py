@@ -84,7 +84,8 @@ class GroupsResource(BaseResource):
             >>> group = client.groups.update("group-123", group_data)
         """
         data = self.client.put(
-            f"groups/{group_id}", data=group_data.model_dump(exclude_unset=True)
+            f"groups/{group_id}",
+            data=group_data.model_dump(exclude_unset=True),
         )
         return self._parse_response(data)
 
