@@ -71,7 +71,7 @@ jobs:
       run: |
         black --check src/ tests/
         isort --check-only src/ tests/
-        flake8 src/ tests/
+        flake8 src/ tests/ --max-line-length=88
 
   publish:
     needs: [build, test]
