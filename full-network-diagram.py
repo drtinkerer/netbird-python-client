@@ -6,10 +6,12 @@ Full Network Diagram - Creates a visual diagram showing all networks and their r
 import os
 import sys
 import json
-from diagrams import Diagram, Cluster, Node
-from diagrams.generic.network import Subnet
+from diagrams import Diagram, Cluster, Node, Edge
+from diagrams.generic.network import Subnet, Router
 from diagrams.generic.compute import Rack
-from diagrams.generic.blank import Blank
+from diagrams.aws.general import Users
+from diagrams.aws.security import IAMPermissions
+from diagrams.generic.database import SQL
 
 # Add the src directory to the path for local development
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
@@ -75,14 +77,17 @@ def get_enriched_networks():
         for network in networks:
             enriched_network = network.copy()
             
-            # Replace resource IDs with actual resource data
+            # Replace resource IDs with actual resource data (keep IDs for mapping)
             if 'resources' in network and network['resources']:
                 try:
                     detailed_resources = client.networks.list_resources(network['id'])
                     enriched_network['resources'] = detailed_resources
+                    # Store original resources with IDs for policy mapping
+                    enriched_network['_original_resources'] = detailed_resources
                 except Exception as e:
                     print(f"Warning: Could not fetch resources for network {network['name']}: {e}")
                     enriched_network['resources'] = network['resources']  # Keep original IDs
+                    enriched_network['_original_resources'] = []
             
             # Replace policy IDs with full policy objects
             if 'policies' in network and network['policies']:
@@ -157,75 +162,135 @@ def get_enriched_networks():
 def create_network_diagram(networks):
     """Create a visual diagram of all networks and their resources using diagrams library."""
     
-    with Diagram("NetBird Network Topology", filename="netbird_networks", show=False, direction="TB", 
+    with Diagram("NetBird Network Topology", filename="netbird_networks", show=False, direction="LR", 
                  graph_attr={
                      "splines": "ortho", 
-                     "nodesep": "2.5", 
-                     "ranksep": "2.5",
+                     "nodesep": "1.5", 
+                     "ranksep": "3.0",
                      "fontsize": "12",
+                     "fontname": "Arial",
+                     "bgcolor": "#FFFFFF",
                      "labelloc": "t",
-                     "pad": "1.0"
+                     "pad": "1.0",
+                     "rankdir": "LR"
                  }):
         
+        # Collect all unique source groups from all networks/policies
+        all_source_groups = set()
         for network in networks:
-            network_name = network['name']
-            resources = network.get('resources', [])
-            
-            with Cluster(f"{network_name}\n({len(resources)} resources)"):
-                resource_nodes = []
+            policies = network.get('policies', [])
+            for policy in policies:
+                rules = policy.get('rules', [])
+                for rule in rules:
+                    sources = rule.get('sources', []) or []
+                    all_source_groups.update(sources)
+        
+        # Collect all policies from all networks
+        all_policies = []
+        for network in networks:
+            policies = network.get('policies', [])
+            for policy in policies:
+                policy['_network_name'] = network['name']  # Store network reference
+                all_policies.append(policy)
+        
+        # Create source groups cluster on the left
+        source_group_nodes = {}
+        with Cluster("Source Groups", 
+                   graph_attr={
+                       "style": "filled,rounded", 
+                       "fillcolor": "#F0F0FF", 
+                       "pencolor": "#4169E1",
+                       "penwidth": "2",
+                       "margin": "20",
+                       "fontsize": "12",
+                       "labeljust": "c",
+                       "rank": "source"
+                   }):
+            for source_group in sorted(all_source_groups):
+                source_node = Users(f"{source_group}")
+                source_group_nodes[source_group] = source_node
+        
+        # Create policies cluster in the middle
+        policy_nodes = {}
+        with Cluster("Policies", 
+                   graph_attr={
+                       "style": "filled,rounded", 
+                       "fillcolor": "#F0FFF0", 
+                       "pencolor": "#228B22",
+                       "penwidth": "2",
+                       "margin": "20",
+                       "fontsize": "12",
+                       "labeljust": "c",
+                       "rank": "same"
+                   }):
+            for policy in all_policies:
+                policy_name = policy.get('name', 'Unknown Policy')
+                policy_enabled = policy.get('enabled', True)
+                rules = policy.get('rules', [])
+                network_name = policy.get('_network_name', 'Unknown')
                 
-                for i, resource in enumerate(resources):
-                    resource_name = resource.get('name', 'Unknown')
-                    resource_address = resource.get('address', 'N/A')
-                    resource_type = resource.get('type', 'unknown')
-                    resource_groups = resource.get('groups', [])
-                    
-                    # Don't truncate names - let them display fully
-                    display_name = resource_name
-                    display_address = resource_address
-                    
-                    # Format groups for display
-                    if resource_groups:
-                        groups_text = "Groups: " + ", ".join(resource_groups[:2])  # Show max 2 groups
-                        if len(resource_groups) > 2:
-                            groups_text += f" (+{len(resource_groups)-2} more)"
-                    else:
-                        groups_text = "No groups"
-                    
-                    # Create a yellowish box around each resource using a sub-cluster
-                    with Cluster(f"{display_name}", 
-                               graph_attr={
-                                   "style": "filled,rounded", 
-                                   "fillcolor": "#FFFFE0", 
-                                   "pencolor": "#DAA520",
-                                   "penwidth": "2",
-                                   "margin": "30",
-                                   "fontsize": "11",
-                                   "labeljust": "c"
-                               }):
-                        # Create different icons based on resource type with address below
-                        if resource_type == 'subnet':
-                            main_node = Subnet(f"{display_address}")
-                        else:  # host, domain, etc.
-                            main_node = Rack(f"{display_address}")
-                        
-                        # Create small pink boxes for each group
-                        group_nodes = []
-                        for group in resource_groups[:3]:  # Show max 3 groups
-                            with Cluster(f"{group}", 
-                                       graph_attr={
-                                           "style": "filled,rounded", 
-                                           "fillcolor": "#FFB6C1", 
-                                           "pencolor": "#FF69B4",
-                                           "penwidth": "1",
-                                           "margin": "8",
-                                           "fontsize": "9",
-                                           "labeljust": "c"
-                                       }):
-                                group_node = Blank("")
-                                group_nodes.append(group_node)
-                        
-                        resource_nodes.append(main_node)
+                policy_info = f"{policy_name}\\n{len(rules)} rules\\nFor: {network_name}"
+                policy_node = IAMPermissions(policy_info)
+                policy_key = f"{network_name}_{policy_name}"
+                policy_nodes[policy_key] = policy_node
+        
+        # Create networks as simple nodes in horizontal layout (no subclusters)
+        network_nodes = {}
+        network_list_nodes = []
+        
+        with Cluster("Networks", 
+                   graph_attr={
+                       "style": "filled,rounded", 
+                       "fillcolor": "#F8F8FF", 
+                       "pencolor": "#4169E1",
+                       "penwidth": "2",
+                       "margin": "20",
+                       "fontsize": "12",
+                       "labeljust": "c",
+                       "rank": "same"
+                   }):
+            
+            for network in networks:
+                network_name = network['name']
+                resources = network.get('resources', [])
+                routers = network.get('routers', [])
+                
+                # Create single node per network with summary info
+                resource_count = len(resources)
+                router_count = len(routers)
+                network_info = f"{network_name}\\n{resource_count} resources"
+                if router_count > 0:
+                    network_info += f"\\n{router_count} routers"
+                
+                network_node = Subnet(network_info)
+                network_nodes[network_name] = network_node
+                network_list_nodes.append(network_node)
+        
+        # Force networks to be on same rank (horizontal)
+        if len(network_list_nodes) > 1:
+            for i in range(len(network_list_nodes) - 1):
+                network_list_nodes[i] >> Edge(style="invis", minlen="1") >> network_list_nodes[i + 1]
+        
+        # Create connections from source groups to policies to networks
+        for policy in all_policies:
+            policy_name = policy.get('name', 'Unknown Policy')
+            network_name = policy.get('_network_name', 'Unknown')
+            rules = policy.get('rules', [])
+            policy_key = f"{network_name}_{policy_name}"
+            
+            if policy_key in policy_nodes:
+                policy_node = policy_nodes[policy_key]
+                
+                # Connect sources to this policy
+                for rule in rules:
+                    sources = rule.get('sources', []) or []
+                    for source in sources:
+                        if source in source_group_nodes:
+                            source_group_nodes[source] >> Edge(color="blue", style="dashed") >> policy_node
+                
+                # Connect policy to its target network
+                if network_name in network_nodes:
+                    policy_node >> Edge(color="green", style="solid") >> network_nodes[network_name]
 
 
 def main():
@@ -234,6 +299,7 @@ def main():
     
     # Get enriched network data
     networks = get_enriched_networks()
+    print(networks)
     
     if not networks:
         print("❌ No networks found.")
