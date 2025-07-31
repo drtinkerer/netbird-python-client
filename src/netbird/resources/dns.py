@@ -30,7 +30,7 @@ class DNSResource(BaseResource):
         data = self.client.get("dns/nameservers")
         return self._parse_list_response(data)
 
-    def create_nameserver_group(self, nameserver_data: dict) -> Dict[str, Any]:
+    def create_nameserver_group(self, nameserver_data: Dict[str, Any]) -> Dict[str, Any]:
         """Create a new nameserver group.
 
         Args:
@@ -68,7 +68,7 @@ class DNSResource(BaseResource):
         return self._parse_response(data)
 
     def update_nameserver_group(
-        self, group_id: str, nameserver_data: dict
+        self, group_id: str, nameserver_data: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Update a nameserver group.
 
@@ -117,7 +117,7 @@ class DNSResource(BaseResource):
         data = self.client.get("dns/settings")
         return self._parse_response(data)
 
-    def update_settings(self, settings_data: dict) -> Dict[str, Any]:
+    def update_settings(self, settings_data: Dict[str, Any]) -> Dict[str, Any]:
         """Update DNS settings.
 
         Args:

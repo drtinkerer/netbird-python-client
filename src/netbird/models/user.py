@@ -2,7 +2,7 @@
 User models for NetBird API.
 """
 
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 
 from pydantic import EmailStr, Field
 
@@ -78,7 +78,7 @@ class User(BaseModel):
     is_service_user: bool = Field(False, description="Service user flag")
     is_blocked: bool = Field(False, description="Blocked status")
     issued: Optional[str] = Field(None, description="User creation timestamp")
-    permissions: Optional[dict] = Field(None, description="User permissions")
+    permissions: Optional[Dict[str, Any]] = Field(None, description="User permissions")
     is_current: Optional[bool] = Field(
         None, description="Whether this is the current user"
     )
