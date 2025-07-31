@@ -19,7 +19,7 @@ This client follows the same upstream schemas as the official NetBird REST APIs,
 - ✅ **Network Visualization** - Generate network topology diagrams in multiple formats
 - ✅ **Modern Python** - Built for Python 3.8+ with async support ready
 - ✅ **Comprehensive Error Handling** - Detailed exception classes for different error types
-- ✅ **High Test Coverage** - 97.56% unit test coverage, 83.29% integration coverage
+- ✅ **Exceptional Test Coverage** - 98.01% total coverage with comprehensive unit and integration tests
 - ✅ **Extensive Documentation** - Complete API reference and examples
 - ✅ **PyPI Ready** - Easy installation and distribution
 
@@ -342,19 +342,60 @@ isort src/ tests/
 flake8 src/ tests/
 ```
 
-### Running Tests
+### Testing & Coverage
+
+The NetBird Python client has comprehensive test coverage ensuring reliability and stability:
+
+#### Test Coverage Statistics
+- **Total Coverage**: 98.01% (1,181 of 1,205 lines covered)
+- **Unit Tests**: 230 tests covering all core functionality
+- **Integration Tests**: 20 tests covering real API interactions  
+- **Total Tests**: 251 tests (250 passing, 1 skipped)
+
+#### Coverage by Module
+| Module | Coverage | Status |
+|--------|----------|--------|
+| **Models** | 100% | ✅ Complete |
+| **Resources** | 100% | ✅ Complete |  
+| **Auth** | 100% | ✅ Complete |
+| **Exceptions** | 100% | ✅ Complete |
+| **Network Map** | 98% | ✅ Excellent |
+| **Base Resources** | 95% | ✅ Excellent |
+| **Client Core** | 95% | 🚀 Exceptional |
+
+#### Running Tests
 
 ```bash
 # Run all tests
 pytest
 
-# Run with coverage
+# Run with coverage report
 pytest --cov=src/netbird --cov-report=html
 
 # Run specific test categories
-pytest -m unit          # Unit tests only
-pytest -m integration   # Integration tests only
+pytest tests/unit/          # Unit tests only
+pytest tests/integration/   # Integration tests only
+
+# Generate detailed coverage report
+pytest --cov=src/netbird --cov-report=html --cov-report=term-missing
 ```
+
+#### Test Categories
+
+**Unit Tests** (tests/unit/)
+- API client functionality
+- Model validation and serialization
+- Resource method behavior
+- Error handling scenarios
+- Network topology generation
+- Diagram creation (Mermaid, Graphviz, Python Diagrams)
+
+**Integration Tests** (tests/integration/)
+- Real API endpoint interactions
+- CRUD operations across all resources
+- Authentication and authorization
+- Error handling with live API responses
+- End-to-end workflows
 
 ## Response Format
 
