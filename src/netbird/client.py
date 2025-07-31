@@ -442,8 +442,8 @@ class APIClient:
                     group_names = []
                     for group in resource_groups:
                         if isinstance(group, dict):
-                            group_name = group.get('name', group.get('id', 'Unknown'))
-                            group_names.append(group_name)
+                            group_name = group.get('name') or group.get('id') or 'Unknown'
+                            group_names.append(str(group_name))
                         else:
                             group_names.append(str(group))
                     resource_label += f"<br/>🏷️ {', '.join(group_names)}"
@@ -521,10 +521,10 @@ class APIClient:
         
         return mermaid_content
 
-    def _create_graphviz_diagram(self, networks: List[Dict[str, Any]], output_file: Optional[str] = None) -> None:
+    def _create_graphviz_diagram(self, networks: List[Dict[str, Any]], output_file: Optional[str] = None) -> Optional[str]:
         """Create a network diagram using Graphviz with optimized connections."""
         try:
-            import graphviz
+            import graphviz  # type: ignore[import-untyped]
         except ImportError:
             print("❌ Error: graphviz library not installed. Run: pip install graphviz")
             return None
@@ -580,8 +580,8 @@ class APIClient:
                         group_names = []
                         for group in resource_groups:
                             if isinstance(group, dict):
-                                group_name = group.get('name', group.get('id', 'Unknown'))
-                                group_names.append(group_name)
+                                group_name = group.get('name') or group.get('id') or 'Unknown'
+                                group_names.append(str(group_name))
                             else:
                                 group_names.append(str(group))
                         resource_label += f'\\\\\\\\n🏷️ {", ".join(group_names)}'
@@ -651,14 +651,16 @@ class APIClient:
         with open(f"{output_base}.dot", 'w') as f:
             f.write(dot.source)
         print(f"✅ DOT source saved as {output_base}.dot")
+        
+        return None
 
     def _create_diagrams_diagram(self, networks: List[Dict[str, Any]], output_file: Optional[str] = None) -> Optional[str]:
         """Create a network diagram using Python Diagrams with optimized connections."""
         try:
-            from diagrams import Diagram, Cluster, Node, Edge
-            from diagrams.generic.blank import Blank
-            from diagrams.onprem.network import Internet
-            from diagrams.generic.network import Router
+            from diagrams import Diagram, Cluster, Node, Edge  # type: ignore[import-untyped]
+            from diagrams.generic.blank import Blank  # type: ignore[import-untyped]
+            from diagrams.onprem.network import Internet  # type: ignore[import-untyped]
+            from diagrams.generic.network import Router  # type: ignore[import-untyped]
         except ImportError:
             print("❌ Error: diagrams library not installed. Run: pip install diagrams")
             return None
@@ -702,8 +704,8 @@ class APIClient:
                             group_names = []
                             for group in resource_groups:
                                 if isinstance(group, dict):
-                                    group_name = group.get('name', group.get('id', 'Unknown'))
-                                    group_names.append(group_name)
+                                    group_name = group.get('name') or group.get('id') or 'Unknown'
+                                    group_names.append(str(group_name))
                                 else:
                                     group_names.append(str(group))
                             label += f"\\n🏷️ {', '.join(group_names)}"

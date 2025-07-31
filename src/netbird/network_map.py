@@ -5,7 +5,7 @@ This module provides functionality to generate enriched network maps from NetBir
 It enriches networks with detailed resource and policy information for visualization purposes.
 """
 
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Set, Tuple
 from .client import APIClient
 from .exceptions import NetBirdAPIError, NetBirdAuthenticationError
 
@@ -185,11 +185,11 @@ def _collect_optimized_connections(networks: List[Dict[str, Any]]) -> Dict[str, 
     This reduces visual clutter by merging duplicate connections and organizing
     them by source group and destination.
     """
-    group_connections = {}  # {(source, dest_group): [policy_names]}
-    direct_connections = {}  # {(source, dest_node): [policy_names]}
-    all_source_groups = set()
-    resource_id_to_node = {}
-    group_name_to_nodes = {}
+    group_connections: Dict[Tuple[str, str], List[str]] = {}  # {(source, dest_group): [policy_names]}
+    direct_connections: Dict[Tuple[str, str], List[str]] = {}  # {(source, dest_node): [policy_names]}
+    all_source_groups: Set[str] = set()
+    resource_id_to_node: Dict[str, str] = {}
+    group_name_to_nodes: Dict[str, List[str]] = {}
     
     # First pass: collect all source groups and build mappings
     for network_idx, network in enumerate(networks):
@@ -209,7 +209,7 @@ def _collect_optimized_connections(networks: List[Dict[str, Any]]) -> Dict[str, 
             if resource_groups:
                 for group in resource_groups:
                     if isinstance(group, dict):
-                        group_name = group.get('name', group.get('id', 'Unknown'))
+                        group_name = group.get('name') or group.get('id') or 'Unknown'
                     else:
                         group_name = str(group)
                     
@@ -226,7 +226,7 @@ def _collect_optimized_connections(networks: List[Dict[str, Any]]) -> Dict[str, 
                     sources = rule.get('sources', []) or []
                     for source in sources:
                         if isinstance(source, dict):
-                            source_name = source.get('name', source.get('id', 'Unknown'))
+                            source_name = source.get('name') or source.get('id') or 'Unknown'
                             all_source_groups.add(source_name)
                         else:
                             all_source_groups.add(str(source))
@@ -247,7 +247,7 @@ def _collect_optimized_connections(networks: List[Dict[str, Any]]) -> Dict[str, 
                     source_names = []
                     for source in sources:
                         if isinstance(source, dict):
-                            source_name = source.get('name', source.get('id', 'Unknown'))
+                            source_name = source.get('name') or source.get('id') or 'Unknown'
                             source_names.append(source_name)
                         else:
                             source_names.append(str(source))
@@ -256,7 +256,7 @@ def _collect_optimized_connections(networks: List[Dict[str, Any]]) -> Dict[str, 
                     if destinations:
                         for dest_group_obj in destinations:
                             if isinstance(dest_group_obj, dict):
-                                dest_group_name = dest_group_obj.get('name', dest_group_obj.get('id', 'Unknown'))
+                                dest_group_name = dest_group_obj.get('name') or dest_group_obj.get('id') or 'Unknown'
                                 if dest_group_name in group_name_to_nodes:
                                     for source_name in source_names:
                                         key = (source_name, dest_group_name)
