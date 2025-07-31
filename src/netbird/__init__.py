@@ -12,7 +12,7 @@ Example:
     >>> users = client.users.list()
 """
 
-__version__ = "1.0.1"
+__version__ = "1.1.0"
 
 from .client import APIClient
 from .exceptions import (
@@ -23,6 +23,7 @@ from .exceptions import (
     NetBirdServerError,
     NetBirdValidationError,
 )
+from .network_map import generate_full_network_map, get_network_topology_data
 
 __all__ = [
     "APIClient",
@@ -32,4 +33,6 @@ __all__ = [
     "NetBirdRateLimitError",
     "NetBirdServerError",
     "NetBirdValidationError",
+    "generate_full_network_map",
+    "get_network_topology_data",
 ]

@@ -157,6 +157,18 @@ def sample_token_data():
     }
 
 
+@pytest.fixture
+def sample_network_map_data():
+    """Sample network map data for testing."""
+    return load_sample_data("network_map")
+
+
+@pytest.fixture
+def mock_networks_response():
+    """Mock API response for networks endpoint."""
+    return load_api_response("networks")
+
+
 # Test markers
 def pytest_configure(config):
     """Configure pytest markers."""

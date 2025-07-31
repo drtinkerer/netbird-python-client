@@ -1,10 +1,12 @@
-# NetBird Python Client
+# NetBird Python Client (Unofficial)
 
 [![PyPI version](https://badge.fury.io/py/netbird.svg)](https://badge.fury.io/py/netbird)
 [![Python Support](https://img.shields.io/pypi/pyversions/netbird.svg)](https://pypi.org/project/netbird/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Python client library for the [NetBird](https://netbird.io) API. Provides complete access to all NetBird API resources with a simple, intuitive interface.
+**Unofficial** Python client library for the [NetBird](https://netbird.io) API. Provides complete access to all NetBird API resources with a simple, intuitive interface.
+
+> **⚠️ Disclaimer**: This is an **unofficial**, community-maintained client library. It is **not affiliated with, endorsed by, or officially supported** by NetBird or the NetBird team. For official NetBird tools and support, please visit [netbird.io](https://netbird.io).
 
 This client follows the same upstream schemas as the official NetBird REST APIs, ensuring full compatibility and consistency with the NetBird ecosystem.
 
@@ -14,6 +16,7 @@ This client follows the same upstream schemas as the official NetBird REST APIs,
 - ✅ **Upstream Schema Compliance** - Follows official NetBird REST API schemas exactly
 - ✅ **Dictionary Responses** - Clean dictionary responses for easy data access
 - ✅ **Type Safety** - Pydantic models for input validation, dictionaries for responses
+- ✅ **Network Visualization** - Generate network topology diagrams in multiple formats
 - ✅ **Modern Python** - Built for Python 3.8+ with async support ready
 - ✅ **Comprehensive Error Handling** - Detailed exception classes for different error types
 - ✅ **High Test Coverage** - 97.56% unit test coverage, 83.29% integration coverage
@@ -49,7 +52,7 @@ from netbird import APIClient
 
 # Initialize the client
 client = APIClient(
-    host="api.netbird.io",
+    host="your-netbird-host.com",  # e.g., "api.netbird.io" for cloud
     api_token="your-api-token-here"
 )
 
@@ -64,7 +67,7 @@ print(f"Logged in as: {user['name']}")
 # Create a new group
 from netbird.models import GroupCreate
 group_data = GroupCreate(
-    name="Development Team",
+    name="My Team",
     peers=["peer-1", "peer-2"]
 )
 group = client.groups.create(group_data)
@@ -78,7 +81,7 @@ NetBird uses token-based authentication. You can use either a personal access to
 ### Personal Access Token (Recommended)
 ```python
 client = APIClient(
-    host="api.netbird.io",
+    host="your-netbird-host.com",  # e.g., "api.netbird.io" for cloud
     api_token="your-personal-access-token"
 )
 ```
@@ -86,7 +89,7 @@ client = APIClient(
 ### Service User Token
 ```python
 client = APIClient(
-    host="api.netbird.io",
+    host="your-netbird-host.com",  # e.g., "api.netbird.io" for cloud
     api_token="your-service-user-token"
 )
 ```
@@ -108,10 +111,10 @@ from netbird.models import UserCreate, UserRole
 
 # Create a new user
 user_data = UserCreate(
-    email="john@example.com",
-    name="John Doe",
+    email="user@company.com",
+    name="New User",
     role=UserRole.USER,
-    auto_groups=["group-developers"]
+    auto_groups=["group-default"]
 )
 user = client.users.create(user_data)
 print(f"Created user: {user['name']} ({user['email']})")
@@ -129,23 +132,23 @@ from netbird.models import NetworkCreate, PolicyCreate, PolicyRule
 
 # Create a network
 network_data = NetworkCreate(
-    name="Production Network",
-    description="Main production environment"
+    name="My Network",
+    description="Network environment"
 )
 network = client.networks.create(network_data)
 print(f"Created network: {network['name']}")
 
 # Create access policy
 rule = PolicyRule(
-    name="Allow SSH",
+    name="Allow Access",
     action="accept",
     protocol="tcp", 
     ports=["22"],
-    sources=["group-admins"],
-    destinations=["group-servers"]
+    sources=["source-group"],
+    destinations=["destination-group"]
 )
 policy_data = PolicyCreate(
-    name="Admin SSH Access",
+    name="Access Policy",
     rules=[rule]
 )
 policy = client.policies.create(policy_data)
@@ -158,11 +161,11 @@ from netbird.models import SetupKeyCreate
 
 # Create a reusable setup key
 key_data = SetupKeyCreate(
-    name="Development Environment",
+    name="Environment Setup",
     type="reusable",
     expires_in=86400,  # 24 hours
     usage_limit=10,
-    auto_groups=["group-dev"]
+    auto_groups=["default-group"]
 )
 setup_key = client.setup_keys.create(key_data)
 print(f"Setup key: {setup_key['key']}")
@@ -185,6 +188,94 @@ traffic_events = client.events.get_network_traffic_events(
 )
 for traffic in traffic_events[:5]:
     print(f"Traffic: {traffic['source_ip']} -> {traffic['destination_ip']}")
+```
+
+## Network Visualization
+
+The NetBird Python client includes powerful network visualization capabilities that can generate topology diagrams in multiple formats:
+
+### Generate Network Maps
+
+```python
+from netbird import APIClient, generate_full_network_map
+
+# Initialize client
+client = APIClient(host="your-netbird-host.com", api_token="your-token")
+
+# Generate enriched network data
+networks = generate_full_network_map(client)
+
+# Access enriched data
+for network in networks:
+    print(f"Network: {network['name']}")
+    for resource in network.get('resources', []):
+        print(f"  Resource: {resource['name']} - {resource['address']}")
+    for policy in network.get('policies', []):
+        print(f"  Policy: {policy['name']}")
+```
+
+### Topology Visualization
+
+```python
+from netbird import get_network_topology_data
+
+# Get optimized topology data for visualization
+topology = get_network_topology_data(client, optimize_connections=True)
+
+print(f"Found {len(topology['all_source_groups'])} source groups")
+print(f"Found {len(topology['group_connections'])} group connections")
+print(f"Found {len(topology['direct_connections'])} direct connections")
+```
+
+### Diagram Generation
+
+Use the included unified diagram generator to create visual network topology diagrams:
+
+```bash
+# Set your API token
+export NETBIRD_API_TOKEN="your-token-here"
+
+# Generate Mermaid diagram (default, GitHub/GitLab compatible)
+python unified-network-diagram.py
+
+# Generate Graphviz diagram (PNG, SVG, PDF)
+python unified-network-diagram.py --format graphviz
+
+# Generate Python Diagrams (PNG)
+python unified-network-diagram.py --format diagrams
+
+# Custom output filename
+python unified-network-diagram.py --format mermaid -o my_network_topology
+```
+
+### Supported Diagram Formats
+
+| Format | Output Files | Best For |
+|--------|-------------|----------|
+| **Mermaid** | `.mmd`, `.md` | GitHub/GitLab documentation, web viewing |
+| **Graphviz** | `.png`, `.svg`, `.pdf`, `.dot` | High-quality publications, presentations |
+| **Diagrams** | `.png` | Code documentation, architecture diagrams |
+
+### Diagram Features
+
+- **Source Groups**: Visual representation of user groups with distinct colors
+- **Networks & Resources**: Hierarchical network structure with resource details
+- **Policy Connections**: 
+  - 🟢 **Group-based access** (dashed lines)
+  - 🔵 **Direct resource access** (solid lines)
+- **Optimized Layout**: Merged connections to reduce visual complexity
+- **Rich Information**: Resource addresses, types, and group memberships
+
+### Installation for Diagrams
+
+```bash
+# For Graphviz diagrams
+pip install graphviz
+
+# For Python Diagrams
+pip install diagrams
+
+# Mermaid requires no additional dependencies
 ```
 
 ## Error Handling
@@ -217,7 +308,7 @@ except NetBirdAPIError as e:
 
 ```python
 client = APIClient(
-    host="api.netbird.io",
+    host="your-netbird-host.com",  # Your NetBird API host
     api_token="your-token",
     use_ssl=True,           # Use HTTPS (default: True)
     timeout=30.0,           # Request timeout in seconds (default: 30)
@@ -323,6 +414,23 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guid
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Disclaimer & Legal
+
+**This is an unofficial, community-maintained client library.**
+
+- ❌ **Not official**: This library is NOT affiliated with, endorsed by, or officially supported by NetBird or the NetBird team
+- ❌ **No warranty**: This software is provided "as is" without warranty of any kind
+- ❌ **No official support**: For official NetBird support, please contact NetBird directly
+- ✅ **Open source**: This is a community effort to provide Python developers with NetBird API access
+- ✅ **Best effort compatibility**: We strive to maintain compatibility with NetBird's official API
+
+**NetBird** is a trademark of NetBird. This project is not endorsed by or affiliated with NetBird.
+
+For official NetBird tools, documentation, and support:
+- **Official Website**: [netbird.io](https://netbird.io)
+- **Official Documentation**: [docs.netbird.io](https://docs.netbird.io)
+- **Official GitHub**: [github.com/netbirdio/netbird](https://github.com/netbirdio/netbird)
 
 ## Support
 

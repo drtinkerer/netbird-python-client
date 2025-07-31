@@ -1,0 +1,23 @@
+[
+  {
+    "id": "network-1",
+    "name": "Production Network",
+    "description": "Main production network",
+    "dns": null,
+    "serial": 1
+  },
+  {
+    "id": "network-2", 
+    "name": "Development Network",
+    "description": "Development environment",
+    "dns": null,
+    "serial": 2
+  },
+  {
+    "id": "network-3",
+    "name": "Staging Network", 
+    "description": "Staging environment for testing",
+    "dns": null,
+    "serial": 3
+  }
+]

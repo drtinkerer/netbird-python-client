@@ -1,0 +1,259 @@
+[
+  {
+    "id": "network-1",
+    "name": "Production Network",
+    "description": "Main production network",  
+    "resources": [
+      {
+        "id": "resource-1",
+        "name": "web-server-prod",
+        "address": "10.0.1.10",
+        "type": "host",
+        "groups": [
+          {"id": "group-1", "name": "web-servers"},
+          {"id": "group-2", "name": "production"}
+        ]
+      },
+      {
+        "id": "resource-2",
+        "name": "api-server-prod", 
+        "address": "10.0.1.20",
+        "type": "host",
+        "groups": [
+          {"id": "group-3", "name": "api-servers"},
+          {"id": "group-2", "name": "production"}
+        ]
+      },
+      {
+        "id": "resource-3",
+        "name": "database-prod",
+        "address": "10.0.1.30", 
+        "type": "host",
+        "groups": [
+          {"id": "group-4", "name": "databases"},
+          {"id": "group-2", "name": "production"}
+        ]
+      },
+      {
+        "id": "resource-4",
+        "name": "internal-subnet",
+        "address": "192.168.1.0/24",
+        "type": "subnet", 
+        "groups": [
+          {"id": "group-5", "name": "internal-networks"}
+        ]
+      }
+    ],
+    "routers": [
+      {
+        "id": "router-1",
+        "name": "prod-router-1",
+        "peer": "peer-router-123"
+      },
+      {
+        "id": "router-2", 
+        "name": "prod-router-2",
+        "peer": "peer-router-456"
+      }
+    ],
+    "policies": [
+      {
+        "id": "policy-1",
+        "name": "web-access-policy",
+        "description": "Allow developers to access web servers",
+        "rules": [
+          {
+            "id": "rule-1", 
+            "sources": [
+              {"id": "group-6", "name": "developers"}
+            ],
+            "destinations": [
+              {"id": "group-1", "name": "web-servers"}
+            ],
+            "destinationResource": {},
+            "protocol": "tcp",
+            "ports": ["80", "443"]
+          }
+        ]
+      },
+      {
+        "id": "policy-2",
+        "name": "api-access-policy", 
+        "description": "Allow web servers to access API servers",
+        "rules": [
+          {
+            "id": "rule-2",
+            "sources": [
+              {"id": "group-1", "name": "web-servers"}
+            ],
+            "destinations": [
+              {"id": "group-3", "name": "api-servers"}
+            ],
+            "destinationResource": {},
+            "protocol": "tcp",
+            "ports": ["8080", "8443"]
+          }
+        ]
+      },
+      {
+        "id": "policy-3",
+        "name": "db-direct-access",
+        "description": "Direct access to specific database",
+        "rules": [
+          {
+            "id": "rule-3",
+            "sources": [
+              {"id": "group-3", "name": "api-servers"}
+            ],
+            "destinations": [],
+            "destinationResource": {"id": "resource-3"},
+            "protocol": "tcp", 
+            "ports": ["5432"]
+          }
+        ]
+      },
+      {
+        "id": "policy-4",
+        "name": "admin-full-access",
+        "description": "Admin access to all production resources",
+        "rules": [
+          {
+            "id": "rule-4",
+            "sources": [
+              {"id": "group-7", "name": "administrators"}
+            ],
+            "destinations": [
+              {"id": "group-2", "name": "production"}
+            ],
+            "destinationResource": {},
+            "protocol": "all",
+            "ports": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "network-2",
+    "name": "Development Network",
+    "description": "Development environment",
+    "resources": [
+      {
+        "id": "resource-5",
+        "name": "dev-web-server",
+        "address": "10.0.2.10", 
+        "type": "host",
+        "groups": [
+          {"id": "group-8", "name": "dev-web-servers"},
+          {"id": "group-9", "name": "development"}
+        ]
+      },
+      {
+        "id": "resource-6",
+        "name": "dev-api-server",
+        "address": "10.0.2.20",
+        "type": "host", 
+        "groups": [
+          {"id": "group-10", "name": "dev-api-servers"},
+          {"id": "group-9", "name": "development"}
+        ]
+      },
+      {
+        "id": "resource-7",
+        "name": "dev-database",
+        "address": "10.0.2.30",
+        "type": "host",
+        "groups": [
+          {"id": "group-11", "name": "dev-databases"},
+          {"id": "group-9", "name": "development"}
+        ]
+      }
+    ],
+    "routers": [
+      {
+        "id": "router-3",
+        "name": "dev-router-1", 
+        "peer": "peer-router-789"
+      }
+    ],
+    "policies": [
+      {
+        "id": "policy-5",
+        "name": "dev-web-access",
+        "description": "Developer access to dev web servers",
+        "rules": [
+          {
+            "id": "rule-5",
+            "sources": [
+              {"id": "group-6", "name": "developers"}
+            ],
+            "destinations": [
+              {"id": "group-8", "name": "dev-web-servers"}
+            ],
+            "destinationResource": {},
+            "protocol": "tcp",
+            "ports": ["80", "443", "3000", "8080"]
+          }
+        ]
+      },
+      {
+        "id": "policy-6",
+        "name": "dev-full-chain",
+        "description": "Full development chain access",
+        "rules": [
+          {
+            "id": "rule-6", 
+            "sources": [
+              {"id": "group-6", "name": "developers"}
+            ],
+            "destinations": [
+              {"id": "group-9", "name": "development"}
+            ],
+            "destinationResource": {},
+            "protocol": "tcp",
+            "ports": ["22", "80", "443", "3000", "5432", "8080"]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "network-3",
+    "name": "Staging Network",
+    "description": "Staging environment for testing",
+    "resources": [
+      {
+        "id": "resource-8", 
+        "name": "staging-web-server",
+        "address": "10.0.3.10",
+        "type": "host",
+        "groups": [
+          {"id": "group-12", "name": "staging-servers"},  
+          {"id": "group-13", "name": "staging"}
+        ]
+      }
+    ],
+    "routers": [],
+    "policies": [
+      {
+        "id": "policy-7",
+        "name": "staging-access",
+        "description": "QA team access to staging",
+        "rules": [
+          {
+            "id": "rule-7",
+            "sources": [
+              {"id": "group-14", "name": "qa-team"}
+            ],
+            "destinations": [
+              {"id": "group-13", "name": "staging"}
+            ],
+            "destinationResource": {},
+            "protocol": "tcp",
+            "ports": ["80", "443"]
+          }
+        ]
+      }
+    ]
+  }
+]
