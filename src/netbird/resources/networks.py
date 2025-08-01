@@ -117,7 +117,9 @@ class NetworksResource(BaseResource):
         data = self.client.get(f"networks/{network_id}/resources")
         return self._parse_list_response(data)
 
-    def create_resource(self, network_id: str, resource_data: Dict[str, Any]) -> Dict[str, Any]:
+    def create_resource(
+        self, network_id: str, resource_data: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Create a network resource.
 
         Args:
@@ -185,7 +187,9 @@ class NetworksResource(BaseResource):
         data = self.client.get(f"networks/{network_id}/routers")
         return self._parse_list_response(data)
 
-    def create_router(self, network_id: str, router_data: Dict[str, Any]) -> Dict[str, Any]:
+    def create_router(
+        self, network_id: str, router_data: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Create a network router.
 
         Args:

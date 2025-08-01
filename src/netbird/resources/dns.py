@@ -30,7 +30,9 @@ class DNSResource(BaseResource):
         data = self.client.get("dns/nameservers")
         return self._parse_list_response(data)
 
-    def create_nameserver_group(self, nameserver_data: Dict[str, Any]) -> Dict[str, Any]:
+    def create_nameserver_group(
+        self, nameserver_data: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Create a new nameserver group.
 
         Args:

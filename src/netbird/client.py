@@ -6,7 +6,6 @@ Core client implementation for the NetBird API.
 
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 from urllib.parse import urljoin
-import os
 
 import httpx
 from httpx import Response
@@ -354,9 +353,10 @@ class APIClient:
             >>> client.generate_diagram(format="graphviz", output_file="my_network")
             >>> client.generate_diagram(format="diagrams")
         """
-        from .network_map import generate_full_network_map, get_network_topology_data
 
         # Get enriched network data
+        from .network_map import generate_full_network_map
+
         networks = generate_full_network_map(
             self, include_routers, include_policies, include_resources
         )
@@ -372,24 +372,42 @@ class APIClient:
         elif format == "diagrams":
             return self._create_diagrams_diagram(networks, output_file)
         else:
-            raise ValueError(f"Unsupported format: {format}. Use 'mermaid', 'graphviz', or 'diagrams'")
+            raise ValueError(
+                f"Unsupported format: {format}. "
+                f"Use 'mermaid', 'graphviz', or 'diagrams'"
+            )
 
     def _get_source_group_colors(self, source_groups: List[str]) -> Dict[str, str]:
         """Generate color mapping for source groups dynamically."""
-        DEFAULT_COLORS = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FECA57', 
-                         '#FF9FF3', '#A8E6CF', '#FFD93D', '#6BCF7F', '#4D96FF', 
-                         '#9B59B6', '#E67E22', '#1ABC9C', '#E74C3C']
-        
+        DEFAULT_COLORS = [
+            "#FF6B6B",
+            "#4ECDC4",
+            "#45B7D1",
+            "#96CEB4",
+            "#FECA57",
+            "#FF9FF3",
+            "#A8E6CF",
+            "#FFD93D",
+            "#6BCF7F",
+            "#4D96FF",
+            "#9B59B6",
+            "#E67E22",
+            "#1ABC9C",
+            "#E74C3C",
+        ]
+
         source_group_colors = {}
         sorted_groups = sorted(source_groups)
-        
+
         for i, group_name in enumerate(sorted_groups):
             color_index = i % len(DEFAULT_COLORS)
             source_group_colors[group_name] = DEFAULT_COLORS[color_index]
-        
+
         return source_group_colors
 
-    def _format_policy_label(self, policy_names: List[str], connection_type: str = "Group") -> str:
+    def _format_policy_label(
+        self, policy_names: List[str], connection_type: str = "Group"
+    ) -> str:
         """Format policy labels for better readability."""
         unique_policies = list(set(policy_names))
         if len(unique_policies) <= 2:
@@ -400,353 +418,467 @@ class APIClient:
     def _sanitize_id(self, name: str) -> str:
         """Sanitize node ID for various diagram formats."""
         import re
-        # Replace any non-alphanumeric character (except underscore) with underscore
-        return re.sub(r'[^a-zA-Z0-9_]', '_', name)
 
-    def _create_mermaid_diagram(self, networks: List[Dict[str, Any]], output_file: Optional[str] = None) -> str:
+        # Replace any non-alphanumeric character (except underscore) with underscore
+        return re.sub(r"[^a-zA-Z0-9_]", "_", name)
+
+    def _create_mermaid_diagram(
+        self, networks: List[Dict[str, Any]], output_file: Optional[str] = None
+    ) -> str:
         """Create a network diagram using Mermaid syntax with optimized connections."""
-        from .network_map import get_network_topology_data
-        
+
         mermaid_lines = ["graph LR"]
-        
+
         # Get optimized connections
+        from .network_map import get_network_topology_data
+
         connections_data = get_network_topology_data(self, optimize_connections=True)
-        
+
         # Create source groups subgraph
-        mermaid_lines.append("    subgraph SG[\"Source Groups\"]")
-        for source_group in sorted(connections_data['all_source_groups']):
+        mermaid_lines.append('    subgraph SG["Source Groups"]')
+        for source_group in sorted(connections_data["all_source_groups"]):
             safe_id = f"src_{self._sanitize_id(source_group)}"
-            mermaid_lines.append(f"        {safe_id}[\"👥 {source_group}\"]")
+            mermaid_lines.append(f'        {safe_id}["👥 {source_group}"]')
         mermaid_lines.append("    end")
-        
+
         # Create networks subgraphs
         for network_idx, network in enumerate(networks):
-            network_name = network['name']
-            resources = network.get('resources', [])
-            routers = network.get('routers', [])
-            
-            mermaid_lines.append(f"    subgraph N{network_idx}[\"🌐 {network_name}\"]")
-            
+            network_name = network["name"]
+            resources = network.get("resources", [])
+            routers = network.get("routers", [])
+
+            mermaid_lines.append(f'    subgraph N{network_idx}["🌐 {network_name}"]')
+
             # Add resources
             for res_idx, resource in enumerate(resources):
-                resource_name = resource.get('name', 'Unknown')
-                resource_address = resource.get('address', 'N/A')
-                resource_type = resource.get('type', 'unknown')
-                resource_groups = resource.get('groups', [])
-                
-                icon = "🖥️" if resource_type == 'host' else "🌐" if resource_type == 'subnet' else "📁"
-                resource_node_name = f'res_{network_idx}_{res_idx}'
+                resource_name = resource.get("name", "Unknown")
+                resource_address = resource.get("address", "N/A")
+                resource_type = resource.get("type", "unknown")
+                resource_groups = resource.get("groups", [])
+
+                icon = (
+                    "🖥️"
+                    if resource_type == "host"
+                    else "🌐" if resource_type == "subnet" else "📁"
+                )
+                resource_node_name = f"res_{network_idx}_{res_idx}"
                 resource_label = f"{icon} {resource_name}<br/>{resource_address}"
-                
+
                 if resource_groups:
                     group_names = []
                     for group in resource_groups:
                         if isinstance(group, dict):
-                            group_name = group.get('name') or group.get('id') or 'Unknown'
+                            group_name = (
+                                group.get("name") or group.get("id") or "Unknown"
+                            )
                             group_names.append(str(group_name))
                         else:
                             group_names.append(str(group))
                     resource_label += f"<br/>🏷️ {', '.join(group_names)}"
-                
-                mermaid_lines.append(f"        {resource_node_name}[\"{resource_label}\"]")
-            
+
+                mermaid_lines.append(
+                    f'        {resource_node_name}["{resource_label}"]'
+                )
+
             # Add routers
             for router_idx, router in enumerate(routers):
-                router_name = router.get('name', 'Unknown Router')
-                router_node_name = f'router_{network_idx}_{router_idx}'
-                mermaid_lines.append(f"        {router_node_name}[\"🔀 {router_name}\"]")
-            
+                router_name = router.get("name", "Unknown Router")
+                router_node_name = f"router_{network_idx}_{router_idx}"
+                mermaid_lines.append(f'        {router_node_name}["🔀 {router_name}"]')
+
             mermaid_lines.append("    end")
-        
+
         # Generate dynamic color mapping
-        source_group_colors = self._get_source_group_colors(list(connections_data['all_source_groups']))
-        
+        source_group_colors = self._get_source_group_colors(
+            list(connections_data["all_source_groups"])
+        )
+
         # Create optimized group connections
-        for (source_name, dest_group_name), policy_names in connections_data['group_connections'].items():
-            if dest_group_name in connections_data['group_name_to_nodes']:
+        for (source_name, dest_group_name), policy_names in connections_data[
+            "group_connections"
+        ].items():
+            if dest_group_name in connections_data["group_name_to_nodes"]:
                 safe_source = f"src_{self._sanitize_id(source_name)}"
                 merged_label = self._format_policy_label(policy_names, "Group")
-                
-                for resource_node in connections_data['group_name_to_nodes'][dest_group_name]:
-                    mermaid_lines.append(f"    {safe_source} -.->|\"{merged_label}\"| {resource_node}")
-        
+
+                for resource_node in connections_data["group_name_to_nodes"][
+                    dest_group_name
+                ]:
+                    mermaid_lines.append(
+                        f'    {safe_source} -.->|"{merged_label}"| {resource_node}'
+                    )
+
         # Create optimized direct connections
-        for (source_name, dest_node), policy_names in connections_data['direct_connections'].items():
+        for (source_name, dest_node), policy_names in connections_data[
+            "direct_connections"
+        ].items():
             safe_source = f"src_{self._sanitize_id(source_name)}"
             merged_label = self._format_policy_label(policy_names, "Direct")
-            mermaid_lines.append(f"    {safe_source} -->|\"{merged_label}\"| {dest_node}")
-        
+            mermaid_lines.append(f'    {safe_source} -->|"{merged_label}"| {dest_node}')
+
         # Add styling
         mermaid_lines.append("")
         mermaid_lines.append("    %% Styling")
-        
+
         # Style source groups with dynamic colors
-        for source_group in sorted(connections_data['all_source_groups']):
+        for source_group in sorted(connections_data["all_source_groups"]):
             safe_id = f"src_{self._sanitize_id(source_group)}"
-            color = source_group_colors.get(source_group, '#FF6B6B')
-            mermaid_lines.append(f"    classDef {safe_id}_style fill:{color},stroke:#333,stroke-width:2px,color:#000")
+            color = source_group_colors.get(source_group, "#FF6B6B")
+            mermaid_lines.append(
+                f"    classDef {safe_id}_style "
+                f"fill:{color},stroke:#333,stroke-width:2px,color:#000"
+            )
             mermaid_lines.append(f"    class {safe_id} {safe_id}_style")
-        
+
         # Style networks
         for network_idx, network in enumerate(networks):
-            mermaid_lines.append(f"    classDef network{network_idx}_style fill:#E1F5FE,stroke:#0277BD,stroke-width:2px")
-            resources = network.get('resources', [])
-            routers = network.get('routers', [])
-            
+            mermaid_lines.append(
+                f"    classDef network{network_idx}_style "
+                f"fill:#E1F5FE,stroke:#0277BD,stroke-width:2px"
+            )
+            resources = network.get("resources", [])
+            routers = network.get("routers", [])
+
             for res_idx, resource in enumerate(resources):
-                resource_node_name = f'res_{network_idx}_{res_idx}'
-                mermaid_lines.append(f"    class {resource_node_name} network{network_idx}_style")
-            
+                resource_node_name = f"res_{network_idx}_{res_idx}"
+                mermaid_lines.append(
+                    f"    class {resource_node_name} network{network_idx}_style"
+                )
+
             for router_idx, router in enumerate(routers):
-                router_node_name = f'router_{network_idx}_{router_idx}'
-                mermaid_lines.append(f"    class {router_node_name} network{network_idx}_style")
-        
+                router_node_name = f"router_{network_idx}_{router_idx}"
+                mermaid_lines.append(
+                    f"    class {router_node_name} network{network_idx}_style"
+                )
+
         mermaid_content = "\n".join(mermaid_lines)
-        
+
         # Save files if output_file specified
         if output_file:
             mermaid_file = f"{output_file}.mmd"
-            with open(mermaid_file, 'w') as f:
+            with open(mermaid_file, "w") as f:
                 f.write(mermaid_content)
             print(f"✅ Mermaid diagram saved as {mermaid_file}")
-            
+
             # Also save as markdown file
             markdown_file = f"{output_file}.md"
-            with open(markdown_file, 'w') as f:
+            with open(markdown_file, "w") as f:
                 f.write("# NetBird Network Topology\n\n")
                 f.write("```mermaid\n")
                 f.write(mermaid_content)
                 f.write("\n```\n")
             print(f"✅ Markdown file saved as {markdown_file}")
-        
+
         return mermaid_content
 
-    def _create_graphviz_diagram(self, networks: List[Dict[str, Any]], output_file: Optional[str] = None) -> Optional[str]:
+    def _create_graphviz_diagram(
+        self, networks: List[Dict[str, Any]], output_file: Optional[str] = None
+    ) -> Optional[str]:
         """Create a network diagram using Graphviz with optimized connections."""
         try:
             import graphviz  # type: ignore[import-untyped]
         except ImportError:
             print("❌ Error: graphviz library not installed. Run: pip install graphviz")
             return None
-        
-        from .network_map import get_network_topology_data
-        
+
         # Get optimized connections
+        from .network_map import get_network_topology_data
+
         connections_data = get_network_topology_data(self, optimize_connections=True)
-        
+
         # Create a new directed graph
-        dot = graphviz.Digraph('NetBird_Networks', comment='NetBird Network Topology')
-        dot.attr(rankdir='LR', splines='ortho', nodesep='2.0', ranksep='3.0')
-        dot.attr('graph', bgcolor='white', fontname='Arial', fontsize='16', compound='true')
-        dot.attr('node', fontname='Arial', fontsize='12')
-        dot.attr('edge', fontname='Arial', fontsize='10')
-        
+        dot = graphviz.Digraph("NetBird_Networks", comment="NetBird Network Topology")
+        dot.attr(rankdir="LR", splines="ortho", nodesep="2.0", ranksep="3.0")
+        dot.attr(
+            "graph", bgcolor="white", fontname="Arial", fontsize="16", compound="true"
+        )
+        dot.attr("node", fontname="Arial", fontsize="12")
+        dot.attr("edge", fontname="Arial", fontsize="10")
+
         # Create source groups subgraph
-        with dot.subgraph(name='cluster_sources') as sources_graph:
-            sources_graph.attr(label='Source Groups', style='filled', fillcolor='lightblue', 
-                              fontsize='14', fontweight='bold')
-            
-            for source_group in sorted(connections_data['all_source_groups']):
-                sources_graph.node(f'src_{source_group}', 
-                                 label=f'👥 {source_group}',
-                                 shape='box',
-                                 style='filled,rounded',
-                                 fillcolor='#FFE4E1',
-                                 color='#CD5C5C',
-                                 penwidth='2')
-        
+        with dot.subgraph(name="cluster_sources") as sources_graph:
+            sources_graph.attr(
+                label="Source Groups",
+                style="filled",
+                fillcolor="lightblue",
+                fontsize="14",
+                fontweight="bold",
+            )
+
+            for source_group in sorted(connections_data["all_source_groups"]):
+                sources_graph.node(
+                    f"src_{source_group}",
+                    label=f"👥 {source_group}",
+                    shape="box",
+                    style="filled,rounded",
+                    fillcolor="#FFE4E1",
+                    color="#CD5C5C",
+                    penwidth="2",
+                )
+
         # Create networks subgraphs
         for network_idx, network in enumerate(networks):
-            network_name = network['name']
-            resources = network.get('resources', [])
-            routers = network.get('routers', [])
-            
-            with dot.subgraph(name=f'cluster_network_{network_idx}') as net_graph:
-                net_graph.attr(label=f'🌐 {network_name}', style='filled', fillcolor='lightcyan',
-                              fontsize='14', fontweight='bold', color='blue', penwidth='2')
-                
+            network_name = network["name"]
+            resources = network.get("resources", [])
+            routers = network.get("routers", [])
+
+            with dot.subgraph(name=f"cluster_network_{network_idx}") as net_graph:
+                net_graph.attr(
+                    label=f"🌐 {network_name}",
+                    style="filled",
+                    fillcolor="lightcyan",
+                    fontsize="14",
+                    fontweight="bold",
+                    color="blue",
+                    penwidth="2",
+                )
+
                 # Add resources
                 for res_idx, resource in enumerate(resources):
-                    resource_name = resource.get('name', 'Unknown')
-                    resource_address = resource.get('address', 'N/A')
-                    resource_type = resource.get('type', 'unknown')
-                    resource_groups = resource.get('groups', [])
-                    
-                    icon = "🖥️" if resource_type == 'host' else "🌐" if resource_type == 'subnet' else "📁"
-                    resource_node_name = f'res_{network_idx}_{res_idx}'
-                    resource_label = f'{icon} {resource_name}\\\\\\\\n{resource_address}'
-                    
+                    resource_name = resource.get("name", "Unknown")
+                    resource_address = resource.get("address", "N/A")
+                    resource_type = resource.get("type", "unknown")
+                    resource_groups = resource.get("groups", [])
+
+                    icon = (
+                        "🖥️"
+                        if resource_type == "host"
+                        else "🌐" if resource_type == "subnet" else "📁"
+                    )
+                    resource_node_name = f"res_{network_idx}_{res_idx}"
+                    resource_label = (
+                        f"{icon} {resource_name}\\\\\\\\n{resource_address}"
+                    )
+
                     if resource_groups:
                         group_names = []
                         for group in resource_groups:
                             if isinstance(group, dict):
-                                group_name = group.get('name') or group.get('id') or 'Unknown'
+                                group_name = (
+                                    group.get("name") or group.get("id") or "Unknown"
+                                )
                                 group_names.append(str(group_name))
                             else:
                                 group_names.append(str(group))
                         resource_label += f'\\\\\\\\n🏷️ {", ".join(group_names)}'
-                    
-                    net_graph.node(resource_node_name,
-                                 label=resource_label,
-                                 shape='box',
-                                 style='filled,rounded',
-                                 fillcolor='#FFFACD',
-                                 color='#DAA520',
-                                 penwidth='2')
-                
+
+                    net_graph.node(
+                        resource_node_name,
+                        label=resource_label,
+                        shape="box",
+                        style="filled,rounded",
+                        fillcolor="#FFFACD",
+                        color="#DAA520",
+                        penwidth="2",
+                    )
+
                 # Add routers
                 for router_idx, router in enumerate(routers):
-                    router_name = router.get('name', 'Unknown Router')
-                    router_node_name = f'router_{network_idx}_{router_idx}'
-                    
-                    net_graph.node(router_node_name,
-                                 label=f'🔀 {router_name}',
-                                 shape='box',
-                                 style='filled,rounded',
-                                 fillcolor='#FFFACD',
-                                 color='#DAA520',
-                                 penwidth='2')
-        
+                    router_name = router.get("name", "Unknown Router")
+                    router_node_name = f"router_{network_idx}_{router_idx}"
+
+                    net_graph.node(
+                        router_node_name,
+                        label=f"🔀 {router_name}",
+                        shape="box",
+                        style="filled,rounded",
+                        fillcolor="#FFFACD",
+                        color="#DAA520",
+                        penwidth="2",
+                    )
+
         # Generate dynamic color mapping
-        source_group_colors = self._get_source_group_colors(list(connections_data['all_source_groups']))
-        
+        source_group_colors = self._get_source_group_colors(
+            list(connections_data["all_source_groups"])
+        )
+
         # Create optimized group connections
-        for (source_name, dest_group_name), policy_names in connections_data['group_connections'].items():
-            if dest_group_name in connections_data['group_name_to_nodes']:
-                color = source_group_colors.get(source_name, '#FF6B6B')
+        for (source_name, dest_group_name), policy_names in connections_data[
+            "group_connections"
+        ].items():
+            if dest_group_name in connections_data["group_name_to_nodes"]:
+                color = source_group_colors.get(source_name, "#FF6B6B")
                 merged_label = self._format_policy_label(policy_names, "Group")
-                
-                for resource_node in connections_data['group_name_to_nodes'][dest_group_name]:
-                    dot.edge(f'src_{source_name}', resource_node,
-                           label=merged_label,
-                           color=color,
-                           style='dashed',
-                           penwidth='2')
-        
+
+                for resource_node in connections_data["group_name_to_nodes"][
+                    dest_group_name
+                ]:
+                    dot.edge(
+                        f"src_{source_name}",
+                        resource_node,
+                        label=merged_label,
+                        color=color,
+                        style="dashed",
+                        penwidth="2",
+                    )
+
         # Create optimized direct connections
-        for (source_name, dest_node), policy_names in connections_data['direct_connections'].items():
-            color = source_group_colors.get(source_name, '#FF6B6B')
+        for (source_name, dest_node), policy_names in connections_data[
+            "direct_connections"
+        ].items():
+            color = source_group_colors.get(source_name, "#FF6B6B")
             merged_label = self._format_policy_label(policy_names, "Direct")
-            
-            dot.edge(f'src_{source_name}', dest_node,
-                   label=merged_label,
-                   color=color,
-                   style='solid',
-                   penwidth='3')
-        
+
+            dot.edge(
+                f"src_{source_name}",
+                dest_node,
+                label=merged_label,
+                color=color,
+                style="solid",
+                penwidth="3",
+            )
+
         # Save files
         output_base = output_file or "netbird_networks_unified_graphviz"
-        
+
         # Save multiple formats
-        dot.render(output_base, format='png', cleanup=True)
+        dot.render(output_base, format="png", cleanup=True)
         print(f"✅ PNG diagram saved as {output_base}.png")
-        
-        dot.render(f"{output_base}_svg", format='svg', cleanup=True)
+
+        dot.render(f"{output_base}_svg", format="svg", cleanup=True)
         print(f"✅ SVG diagram saved as {output_base}_svg.svg")
-        
-        dot.render(f"{output_base}_pdf", format='pdf', cleanup=True)
+
+        dot.render(f"{output_base}_pdf", format="pdf", cleanup=True)
         print(f"✅ PDF diagram saved as {output_base}_pdf.pdf")
-        
+
         # Save DOT source
-        with open(f"{output_base}.dot", 'w') as f:
+        with open(f"{output_base}.dot", "w") as f:
             f.write(dot.source)
         print(f"✅ DOT source saved as {output_base}.dot")
-        
+
         return None
 
-    def _create_diagrams_diagram(self, networks: List[Dict[str, Any]], output_file: Optional[str] = None) -> Optional[str]:
+    def _create_diagrams_diagram(
+        self, networks: List[Dict[str, Any]], output_file: Optional[str] = None
+    ) -> Optional[str]:
         """Create a network diagram using Python Diagrams with optimized connections."""
         try:
-            from diagrams import Diagram, Cluster, Node, Edge  # type: ignore[import-untyped]
-            from diagrams.generic.blank import Blank  # type: ignore[import-untyped]
-            from diagrams.onprem.network import Internet  # type: ignore[import-untyped]
+            from diagrams import (  # type: ignore[import-untyped]
+                Cluster,
+                Diagram,
+                Edge,
+            )
             from diagrams.generic.network import Router  # type: ignore[import-untyped]
+            from diagrams.onprem.network import Internet  # type: ignore[import-untyped]
         except ImportError:
             print("❌ Error: diagrams library not installed. Run: pip install diagrams")
             return None
-        
-        from .network_map import get_network_topology_data
-        
+
         # Get optimized connections
+        from .network_map import get_network_topology_data
+
         connections_data = get_network_topology_data(self, optimize_connections=True)
-        
+
         diagram_name = output_file or "netbird_network_topology"
-        
-        with Diagram(diagram_name, show=False, direction="LR", 
-                     graph_attr={"splines": "ortho", "nodesep": "2.0", "ranksep": "3.0"}):
-            
+
+        with Diagram(
+            diagram_name,
+            show=False,
+            direction="LR",
+            graph_attr={"splines": "ortho", "nodesep": "2.0", "ranksep": "3.0"},
+        ):
+
             # Create source groups
             source_group_nodes = {}
             with Cluster("Source Groups"):
-                for source_group in sorted(connections_data['all_source_groups']):
+                for source_group in sorted(connections_data["all_source_groups"]):
                     source_group_nodes[source_group] = Internet(f"👥 {source_group}")
-            
+
             # Create networks
             network_resource_nodes = {}
             for network_idx, network in enumerate(networks):
-                network_name = network['name']
-                resources = network.get('resources', [])
-                routers = network.get('routers', [])
-                
+                network_name = network["name"]
+                resources = network.get("resources", [])
+                routers = network.get("routers", [])
+
                 with Cluster(f"🌐 {network_name}"):
                     # Add resources
                     for res_idx, resource in enumerate(resources):
-                        resource_name = resource.get('name', 'Unknown')
-                        resource_address = resource.get('address', 'N/A')
-                        resource_type = resource.get('type', 'unknown')
-                        resource_groups = resource.get('groups', [])
-                        
-                        icon_class = Internet if resource_type in ['subnet', 'host'] else Router
-                        resource_node_name = f'res_{network_idx}_{res_idx}'
-                        
+                        resource_name = resource.get("name", "Unknown")
+                        resource_address = resource.get("address", "N/A")
+                        resource_type = resource.get("type", "unknown")
+                        resource_groups = resource.get("groups", [])
+
+                        icon_class = (
+                            Internet if resource_type in ["subnet", "host"] else Router
+                        )
+                        resource_node_name = f"res_{network_idx}_{res_idx}"
+
                         label = f"{resource_name}\\n{resource_address}"
                         if resource_groups:
                             group_names = []
                             for group in resource_groups:
                                 if isinstance(group, dict):
-                                    group_name = group.get('name') or group.get('id') or 'Unknown'
+                                    group_name = (
+                                        group.get("name")
+                                        or group.get("id")
+                                        or "Unknown"
+                                    )
                                     group_names.append(str(group_name))
                                 else:
                                     group_names.append(str(group))
                             label += f"\\n🏷️ {', '.join(group_names)}"
-                        
+
                         network_resource_nodes[resource_node_name] = icon_class(label)
-                    
+
                     # Add routers
                     for router_idx, router in enumerate(routers):
-                        router_name = router.get('name', 'Unknown Router')
-                        router_node_name = f'router_{network_idx}_{router_idx}'
-                        network_resource_nodes[router_node_name] = Router(f"🔀 {router_name}")
-            
+                        router_name = router.get("name", "Unknown Router")
+                        router_node_name = f"router_{network_idx}_{router_idx}"
+                        network_resource_nodes[router_node_name] = Router(
+                            f"🔀 {router_name}"
+                        )
+
             # Generate dynamic color mapping
-            source_group_colors = self._get_source_group_colors(list(connections_data['all_source_groups']))
-            
+            source_group_colors = self._get_source_group_colors(
+                list(connections_data["all_source_groups"])
+            )
+
             # Create optimized group connections
-            for (source_name, dest_group_name), policy_names in connections_data['group_connections'].items():
-                if dest_group_name in connections_data['group_name_to_nodes'] and source_name in source_group_nodes:
-                    color = source_group_colors.get(source_name, '#FF6B6B')
+            for (source_name, dest_group_name), policy_names in connections_data[
+                "group_connections"
+            ].items():
+                if (
+                    dest_group_name in connections_data["group_name_to_nodes"]
+                    and source_name in source_group_nodes
+                ):
+                    color = source_group_colors.get(source_name, "#FF6B6B")
                     merged_label = self._format_policy_label(policy_names, "Group")
-                    
-                    for resource_node in connections_data['group_name_to_nodes'][dest_group_name]:
+
+                    for resource_node in connections_data["group_name_to_nodes"][
+                        dest_group_name
+                    ]:
                         if resource_node in network_resource_nodes:
-                            source_group_nodes[source_name] >> Edge(
-                                color=color, style="dashed", 
-                                label=merged_label,
-                                penwidth="2"
-                            ) >> network_resource_nodes[resource_node]
-            
+                            (
+                                source_group_nodes[source_name]
+                                >> Edge(
+                                    color=color,
+                                    style="dashed",
+                                    label=merged_label,
+                                    penwidth="2",
+                                )
+                                >> network_resource_nodes[resource_node]
+                            )
+
             # Create optimized direct connections
-            for (source_name, dest_node), policy_names in connections_data['direct_connections'].items():
-                if source_name in source_group_nodes and dest_node in network_resource_nodes:
-                    color = source_group_colors.get(source_name, '#FF6B6B')
+            for (source_name, dest_node), policy_names in connections_data[
+                "direct_connections"
+            ].items():
+                if (
+                    source_name in source_group_nodes
+                    and dest_node in network_resource_nodes
+                ):
+                    color = source_group_colors.get(source_name, "#FF6B6B")
                     merged_label = self._format_policy_label(policy_names, "Direct")
-                    
-                    source_group_nodes[source_name] >> Edge(
-                        color=color, style="solid",
-                        label=merged_label,
-                        penwidth="3"
-                    ) >> network_resource_nodes[dest_node]
-        
+
+                    (
+                        source_group_nodes[source_name]
+                        >> Edge(
+                            color=color, style="solid", label=merged_label, penwidth="3"
+                        )
+                        >> network_resource_nodes[dest_node]
+                    )
+
         output_filename = f"{diagram_name}.png"
         print(f"✅ Diagrams saved as {output_filename}")
         return output_filename
