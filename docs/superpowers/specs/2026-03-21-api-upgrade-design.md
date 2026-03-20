@@ -38,7 +38,7 @@ All additions are optional with defaults — no breaking changes.
 - `auto_update_version: Optional[str] = None`
 - `embedded_idp_enabled: Optional[bool] = None`
 - `local_auth_disabled: Optional[bool] = None`
-- `extra: Optional[Dict[str, Any]] = None` (peer_approval, user_approval, traffic_logs, packet_counter)
+- `extra_settings: Optional[Dict[str, Any]] = Field(default=None, alias="extra")` (peer_approval, user_approval, traffic_logs, packet_counter) — renamed to avoid collision with Pydantic's `extra` config when using `extra="allow"`
 
 **Account** — add:
 - `onboarding: Optional[Dict[str, Any]] = None`
@@ -49,8 +49,8 @@ All additions are optional with defaults — no breaking changes.
 **PolicyRule** — add:
 - `port_ranges: Optional[List[Dict[str, Any]]] = None`
 - `authorized_groups: Optional[Dict[str, Any]] = None`
-- `sourceResource: Optional[Dict[str, Any]] = None`
-- `destinationResource: Optional[Dict[str, Any]] = None`
+- `source_resource: Optional[Dict[str, Any]] = Field(default=None, alias="sourceResource")`
+- `destination_resource: Optional[Dict[str, Any]] = Field(default=None, alias="destinationResource")`
 
 ### 1.3 New Endpoints on Existing Resources
 
@@ -90,7 +90,13 @@ Supported filters: `page`, `page_size`, `sort_by`, `sort_order`, `search`, `sour
 - `UserInviteCreate(name, email, role, auto_groups, expires_in)`
 - `UserInvite(id, email, name, role, expires_at, token, invited_by, valid)`
 
-### 1.5 Tests (Phase 1)
+Note on invite identifiers: `delete_invite(invite_id)` and `regenerate_invite(invite_id)` use the invite's `id` field. `get_invite_info(token)` and `accept_invite(token)` use the invite's `token` field. These are different path parameters for different endpoints.
+
+### 1.5 Version
+
+- Bump `__version__` to `1.2.0` in `src/netbird/__init__.py`
+
+### 1.6 Tests (Phase 1)
 
 New test files:
 - `tests/unit/test_users.py` — all User endpoints including approve/reject/password/invites
@@ -98,6 +104,8 @@ New test files:
 - `tests/unit/test_events.py` — all Event endpoints including proxy
 - `tests/unit/test_networks.py` — all Network endpoints including list_all_routers
 - `tests/unit/test_models.py` — model field additions, `extra="allow"` behavior
+
+Existing test files (`test_client.py`, `test_client_comprehensive.py`, `test_coverage_improvements.py`) are kept as-is. New per-resource test files cover the new methods and avoid duplication with existing tests.
 
 ---
 
@@ -134,6 +142,8 @@ New test files:
 | `list_cities(country_code)` | GET | `/locations/countries/{country}/cities` |
 
 ### 2.3 DNS Zones + Records
+
+> **Note**: DNS Zones (`/dns/zones`) is a separate API concept from DNS Nameserver Groups (`/dns/nameservers`). The existing `client.dns` resource manages nameserver groups and DNS settings — it remains unchanged. `client.dns_zones` is a new, distinct resource for zone and record management. There is no overlap or deprecation.
 
 **Resource**: `src/netbird/resources/dns_zones.py` → `DNSZonesResource`
 **Models**: `src/netbird/models/dns_zone.py`
@@ -192,22 +202,23 @@ Note: `client_secret` only in input models, never in read model.
 | `get_version()` | GET | `/instance/version` |
 | `setup(email, password, name)` | POST | `/setup` |
 
-Note: These endpoints do not require authentication.
+Note: These endpoints do not require authentication. The `APIClient` will still send auth headers (the server ignores them). No special handling needed — existing `_request()` works as-is.
 
-### 2.6 Jobs
+### 2.6 Jobs (on PeersResource)
 
-**Resource**: `src/netbird/resources/jobs.py` → `JobsResource`
+Jobs are scoped under peers in the API, so they belong on `PeersResource` rather than as a standalone resource. This follows the same pattern as Tokens on `UsersResource`.
+
 **Models**: `src/netbird/models/job.py`
 - `Job(id, workload, status)`
 - `JobCreate(workload)`
 
-**Client property**: `client.jobs`
+**Added to `PeersResource`**:
 
 | Method | HTTP | Path |
 |--------|------|------|
-| `list(peer_id)` | GET | `/peers/{id}/jobs` |
-| `create(peer_id, data)` | POST | `/peers/{id}/jobs` |
-| `get(peer_id, job_id)` | GET | `/peers/{id}/jobs/{jid}` |
+| `list_jobs(peer_id)` | GET | `/peers/{id}/jobs` |
+| `create_job(peer_id, data)` | POST | `/peers/{id}/jobs` |
+| `get_job(peer_id, job_id)` | GET | `/peers/{id}/jobs/{jid}` |
 
 ### 2.7 Routes Deprecation Warning
 
@@ -226,9 +237,10 @@ No functionality removed — warning only.
 ### 2.8 Version & Exports
 
 - Bump `__version__` to `1.3.0`
-- Add to `resources/__init__.py`: `PostureChecksResource`, `GeoLocationsResource`, `DNSZonesResource`, `IdentityProvidersResource`, `InstanceResource`, `JobsResource`
-- Add to `models/__init__.py`: all new model classes
-- Add lazy properties to `APIClient`: `posture_checks`, `geo_locations`, `dns_zones`, `identity_providers`, `instance`, `jobs`
+- Add to `resources/__init__.py`: `PostureChecksResource`, `GeoLocationsResource`, `DNSZonesResource`, `IdentityProvidersResource`, `InstanceResource`
+- Add to `models/__init__.py`: all new model classes (including `Job`, `JobCreate`)
+- Add lazy properties to `APIClient`: `posture_checks`, `geo_locations`, `dns_zones`, `identity_providers`, `instance`
+- Jobs methods added directly to existing `PeersResource` (no new lazy property needed)
 
 ### 2.9 Tests (Phase 2)
 
@@ -253,7 +265,26 @@ New files:
 
 **Client property**: `client.cloud` → `CloudResources`
 
-`CloudResources` uses the same lazy-loading pattern as `APIClient`:
+`CloudResources` and `EDRResources` use the same lazy-loading pattern as `APIClient`. Both receive the `APIClient` reference via `__init__` and pass it to child resources:
+
+```python
+class CloudResources:
+    def __init__(self, client: "APIClient") -> None:
+        self.client = client
+        self._edr: Optional["EDRResources"] = None
+
+    @property
+    def edr(self) -> "EDRResources":
+        if self._edr is None:
+            self._edr = EDRResources(self.client)
+        return self._edr
+
+class EDRResources:
+    def __init__(self, client: "APIClient") -> None:
+        self.client = client
+```
+
+Access patterns:
 ```
 client.cloud.services          → ServicesResource
 client.cloud.ingress           → IngressResource
@@ -366,6 +397,7 @@ Same 4 singleton endpoints at `/integrations/edr/sentinelone`.
 |--------|------|------|
 | `list_tenants()` | GET | `/integrations/msp/tenants` |
 | `create_tenant(data)` | POST | `/integrations/msp/tenants` |
+| `get_tenant(id)` | GET | `/integrations/msp/tenants/{id}` |
 | `update_tenant(id, data)` | PUT | `/integrations/msp/tenants/{id}` |
 | `unlink_tenant(id, owner)` | POST | `/integrations/msp/tenants/{id}/unlink` |
 | `verify_domain(id)` | POST | `/integrations/msp/tenants/{id}/dns` |
@@ -480,9 +512,9 @@ tests/unit/cloud/
 | Phase | New Endpoints | New Resources | New Models | New Test Files |
 |-------|:---:|:---:|:---:|:---:|
 | Phase 1 (v1.2.0) | 12 | 0 | 2 | 5 |
-| Phase 2 (v1.3.0) | 25 | 6 | 14 | 6 |
-| Phase 3 (v1.4.0) | 62 | 13 | 18 | 8 |
-| **Total** | **99** | **19** | **34** | **19** |
+| Phase 2 (v1.3.0) | 25 | 5 (+Jobs on PeersResource) | 14 | 6 |
+| Phase 3 (v1.4.0) | 64 | 13 | 18 | 8 |
+| **Total** | **101** | **18+** | **34** | **19** |
 
 ## Backward Compatibility
 
