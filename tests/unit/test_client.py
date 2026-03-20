@@ -32,14 +32,13 @@ class TestAPIClient:
     def test_client_initialization_with_custom_settings(self):
         """Test client initialization with custom settings."""
         client = APIClient(
-            host="custom.netbird.com:8080",
+            host="http://custom.netbird.com:8080",
             api_token="test-token",
-            use_ssl=False,
             timeout=60.0,
             base_path="/custom-api",
         )
 
-        assert client.host == "custom.netbird.com:8080"
+        assert client.host == "http://custom.netbird.com:8080"
         assert client.base_url == "http://custom.netbird.com:8080/custom-api"
         assert client.timeout == 60.0
 

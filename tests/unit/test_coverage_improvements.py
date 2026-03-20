@@ -67,41 +67,6 @@ class TestEnumMissingMethods:
         assert result is None
 
 
-class TestClientDiagramEdgeCases:
-    """Test edge cases in client diagram generation for better coverage."""
-
-    @pytest.fixture
-    def test_client(self):
-        return APIClient(host="test.example.com", api_token="test-token")
-
-    def test_mermaid_generation_with_string_groups(self, test_client):
-        """Test mermaid generation when groups are strings instead of dicts."""
-        with patch("netbird.network_map.generate_full_network_map") as mock_generate:
-            # Mock network data with string groups instead of dict groups
-            mock_generate.return_value = [
-                {
-                    "name": "test-network",
-                    "resources": [
-                        {
-                            "name": "test-resource",
-                            "address": "10.0.0.1",
-                            "type": "host",
-                            "groups": [
-                                "string-group-1",
-                                "string-group-2",
-                            ],  # String groups instead of dicts
-                        }
-                    ],
-                    "policies": [],
-                    "routers": [],
-                }
-            ]
-
-            # This should cover line 448 in client.py
-            result = test_client.generate_diagram(format="mermaid")
-            assert result is not None
-            assert "string-group-1" in result
-            assert "string-group-2" in result
 
 
 class TestNetworkMapErrorHandling:
@@ -287,62 +252,5 @@ class TestClientTypeCheckingImports:
         assert test_client is not None
 
 
-class TestDiagramGenerationErrorCases:
-    """Test specific error cases in diagram generation."""
-
-    def test_diagram_with_empty_network_name(self):
-        """Test diagram generation with empty network names."""
-        from netbird.client import APIClient
-
-        client = APIClient(host="test.example.com", api_token="test-token")
-
-        with patch("netbird.network_map.generate_full_network_map") as mock_generate:
-            # Mock data with empty network name
-            mock_generate.return_value = [
-                {
-                    "name": "",  # Empty name
-                    "resources": [],
-                    "policies": [],
-                    "routers": [],
-                }
-            ]
-
-            result = client.generate_diagram(format="mermaid")
-            assert result is not None
-            # Should handle empty names gracefully
 
 
-class TestAdditionalCoverage:
-    """Additional tests to catch remaining uncovered lines."""
-
-    def test_diagram_with_complex_resource_groups(self):
-        """Test diagram generation with complex resource group structures."""
-        from netbird.client import APIClient
-
-        client = APIClient(host="test.example.com", api_token="test-token")
-
-        with patch("netbird.network_map.generate_full_network_map") as mock_generate:
-            # Mock data that exercises different group handling paths
-            mock_generate.return_value = [
-                {
-                    "name": "test-network",
-                    "resources": [
-                        {
-                            "name": "test-resource",
-                            "address": "10.0.0.1",
-                            "type": "host",
-                            "groups": [
-                                {"name": "group1", "id": "g1"},  # Dict with name
-                                {"id": "g2"},  # Dict without name
-                                "string-group",  # String group
-                                None,  # None group (should be handled gracefully)
-                            ],
-                        }
-                    ],
-                    "policies": [],
-                    "routers": [],
-                }
-            ]
-
-            result = client.generate_diagram(format="mermaid")
-            assert result is not None

@@ -44,7 +44,6 @@ class APIClient:
     Args:
         host: NetBird API host (e.g., 'api.netbird.io' or 'your-domain.com')
         api_token: API token for authentication
-        use_ssl: Whether to use HTTPS (default: True)
         timeout: Request timeout in seconds (default: 30)
         base_path: API base path (default: '/api')
 
@@ -64,21 +63,19 @@ class APIClient:
         self,
         host: str,
         api_token: str,
-        use_ssl: bool = True,
         timeout: float = 30.0,
         base_path: str = "/api",
     ) -> None:
         self.host = host.strip().rstrip("/")
         self.base_path = base_path.strip()
-        self.use_ssl = use_ssl
         self.timeout = timeout
 
         # Build base URL - if host already has protocol, use as-is
         if self.host.startswith(("http://", "https://")):
             self.base_url = f"{self.host}{self.base_path}"
         else:
-            scheme = "https" if use_ssl else "http"
-            self.base_url = f"{scheme}://{self.host}{self.base_path}"
+            # Default to HTTPS for security
+            self.base_url = f"https://{self.host}{self.base_path}"
 
         # Set up authentication
         self.auth = TokenAuth(api_token)

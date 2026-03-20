@@ -16,8 +16,8 @@ This client follows the same upstream schemas as the official NetBird REST APIs,
 - ✅ **Upstream Schema Compliance** - Follows official NetBird REST API schemas exactly
 - ✅ **Dictionary Responses** - Clean dictionary responses for easy data access
 - ✅ **Type Safety** - Pydantic models for input validation, dictionaries for responses
-- ✅ **Network Visualization** - Generate network topology diagrams in multiple formats
-- ✅ **Modern Python** - Built for Python 3.8+ with async support ready
+- ✅ **Network Visualization** - Built-in diagram generation (Mermaid, Graphviz, Python Diagrams)
+- ✅ **Modern Python** - Built for Python 3.9+ (supports 3.9-3.13) with async support ready
 - ✅ **Comprehensive Error Handling** - Detailed exception classes for different error types
 - ✅ **Exceptional Test Coverage** - 98.01% total coverage with comprehensive unit and integration tests
 - ✅ **Extensive Documentation** - Complete API reference and examples
@@ -76,30 +76,24 @@ print(f"Created group: {group['name']}")
 
 ## Authentication
 
-NetBird uses token-based authentication. You can use either a personal access token or a service user token:
+NetBird uses token-based authentication with API access tokens:
 
-### Personal Access Token (Recommended)
 ```python
 client = APIClient(
     host="your-netbird-host.com",  # e.g., "api.netbird.io" for cloud
-    api_token="your-personal-access-token"
+    api_token="your-api-token"
 )
 ```
 
-### Service User Token
-```python
-client = APIClient(
-    host="your-netbird-host.com",  # e.g., "api.netbird.io" for cloud
-    api_token="your-service-user-token"
-)
-```
+You can get your API token from:
+- **NetBird Cloud**: Dashboard → Settings → API Tokens
+- **Self-hosted**: Your NetBird management interface
 
 ### Self-Hosted NetBird
 ```python
 client = APIClient(
     host="netbird.yourcompany.com:33073",
-    api_token="your-token",
-    use_ssl=True  # or False for HTTP
+    api_token="your-token"
 )
 ```
 
@@ -197,7 +191,8 @@ The NetBird Python client includes powerful network visualization capabilities t
 ### Generate Network Maps
 
 ```python
-from netbird import APIClient, generate_full_network_map
+from netbird import APIClient
+from netbird.network_map import generate_full_network_map
 
 # Initialize client
 client = APIClient(host="your-netbird-host.com", api_token="your-token")
@@ -217,7 +212,7 @@ for network in networks:
 ### Topology Visualization
 
 ```python
-from netbird import get_network_topology_data
+from netbird.network_map import get_network_topology_data
 
 # Get optimized topology data for visualization
 topology = get_network_topology_data(client, optimize_connections=True)
@@ -229,23 +224,32 @@ print(f"Found {len(topology['direct_connections'])} direct connections")
 
 ### Diagram Generation
 
-Use the included unified diagram generator to create visual network topology diagrams:
+Generate visual network topology diagrams directly from the client:
 
-```bash
-# Set your API token
-export NETBIRD_API_TOKEN="your-token-here"
+```python
+from netbird import APIClient
+
+# Initialize client
+client = APIClient(host="your-netbird-host.com", api_token="your-token")
 
 # Generate Mermaid diagram (default, GitHub/GitLab compatible)
-python unified-network-diagram.py
+mermaid_content = client.generate_diagram(format="mermaid")
+print(mermaid_content)
 
 # Generate Graphviz diagram (PNG, SVG, PDF)
-python unified-network-diagram.py --format graphviz
+client.generate_diagram(format="graphviz", output_file="my_network")
 
 # Generate Python Diagrams (PNG)
-python unified-network-diagram.py --format diagrams
+client.generate_diagram(format="diagrams", output_file="network_topology")
 
-# Custom output filename
-python unified-network-diagram.py --format mermaid -o my_network_topology
+# Customize what to include
+client.generate_diagram(
+    format="mermaid",
+    include_routers=True,
+    include_policies=True, 
+    include_resources=True,
+    output_file="complete_network"
+)
 ```
 
 ### Supported Diagram Formats
@@ -310,7 +314,6 @@ except NetBirdAPIError as e:
 client = APIClient(
     host="your-netbird-host.com",  # Your NetBird API host
     api_token="your-token",
-    use_ssl=True,           # Use HTTPS (default: True)
     timeout=30.0,           # Request timeout in seconds (default: 30)
     base_path="/api"        # API base path (default: "/api")
 )
