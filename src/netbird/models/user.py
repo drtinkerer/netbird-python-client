@@ -83,3 +83,26 @@ class User(BaseModel):
         None, description="Whether this is the current user"
     )
     last_login: Optional[str] = Field(None, description="Last login timestamp")
+
+
+class UserInviteCreate(BaseModel):
+    """Model for creating a user invite."""
+
+    email: str = Field(..., description="Invitee email address")
+    name: str = Field(..., description="Invitee display name")
+    role: UserRole = Field(..., description="Role to assign")
+    auto_groups: List[ResourceId] = Field(..., description="Auto-assigned group IDs")
+    expires_in: Optional[int] = Field(None, description="Expiration in seconds")
+
+
+class UserInvite(BaseModel):
+    """User invite model."""
+
+    id: ResourceId = Field(..., description="Unique invite identifier")
+    email: str = Field(..., description="Invitee email address")
+    name: str = Field(..., description="Invitee display name")
+    role: UserRole = Field(..., description="Assigned role")
+    expires_at: Optional[str] = Field(None, description="Expiration timestamp")
+    token: Optional[str] = Field(None, description="Invite token")
+    invited_by: Optional[str] = Field(None, description="Inviter identifier")
+    valid: Optional[bool] = Field(None, description="Whether invite is still valid")

@@ -98,3 +98,82 @@ class EventsResource(BaseResource):
 
         data = self.client.get("events/network-traffic", params=params or None)
         return self._parse_list_response(data)
+
+    def get_proxy_events(
+        self,
+        page: Optional[int] = None,
+        page_size: Optional[int] = None,
+        sort_by: Optional[str] = None,
+        sort_order: Optional[str] = None,
+        search: Optional[str] = None,
+        source_ip: Optional[str] = None,
+        host: Optional[str] = None,
+        path: Optional[str] = None,
+        user_id: Optional[str] = None,
+        user_email: Optional[str] = None,
+        user_name: Optional[str] = None,
+        method: Optional[str] = None,
+        status: Optional[str] = None,
+        status_code: Optional[int] = None,
+        start_date: Optional[str] = None,
+        end_date: Optional[str] = None,
+    ) -> List[Dict[str, Any]]:
+        """Retrieve reverse proxy access log events.
+
+        Args:
+            page: Page number for pagination
+            page_size: Number of events per page
+            sort_by: Sort field
+            sort_order: Sort direction
+            search: Search term
+            source_ip: Filter by source IP
+            host: Filter by host
+            path: Filter by path
+            user_id: Filter by user ID
+            user_email: Filter by user email
+            user_name: Filter by user name
+            method: Filter by HTTP method
+            status: Filter by status
+            status_code: Filter by status code
+            start_date: Start date filter (RFC3339)
+            end_date: End date filter (RFC3339)
+
+        Returns:
+            List of proxy event dictionaries
+        """
+        params: Dict[str, Any] = {}
+        if page is not None:
+            params["page"] = page
+        if page_size is not None:
+            params["page_size"] = page_size
+        if sort_by:
+            params["sort_by"] = sort_by
+        if sort_order:
+            params["sort_order"] = sort_order
+        if search:
+            params["search"] = search
+        if source_ip:
+            params["source_ip"] = source_ip
+        if host:
+            params["host"] = host
+        if path:
+            params["path"] = path
+        if user_id:
+            params["user_id"] = user_id
+        if user_email:
+            params["user_email"] = user_email
+        if user_name:
+            params["user_name"] = user_name
+        if method:
+            params["method"] = method
+        if status:
+            params["status"] = status
+        if status_code is not None:
+            params["status_code"] = status_code
+        if start_date:
+            params["start_date"] = start_date
+        if end_date:
+            params["end_date"] = end_date
+
+        data = self.client.get("events/proxy", params=params or None)
+        return self._parse_list_response(data)

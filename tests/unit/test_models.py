@@ -422,17 +422,16 @@ class TestEventModels:
 class TestModelValidation:
     """Test model validation edge cases."""
 
-    def test_extra_fields_forbidden_in_input_models(self):
-        """Test that extra fields are rejected in input validation."""
-        # This test is kept for input validation of Create/Update models
-        with pytest.raises(ValidationError):
-            User(
-                id="user-123",
-                email="test@example.com",
-                role="user",
-                status="active",
-                extra_field="not-allowed",  # This should cause validation error
-            )
+    def test_extra_fields_allowed_in_models(self):
+        """Test that extra fields are accepted (extra='allow' for API forward-compat)."""
+        user = User(
+            id="user-123",
+            email="test@example.com",
+            role="user",
+            status="active",
+            extra_field="allowed",
+        )
+        assert user.model_extra == {"extra_field": "allowed"}
 
     def test_required_fields_missing_in_input_models(self):
         """Test that missing required fields raise errors in input validation."""

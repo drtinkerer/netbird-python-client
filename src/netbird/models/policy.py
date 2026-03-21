@@ -39,6 +39,18 @@ class PolicyRule(BaseModel):
         None, description="Destination group objects"
     )
     bidirectional: bool = Field(False, description="Bidirectional rule")
+    port_ranges: Optional[List[Dict[str, Any]]] = Field(
+        None, description="Port ranges"
+    )
+    authorized_groups: Optional[Dict[str, Any]] = Field(
+        None, description="Authorized groups"
+    )
+    source_resource: Optional[Dict[str, Any]] = Field(
+        None, alias="sourceResource", description="Source resource"
+    )
+    destination_resource: Optional[Dict[str, Any]] = Field(
+        None, alias="destinationResource", description="Destination resource"
+    )
 
 
 class PolicyCreate(BaseModel):

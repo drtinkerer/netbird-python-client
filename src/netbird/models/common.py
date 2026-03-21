@@ -13,7 +13,7 @@ class BaseModel(PydanticBaseModel):
     """Base model for all NetBird API models."""
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
         validate_assignment=True,
         use_enum_values=True,
         populate_by_name=True,

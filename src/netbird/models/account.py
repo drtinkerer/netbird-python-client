@@ -2,7 +2,7 @@
 Account models for NetBird API.
 """
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic import Field
 
@@ -50,6 +50,33 @@ class AccountSettings(BaseModel):
         False, description="Enable network traffic logging"
     )
     lazy_connection_enabled: bool = Field(False, description="Enable lazy connection")
+    peer_inactivity_expiration: Optional[int] = Field(
+        None, description="Peer inactivity expiration in seconds"
+    )
+    routing_peer_dns_resolution_enabled: Optional[bool] = Field(
+        None, description="Enable routing peer DNS resolution"
+    )
+    network_range: Optional[str] = Field(None, description="Network range")
+    peer_expose_enabled: Optional[bool] = Field(
+        None, description="Enable peer expose"
+    )
+    peer_expose_groups: Optional[List[str]] = Field(
+        None, description="Peer expose groups"
+    )
+    auto_update_version: Optional[str] = Field(
+        None, description="Auto update version"
+    )
+    embedded_idp_enabled: Optional[bool] = Field(
+        None, description="Enable embedded IDP"
+    )
+    local_auth_disabled: Optional[bool] = Field(
+        None, description="Disable local auth"
+    )
+    extra_settings: Optional[Dict[str, Any]] = Field(
+        None,
+        alias="extra",
+        description="Extra settings (peer_approval, user_approval, traffic_logs, packet_counter)",
+    )
 
 
 class Account(BaseModel):
@@ -70,3 +97,6 @@ class Account(BaseModel):
     created_at: Optional[str] = Field(None, description="Account creation timestamp")
     created_by: Optional[str] = Field(None, description="User who created the account")
     settings: Optional[Dict[str, Any]] = Field(None, description="Account settings")
+    onboarding: Optional[Dict[str, Any]] = Field(
+        None, description="Onboarding status"
+    )

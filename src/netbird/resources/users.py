@@ -2,9 +2,9 @@
 Users resource handler for NetBird API.
 """
 
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
-from ..models import UserCreate, UserUpdate
+from ..models import UserCreate, UserInviteCreate, UserUpdate
 from .base import BaseResource
 
 
@@ -117,4 +117,117 @@ class UsersResource(BaseResource):
             >>> print(f"Logged in as: {current_user['name']}")
         """
         data = self.client.get("users/current")
+        return self._parse_response(data)
+
+    def approve(self, user_id: str) -> Dict[str, Any]:
+        """Approve a pending user.
+
+        Args:
+            user_id: Unique user identifier
+
+        Returns:
+            Approved user dictionary
+        """
+        data = self.client.post(f"users/{user_id}/approve")
+        return self._parse_response(data)
+
+    def reject(self, user_id: str) -> None:
+        """Reject a pending user.
+
+        Args:
+            user_id: Unique user identifier
+        """
+        self.client.delete(f"users/{user_id}/reject")
+
+    def change_password(
+        self, user_id: str, old_password: str, new_password: str
+    ) -> None:
+        """Change a user's password.
+
+        Args:
+            user_id: Unique user identifier
+            old_password: Current password
+            new_password: New password
+        """
+        self.client.put(
+            f"users/{user_id}/password",
+            data={"old_password": old_password, "new_password": new_password},
+        )
+
+    def list_invites(self) -> List[Dict[str, Any]]:
+        """List all user invites.
+
+        Returns:
+            List of invite dictionaries
+        """
+        data = self.client.get("users/invites")
+        return self._parse_list_response(data)
+
+    def create_invite(self, invite_data: UserInviteCreate) -> Dict[str, Any]:
+        """Create a user invite.
+
+        Args:
+            invite_data: Invite creation data
+
+        Returns:
+            Created invite dictionary with token
+        """
+        data = self.client.post(
+            "users/invites", data=invite_data.model_dump(exclude_unset=True)
+        )
+        return self._parse_response(data)
+
+    def delete_invite(self, invite_id: str) -> None:
+        """Delete a user invite.
+
+        Args:
+            invite_id: Unique invite identifier
+        """
+        self.client.delete(f"users/invites/{invite_id}")
+
+    def regenerate_invite(
+        self, invite_id: str, expires_in: Optional[int] = None
+    ) -> Dict[str, Any]:
+        """Regenerate a user invite token.
+
+        Args:
+            invite_id: Unique invite identifier
+            expires_in: Optional new expiration in seconds
+
+        Returns:
+            Regenerated invite dictionary with new token
+        """
+        payload = {}
+        if expires_in is not None:
+            payload["expires_in"] = expires_in
+        data = self.client.post(
+            f"users/invites/{invite_id}/regenerate", data=payload or None
+        )
+        return self._parse_response(data)
+
+    def get_invite_info(self, token: str) -> Dict[str, Any]:
+        """Get public invite information by token.
+
+        Args:
+            token: Invite token
+
+        Returns:
+            Public invite details
+        """
+        data = self.client.get(f"users/invites/{token}")
+        return self._parse_response(data)
+
+    def accept_invite(self, token: str, password: str) -> Dict[str, Any]:
+        """Accept a user invite.
+
+        Args:
+            token: Invite token
+            password: Password for the new account
+
+        Returns:
+            Acceptance confirmation
+        """
+        data = self.client.post(
+            f"users/invites/{token}/accept", data={"password": password}
+        )
         return self._parse_response(data)

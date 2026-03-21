@@ -13,17 +13,23 @@ from httpx import Response
 from .auth import TokenAuth
 
 if TYPE_CHECKING:
+    from .cloud import CloudResources
     from .resources.accounts import AccountsResource
-    from .resources.users import UsersResource
-    from .resources.tokens import TokensResource
-    from .resources.peers import PeersResource
-    from .resources.setup_keys import SetupKeysResource
-    from .resources.groups import GroupsResource
-    from .resources.networks import NetworksResource
-    from .resources.policies import PoliciesResource
-    from .resources.routes import RoutesResource
     from .resources.dns import DNSResource
+    from .resources.dns_zones import DNSZonesResource
     from .resources.events import EventsResource
+    from .resources.geo_locations import GeoLocationsResource
+    from .resources.groups import GroupsResource
+    from .resources.identity_providers import IdentityProvidersResource
+    from .resources.instance import InstanceResource
+    from .resources.networks import NetworksResource
+    from .resources.peers import PeersResource
+    from .resources.policies import PoliciesResource
+    from .resources.posture_checks import PostureChecksResource
+    from .resources.routes import RoutesResource
+    from .resources.setup_keys import SetupKeysResource
+    from .resources.tokens import TokensResource
+    from .resources.users import UsersResource
 
 from .exceptions import (
     NetBirdAPIError,
@@ -101,7 +107,13 @@ class APIClient:
         self._policies: Optional["PoliciesResource"] = None
         self._routes: Optional["RoutesResource"] = None
         self._dns: Optional["DNSResource"] = None
+        self._dns_zones: Optional["DNSZonesResource"] = None
         self._events: Optional["EventsResource"] = None
+        self._posture_checks: Optional["PostureChecksResource"] = None
+        self._geo_locations: Optional["GeoLocationsResource"] = None
+        self._identity_providers: Optional["IdentityProvidersResource"] = None
+        self._instance: Optional["InstanceResource"] = None
+        self._cloud: Optional["CloudResources"] = None
 
     @property
     def accounts(self) -> "AccountsResource":
@@ -201,6 +213,60 @@ class APIClient:
 
             self._events = EventsResource(self)
         return self._events
+
+    @property
+    def dns_zones(self) -> "DNSZonesResource":
+        """Access to DNS zones API endpoints."""
+        if self._dns_zones is None:
+            from .resources.dns_zones import DNSZonesResource
+
+            self._dns_zones = DNSZonesResource(self)
+        return self._dns_zones
+
+    @property
+    def posture_checks(self) -> "PostureChecksResource":
+        """Access to posture checks API endpoints."""
+        if self._posture_checks is None:
+            from .resources.posture_checks import PostureChecksResource
+
+            self._posture_checks = PostureChecksResource(self)
+        return self._posture_checks
+
+    @property
+    def geo_locations(self) -> "GeoLocationsResource":
+        """Access to geo locations API endpoints."""
+        if self._geo_locations is None:
+            from .resources.geo_locations import GeoLocationsResource
+
+            self._geo_locations = GeoLocationsResource(self)
+        return self._geo_locations
+
+    @property
+    def identity_providers(self) -> "IdentityProvidersResource":
+        """Access to identity providers API endpoints."""
+        if self._identity_providers is None:
+            from .resources.identity_providers import IdentityProvidersResource
+
+            self._identity_providers = IdentityProvidersResource(self)
+        return self._identity_providers
+
+    @property
+    def instance(self) -> "InstanceResource":
+        """Access to instance API endpoints."""
+        if self._instance is None:
+            from .resources.instance import InstanceResource
+
+            self._instance = InstanceResource(self)
+        return self._instance
+
+    @property
+    def cloud(self) -> "CloudResources":
+        """Access to cloud-only API endpoints."""
+        if self._cloud is None:
+            from .cloud import CloudResources
+
+            self._cloud = CloudResources(self)
+        return self._cloud
 
     def _build_url(self, path: str) -> str:
         """Build full URL from path."""

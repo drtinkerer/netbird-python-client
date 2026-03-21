@@ -2,6 +2,7 @@
 Routes resource handler for NetBird API.
 """
 
+import warnings
 from typing import Any, Dict, List
 
 from ..models import RouteCreate, RouteUpdate
@@ -26,6 +27,11 @@ class RoutesResource(BaseResource):
             >>> for route in routes:
             ...     print(f"Route: {route['network']} (Enabled: {route['enabled']})")
         """
+        warnings.warn(
+            "Routes are deprecated by NetBird. Use Networks instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         data = self.client.get("routes")
         return self._parse_list_response(data)
 
@@ -48,6 +54,11 @@ class RoutesResource(BaseResource):
             ... )
             >>> route = client.routes.create(route_data)
         """
+        warnings.warn(
+            "Routes are deprecated by NetBird. Use Networks instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         data = self.client.post(
             "routes", data=route_data.model_dump(exclude_unset=True)
         )
@@ -66,6 +77,11 @@ class RoutesResource(BaseResource):
             >>> route = client.routes.get("route-123")
             >>> print(f"Route: {route['network']}")
         """
+        warnings.warn(
+            "Routes are deprecated by NetBird. Use Networks instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         data = self.client.get(f"routes/{route_id}")
         return self._parse_response(data)
 
@@ -86,6 +102,11 @@ class RoutesResource(BaseResource):
             ... )
             >>> route = client.routes.update("route-123", route_data)
         """
+        warnings.warn(
+            "Routes are deprecated by NetBird. Use Networks instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         data = self.client.put(
             f"routes/{route_id}",
             data=route_data.model_dump(exclude_unset=True),
@@ -101,4 +122,9 @@ class RoutesResource(BaseResource):
         Example:
             >>> client.routes.delete("route-123")
         """
+        warnings.warn(
+            "Routes are deprecated by NetBird. Use Networks instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         self.client.delete(f"routes/{route_id}")

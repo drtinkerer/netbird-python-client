@@ -110,3 +110,58 @@ class PeersResource(BaseResource):
         """
         data = self.client.get(f"peers/{peer_id}/accessible-peers")
         return self._parse_list_response(data)
+
+    def create_temporary_access(
+        self, peer_id: str, data: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """Create a temporary access peer.
+
+        Args:
+            peer_id: Unique peer identifier
+            data: Temporary access data (name, wg_pub_key, rules)
+
+        Returns:
+            Created temporary access peer dictionary
+        """
+        result = self.client.post(f"peers/{peer_id}/temporary-access", data=data)
+        return self._parse_response(result)
+
+    # Jobs (scoped under peers)
+
+    def list_jobs(self, peer_id: str) -> List[Dict[str, Any]]:
+        """List all jobs for a peer.
+
+        Args:
+            peer_id: Unique peer identifier
+
+        Returns:
+            List of job dictionaries
+        """
+        data = self.client.get(f"peers/{peer_id}/jobs")
+        return self._parse_list_response(data)
+
+    def create_job(self, peer_id: str, job_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Create a job for a peer.
+
+        Args:
+            peer_id: Unique peer identifier
+            job_data: Job creation data (workload)
+
+        Returns:
+            Created job dictionary
+        """
+        data = self.client.post(f"peers/{peer_id}/jobs", data=job_data)
+        return self._parse_response(data)
+
+    def get_job(self, peer_id: str, job_id: str) -> Dict[str, Any]:
+        """Retrieve a specific job for a peer.
+
+        Args:
+            peer_id: Unique peer identifier
+            job_id: Unique job identifier
+
+        Returns:
+            Job dictionary
+        """
+        data = self.client.get(f"peers/{peer_id}/jobs/{job_id}")
+        return self._parse_response(data)

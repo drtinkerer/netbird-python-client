@@ -241,3 +241,12 @@ class NetworksResource(BaseResource):
             router_id: Unique router identifier
         """
         self.client.delete(f"networks/{network_id}/routers/{router_id}")
+
+    def list_all_routers(self) -> List[Dict[str, Any]]:
+        """List all routers across all networks.
+
+        Returns:
+            List of network router dictionaries
+        """
+        data = self.client.get("networks/routers")
+        return self._parse_list_response(data)

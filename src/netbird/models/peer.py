@@ -31,6 +31,7 @@ class PeerUpdate(BaseModel):
     approval_required: Optional[bool] = Field(
         None, description="Approval required (cloud-only)"
     )
+    ip: Optional[str] = Field(None, description="Peer IP address")
 
 
 class Peer(BaseModel):

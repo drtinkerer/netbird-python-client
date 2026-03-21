@@ -7,7 +7,10 @@ Pydantic models for all NetBird API resources.
 from .account import Account, AccountSettings
 from .common import BaseModel, ResourceId, Timestamp
 from .dns import DNSNameserverGroup, DNSSettings
+from .dns_zone import DNSRecord, DNSRecordCreate, DNSRecordUpdate, DNSZone, DNSZoneCreate, DNSZoneUpdate
 from .event import AuditEvent, NetworkTrafficEvent
+from .identity_provider import IdentityProvider, IdentityProviderCreate, IdentityProviderUpdate
+from .job import Job, JobCreate
 from .group import Group, GroupCreate, GroupUpdate
 from .network import (
     Network,
@@ -18,10 +21,11 @@ from .network import (
 )
 from .peer import Peer, PeerUpdate
 from .policy import Policy, PolicyCreate, PolicyRule, PolicyUpdate
+from .posture_check import PostureCheck, PostureCheckCreate, PostureCheckUpdate
 from .route import Route, RouteCreate, RouteUpdate
 from .setup_key import SetupKey, SetupKeyCreate, SetupKeyUpdate
 from .token import Token, TokenCreate
-from .user import User, UserCreate, UserUpdate
+from .user import User, UserCreate, UserInvite, UserInviteCreate, UserUpdate
 
 __all__ = [
     # Common
@@ -34,6 +38,8 @@ __all__ = [
     # User
     "User",
     "UserCreate",
+    "UserInvite",
+    "UserInviteCreate",
     "UserUpdate",
     # Token
     "Token",
@@ -67,7 +73,25 @@ __all__ = [
     # DNS
     "DNSNameserverGroup",
     "DNSSettings",
+    # DNS Zones
+    "DNSZone",
+    "DNSZoneCreate",
+    "DNSZoneUpdate",
+    "DNSRecord",
+    "DNSRecordCreate",
+    "DNSRecordUpdate",
     # Events
     "AuditEvent",
     "NetworkTrafficEvent",
+    # Posture Checks
+    "PostureCheck",
+    "PostureCheckCreate",
+    "PostureCheckUpdate",
+    # Identity Providers
+    "IdentityProvider",
+    "IdentityProviderCreate",
+    "IdentityProviderUpdate",
+    # Jobs
+    "Job",
+    "JobCreate",
 ]
