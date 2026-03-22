@@ -8,6 +8,7 @@ import pytest
 
 from netbird import APIClient
 from netbird.auth import TokenAuth
+from netbird.cloud import CloudResources
 from netbird.exceptions import (
     NetBirdAPIError,
     NetBirdAuthenticationError,
@@ -16,6 +17,11 @@ from netbird.exceptions import (
     NetBirdServerError,
     NetBirdValidationError,
 )
+from netbird.resources.dns_zones import DNSZonesResource
+from netbird.resources.geo_locations import GeoLocationsResource
+from netbird.resources.identity_providers import IdentityProvidersResource
+from netbird.resources.instance import InstanceResource
+from netbird.resources.posture_checks import PostureChecksResource
 
 
 class TestAPIClient:
@@ -249,6 +255,158 @@ class TestAPIClient:
         # Accessing again should return the same instance (lazy loading)
         assert client.accounts is accounts_resource
         assert client.users is users_resource
+
+    @patch("netbird.client.httpx.Client.put")
+    def test_put_request(self, mock_put):
+        """Test PUT request functionality."""
+        client = APIClient(host="api.netbird.io", api_token="test-token")
+
+        mock_response = Mock()
+        mock_response.is_success = True
+        mock_response.json.return_value = {"id": "123", "name": "Updated"}
+        mock_response.content = b'{"id": "123", "name": "Updated"}'
+        mock_put.return_value = mock_response
+
+        result = client.put("users/123", data={"name": "Updated"})
+
+        assert result == {"id": "123", "name": "Updated"}
+        mock_put.assert_called_once_with(
+            "https://api.netbird.io/api/users/123",
+            json={"name": "Updated"},
+            params=None,
+        )
+
+    @patch("netbird.client.httpx.Client.delete")
+    def test_delete_request(self, mock_delete):
+        """Test DELETE request functionality."""
+        client = APIClient(host="api.netbird.io", api_token="test-token")
+
+        mock_response = Mock()
+        mock_response.is_success = True
+        mock_response.content = b'{"status": "deleted"}'
+        mock_response.json.return_value = {"status": "deleted"}
+        mock_delete.return_value = mock_response
+
+        result = client.delete("users/123")
+        assert result == {"status": "deleted"}
+        mock_delete.assert_called_once_with(
+            "https://api.netbird.io/api/users/123", params=None
+        )
+
+    def test_handle_response_empty_content(self):
+        """Test response handling with empty content."""
+        client = APIClient(host="api.netbird.io", api_token="test-token")
+
+        mock_response = Mock()
+        mock_response.is_success = True
+        mock_response.content = b""
+
+        result = client._handle_response(mock_response)
+        assert result == {}
+        mock_response.json.assert_not_called()
+
+    def test_handle_response_409_conflict(self):
+        """Test 409 Conflict maps to ValidationError."""
+        client = APIClient(host="api.netbird.io", api_token="test-token")
+
+        mock_response = Mock()
+        mock_response.is_success = False
+        mock_response.status_code = 409
+        mock_response.json.return_value = {"message": "Conflict"}
+        mock_response.content = b'{"message": "Conflict"}'
+
+        with pytest.raises(NetBirdValidationError) as exc_info:
+            client._handle_response(mock_response)
+        assert exc_info.value.status_code == 409
+
+    def test_handle_response_422_unprocessable(self):
+        """Test 422 Unprocessable Entity maps to ValidationError."""
+        client = APIClient(host="api.netbird.io", api_token="test-token")
+
+        mock_response = Mock()
+        mock_response.is_success = False
+        mock_response.status_code = 422
+        mock_response.json.return_value = {"message": "Unprocessable"}
+        mock_response.content = b'{"message": "Unprocessable"}'
+
+        with pytest.raises(NetBirdValidationError) as exc_info:
+            client._handle_response(mock_response)
+        assert exc_info.value.status_code == 422
+
+    def test_handle_response_rate_limit_no_retry_after(self):
+        """Test 429 without Retry-After header."""
+        client = APIClient(host="api.netbird.io", api_token="test-token")
+
+        mock_response = Mock()
+        mock_response.is_success = False
+        mock_response.status_code = 429
+        mock_response.json.return_value = {"message": "Rate limited"}
+        mock_response.content = b'{"message": "Rate limited"}'
+        mock_response.headers = {}
+
+        with pytest.raises(NetBirdRateLimitError) as exc_info:
+            client._handle_response(mock_response)
+        assert exc_info.value.retry_after is None
+
+    def test_handle_response_error_fallback_message(self):
+        """Test error message fallback to 'error' key then status code."""
+        client = APIClient(host="api.netbird.io", api_token="test-token")
+
+        mock_response = Mock()
+        mock_response.is_success = False
+        mock_response.status_code = 503
+        mock_response.json.return_value = {"error": "Service unavailable"}
+        mock_response.content = b'{"error": "Service unavailable"}'
+
+        with pytest.raises(NetBirdServerError) as exc_info:
+            client._handle_response(mock_response)
+        assert "Service unavailable" in str(exc_info.value)
+
+    def test_handle_response_no_message_fallback(self):
+        """Test error falls back to HTTP status code when no message/error key."""
+        client = APIClient(host="api.netbird.io", api_token="test-token")
+
+        mock_response = Mock()
+        mock_response.is_success = False
+        mock_response.status_code = 502
+        mock_response.json.return_value = {}
+        mock_response.content = b'{}'
+
+        with pytest.raises(NetBirdServerError) as exc_info:
+            client._handle_response(mock_response)
+        assert "HTTP 502" in str(exc_info.value)
+
+    def test_new_resource_properties(self):
+        """Test Phase 2 resource properties are accessible and lazy-loaded."""
+        client = APIClient(host="api.netbird.io", api_token="test-token")
+
+        dns_zones = client.dns_zones
+        assert isinstance(dns_zones, DNSZonesResource)
+        assert client.dns_zones is dns_zones  # same instance
+
+        posture_checks = client.posture_checks
+        assert isinstance(posture_checks, PostureChecksResource)
+        assert client.posture_checks is posture_checks
+
+        geo_locations = client.geo_locations
+        assert isinstance(geo_locations, GeoLocationsResource)
+        assert client.geo_locations is geo_locations
+
+        identity_providers = client.identity_providers
+        assert isinstance(identity_providers, IdentityProvidersResource)
+        assert client.identity_providers is identity_providers
+
+        instance = client.instance
+        assert isinstance(instance, InstanceResource)
+        assert client.instance is instance
+
+    def test_cloud_property(self):
+        """Test cloud namespace property is accessible and lazy-loaded."""
+        client = APIClient(host="api.netbird.io", api_token="test-token")
+
+        cloud = client.cloud
+        assert isinstance(cloud, CloudResources)
+        assert client.cloud is cloud  # same instance
 
     def test_repr(self):
         """Test string representation of client."""
