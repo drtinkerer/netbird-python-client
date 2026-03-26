@@ -1,5 +1,7 @@
 """Tests for CloudResources and EDRResources namespace lazy-loading."""
 
+import warnings
+
 import pytest
 from unittest.mock import MagicMock
 
@@ -44,7 +46,10 @@ class TestEDRResources:
 class TestCloudResources:
     def setup_method(self):
         self.mock_client = MagicMock()
-        self.cloud = CloudResources(self.mock_client)
+        self.mock_client.host = "api.netbird.io"
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            self.cloud = CloudResources(self.mock_client)
 
     @pytest.mark.parametrize(
         "attr,expected_type",
@@ -63,3 +68,50 @@ class TestCloudResources:
         resource = getattr(self.cloud, attr)
         assert isinstance(resource, expected_type)
         assert getattr(self.cloud, attr) is resource  # cached
+
+
+@pytest.mark.unit
+class TestCloudHostWarning:
+    def test_no_warning_for_cloud_host(self):
+        mock_client = MagicMock()
+        mock_client.host = "api.netbird.io"
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            CloudResources(mock_client)
+            assert len(w) == 0
+
+    def test_no_warning_for_app_host(self):
+        mock_client = MagicMock()
+        mock_client.host = "app.netbird.io"
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            CloudResources(mock_client)
+            assert len(w) == 0
+
+    def test_warning_for_self_hosted(self):
+        mock_client = MagicMock()
+        mock_client.host = "netbird.mycompany.com"
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            CloudResources(mock_client)
+            assert len(w) == 1
+            assert issubclass(w[0].category, UserWarning)
+            assert "Cloud endpoints" in str(w[0].message)
+            assert "self-hosted" in str(w[0].message)
+
+    def test_warning_for_self_hosted_with_https(self):
+        mock_client = MagicMock()
+        mock_client.host = "https://netbird.internal:33073"
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            CloudResources(mock_client)
+            assert len(w) == 1
+
+    def test_still_works_after_warning(self):
+        """Cloud resources should still be usable after warning."""
+        mock_client = MagicMock()
+        mock_client.host = "netbird.mycompany.com"
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            cloud = CloudResources(mock_client)
+        assert isinstance(cloud.services, ServicesResource)

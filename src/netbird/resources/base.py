@@ -31,6 +31,8 @@ class BaseResource:
 
     def _parse_list_response(self, data: Any) -> List[Dict[str, Any]]:
         """Parse API response data and return as list of dictionaries (boto3 style)."""
+        if data is None:
+            return []
         if not isinstance(data, list):
             raise ValueError("Expected list response")
         return data

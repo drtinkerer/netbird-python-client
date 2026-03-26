@@ -13,13 +13,13 @@ class EventStreamingResource(BaseResource):
 
     def list(self) -> List[Dict[str, Any]]:
         """List all event streaming integrations."""
-        data = self.client.get("event-streaming")
+        data = self.client.get("integrations/event-streaming")
         return self._parse_list_response(data)
 
     def create(self, integration_data: EventStreamingCreate) -> Dict[str, Any]:
         """Create an event streaming integration."""
         data = self.client.post(
-            "event-streaming",
+            "integrations/event-streaming",
             data=integration_data.model_dump(exclude_unset=True),
         )
         return self._parse_response(data)

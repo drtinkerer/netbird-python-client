@@ -4,7 +4,10 @@ Cloud-only resources namespace for NetBird API.
 Provides access to cloud-only features via client.cloud.
 """
 
+import warnings
 from typing import TYPE_CHECKING, Optional
+
+CLOUD_HOSTS = {"api.netbird.io", "app.netbird.io"}
 
 if TYPE_CHECKING:
     from .client import APIClient
@@ -87,6 +90,15 @@ class CloudResources:
 
     def __init__(self, client: "APIClient") -> None:
         self.client = client
+        host = getattr(client, "host", "")
+        host = host.removeprefix("https://").removeprefix("http://")
+        if host and host not in CLOUD_HOSTS:
+            warnings.warn(
+                f"Cloud endpoints are only available on NetBird Cloud "
+                f"(api.netbird.io). Your host '{client.host}' appears to be "
+                f"self-hosted. Cloud API calls may return 404 errors.",
+                stacklevel=2,
+            )
         self._services: Optional["ServicesResource"] = None
         self._ingress: Optional["IngressResource"] = None
         self._edr: Optional["EDRResources"] = None
