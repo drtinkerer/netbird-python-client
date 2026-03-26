@@ -15,8 +15,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 project = "NetBird Python Client"
 copyright = "2025, Bhushan Rane"
 author = "Bhushan Rane"
-release = "1.1.0"
-version = "1.1.0"
+release = "1.2.0"
+version = "1.2.0"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -46,9 +46,9 @@ html_static_path = ["_static"]
 
 # Furo theme options
 html_theme_options = {
-    "sidebar_hide_name": True,
-    "light_logo": "logo-light.png",
-    "dark_logo": "logo-dark.png",
+    "sidebar_hide_name": False,
+    "navigation_with_keys": True,
+    "top_of_page_button": "edit",
     "source_repository": "https://github.com/drtinkerer/netbird-python-client/",
     "source_branch": "main",
     "source_directory": "docs/",

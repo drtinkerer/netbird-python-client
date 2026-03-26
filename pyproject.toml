@@ -61,7 +61,7 @@ docs = [
 [project.urls]
 Homepage = "https://github.com/drtinkerer/netbird-python-client"
 Repository = "https://github.com/drtinkerer/netbird-python-client"
-Documentation = "https://github.com/drtinkerer/netbird-python-client"
+Documentation = "https://drtinkerer.github.io/netbird-python-client/"
 Issues = "https://github.com/drtinkerer/netbird-python-client/issues"
 Changelog = "https://github.com/drtinkerer/netbird-python-client/blob/main/CHANGELOG.md"
 

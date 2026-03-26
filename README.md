@@ -443,6 +443,7 @@ The demo notebook shows real usage examples for all API resources.
 
 ## Documentation
 
+- **[Full Documentation](https://drtinkerer.github.io/netbird-python-client/)** - Comprehensive Sphinx docs with API reference, user guides, and examples
 - **[Jupyter Demo](netbird_demo.ipynb)** - Interactive demonstration of all features
 - **[Integration Tests](tests/integration/)** - Real API usage examples
 - **[Unit Tests](tests/unit/)** - Complete test coverage examples
