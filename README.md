@@ -12,32 +12,57 @@ This client follows the same upstream schemas as the official NetBird REST APIs,
 
 ## Features
 
-- ✅ **Complete API Coverage** - All 11 NetBird API resources supported
+- ✅ **Full API Parity** - 30+ resources covering core, cloud, and EDR endpoints
+- ✅ **Cloud & Self-Hosted** - Works with NetBird Cloud and self-hosted instances
+- ✅ **Forward-Compatible** - `extra="allow"` on all models accepts future API fields gracefully
 - ✅ **Upstream Schema Compliance** - Follows official NetBird REST API schemas exactly
 - ✅ **Dictionary Responses** - Clean dictionary responses for easy data access
 - ✅ **Type Safety** - Pydantic models for input validation, dictionaries for responses
 - ✅ **Network Visualization** - Built-in diagram generation (Mermaid, Graphviz, Python Diagrams)
-- ✅ **Modern Python** - Built for Python 3.9+ (supports 3.9-3.13) with async support ready
+- ✅ **Modern Python** - Built for Python 3.9+ (supports 3.9-3.14)
 - ✅ **Comprehensive Error Handling** - Detailed exception classes for different error types
-- ✅ **Exceptional Test Coverage** - 98.01% total coverage with comprehensive unit and integration tests
-- ✅ **Extensive Documentation** - Complete API reference and examples
+- ✅ **88% Test Coverage** - 364 unit tests covering all resources
 - ✅ **PyPI Ready** - Easy installation and distribution
 
 ## Supported Resources
 
-| Resource | Description | Endpoints |
-|----------|-------------|-----------|
+### Core Resources
+
+| Resource | Description | Key Methods |
+|----------|-------------|-------------|
 | **Accounts** | Account management and settings | List, Update, Delete |
-| **Users** | User lifecycle management | CRUD + Invite, Current user |
+| **Users** | User lifecycle management | CRUD, Approve, Reject, Invites, Password |
 | **Tokens** | API token management | CRUD operations |
-| **Peers** | Network peer management | CRUD + Accessible peers |
+| **Peers** | Network peer management | CRUD, Temporary Access, Jobs |
 | **Setup Keys** | Peer setup key management | CRUD operations |
 | **Groups** | Peer group management | CRUD operations |
 | **Networks** | Network and resource management | CRUD + Resources/Routers |
 | **Policies** | Access control policies | CRUD operations |
-| **Routes** | Network routing configuration | CRUD operations |
-| **DNS** | DNS settings and nameservers | Nameserver groups + Settings |
-| **Events** | Audit and traffic events | Audit logs, Network traffic |
+| **Routes** | Network routing (deprecated) | CRUD (use Networks instead) |
+| **DNS** | DNS nameserver groups | CRUD + Settings |
+| **DNS Zones** | Custom DNS zones and records | Zone CRUD + Record CRUD |
+| **Events** | Audit and traffic events | Audit, Traffic, Proxy events |
+| **Posture Checks** | Device compliance verification | CRUD operations |
+| **Geo Locations** | Geographic data | Countries, Cities |
+| **Identity Providers** | OAuth2/OIDC providers | CRUD operations |
+| **Instance** | Instance management | Status, Version, Setup |
+
+### Cloud Resources (`client.cloud.*`)
+
+| Resource | Description | Key Methods |
+|----------|-------------|-------------|
+| **Services** | Reverse proxy services | CRUD + Domain management |
+| **Ingress** | Ingress port allocation | Port + Peer management |
+| **EDR Peers** | EDR peer bypass | Bypass, List, Revoke |
+| **EDR Falcon** | CrowdStrike Falcon | Get, Create, Update, Delete |
+| **EDR Huntress** | Huntress integration | Get, Create, Update, Delete |
+| **EDR Intune** | Microsoft Intune | Get, Create, Update, Delete |
+| **EDR SentinelOne** | SentinelOne integration | Get, Create, Update, Delete |
+| **MSP** | Multi-tenant management | Tenants CRUD + Users/Peers |
+| **Invoices** | Billing invoices | List, PDF, CSV |
+| **Usage** | Billing usage stats | Get usage |
+| **Event Streaming** | Event streaming integrations | CRUD operations |
+| **IDP/SCIM** | SCIM identity providers | CRUD + Token + Logs |
 
 ## Installation
 
@@ -52,7 +77,7 @@ from netbird import APIClient
 
 # Initialize the client
 client = APIClient(
-    host="your-netbird-host.com",  # e.g., "api.netbird.io" for cloud
+    host="api.netbird.io",  # or "netbird.yourcompany.com" for self-hosted
     api_token="your-api-token-here"
 )
 
@@ -72,6 +97,13 @@ group_data = GroupCreate(
 )
 group = client.groups.create(group_data)
 print(f"Created group: {group['name']}")
+
+# Access cloud-only resources (NetBird Cloud only)
+usage = client.cloud.usage.get()
+print(f"Active peers: {usage['active_peers']}")
+
+# EDR integrations
+falcon_config = client.cloud.edr.falcon.get()
 ```
 
 ## Authentication
@@ -325,7 +357,7 @@ client = APIClient(
 
 ```bash
 # Clone the repository
-git clone https://github.com/netbirdio/netbird-python-client.git
+git clone https://github.com/drtinkerer/netbird-python-client.git
 cd netbird-python-client
 
 # Install development dependencies
@@ -347,24 +379,20 @@ flake8 src/ tests/
 
 ### Testing & Coverage
 
-The NetBird Python client has comprehensive test coverage ensuring reliability and stability:
-
-#### Test Coverage Statistics
-- **Total Coverage**: 98.01% (1,181 of 1,205 lines covered)
-- **Unit Tests**: 230 tests covering all core functionality
-- **Integration Tests**: 20 tests covering real API interactions  
-- **Total Tests**: 251 tests (250 passing, 1 skipped)
+#### Test Statistics
+- **Total Tests**: 364 unit tests
+- **Coverage**: 88% (2,045 statements)
+- **All models and resources**: 100% coverage
 
 #### Coverage by Module
-| Module | Coverage | Status |
-|--------|----------|--------|
-| **Models** | 100% | ✅ Complete |
-| **Resources** | 100% | ✅ Complete |  
-| **Auth** | 100% | ✅ Complete |
-| **Exceptions** | 100% | ✅ Complete |
-| **Network Map** | 98% | ✅ Excellent |
-| **Base Resources** | 95% | ✅ Excellent |
-| **Client Core** | 95% | 🚀 Exceptional |
+| Module | Coverage |
+|--------|----------|
+| **Models** (core + cloud) | 100% |
+| **Resources** (core + cloud) | 100% |
+| **Auth / Exceptions** | 100% |
+| **Cloud Namespace** | 88% |
+| **Network Map** | 98% |
+| **Client Core** | 47% (diagram generation untested) |
 
 #### Running Tests
 
@@ -376,29 +404,9 @@ pytest
 pytest --cov=src/netbird --cov-report=html
 
 # Run specific test categories
-pytest tests/unit/          # Unit tests only
-pytest tests/integration/   # Integration tests only
-
-# Generate detailed coverage report
-pytest --cov=src/netbird --cov-report=html --cov-report=term-missing
+pytest tests/unit/              # Core resource tests
+pytest tests/unit/cloud/        # Cloud resource tests
 ```
-
-#### Test Categories
-
-**Unit Tests** (tests/unit/)
-- API client functionality
-- Model validation and serialization
-- Resource method behavior
-- Error handling scenarios
-- Network topology generation
-- Diagram creation (Mermaid, Graphviz, Python Diagrams)
-
-**Integration Tests** (tests/integration/)
-- Real API endpoint interactions
-- CRUD operations across all resources
-- Authentication and authorization
-- Error handling with live API responses
-- End-to-end workflows
 
 ## Response Format
 
