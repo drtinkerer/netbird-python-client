@@ -1,10 +1,11 @@
 """Tests for PostureChecksResource."""
 
-import pytest
 from unittest.mock import MagicMock
 
-from netbird.resources.posture_checks import PostureChecksResource
+import pytest
+
 from netbird.models.posture_check import PostureCheckCreate, PostureCheckUpdate
+from netbird.resources.posture_checks import PostureChecksResource
 
 
 @pytest.mark.unit

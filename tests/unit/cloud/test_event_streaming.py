@@ -2,14 +2,15 @@
 Unit tests for EventStreamingResource.
 """
 
-import pytest
 from unittest.mock import MagicMock
 
-from netbird.resources.cloud.event_streaming import EventStreamingResource
+import pytest
+
 from netbird.models.cloud.event_streaming import (
     EventStreamingCreate,
     EventStreamingUpdate,
 )
+from netbird.resources.cloud.event_streaming import EventStreamingResource
 
 
 @pytest.mark.unit

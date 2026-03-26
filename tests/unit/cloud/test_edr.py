@@ -2,20 +2,21 @@
 Unit tests for all EDR resources.
 """
 
-import pytest
 from unittest.mock import MagicMock
 
-from netbird.resources.cloud.edr_peers import EDRPeersResource
-from netbird.resources.cloud.edr_falcon import EDRFalconResource
-from netbird.resources.cloud.edr_huntress import EDRHuntressResource
-from netbird.resources.cloud.edr_intune import EDRIntuneResource
-from netbird.resources.cloud.edr_sentinelone import EDRSentinelOneResource
+import pytest
+
 from netbird.models.cloud.edr import (
     EDRFalconConfig,
     EDRHuntressConfig,
     EDRIntuneConfig,
     EDRSentinelOneConfig,
 )
+from netbird.resources.cloud.edr_falcon import EDRFalconResource
+from netbird.resources.cloud.edr_huntress import EDRHuntressResource
+from netbird.resources.cloud.edr_intune import EDRIntuneResource
+from netbird.resources.cloud.edr_peers import EDRPeersResource
+from netbird.resources.cloud.edr_sentinelone import EDRSentinelOneResource
 
 
 @pytest.mark.unit

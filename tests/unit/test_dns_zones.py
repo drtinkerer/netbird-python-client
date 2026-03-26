@@ -1,15 +1,16 @@
 """Tests for DNSZonesResource."""
 
-import pytest
 from unittest.mock import MagicMock
 
-from netbird.resources.dns_zones import DNSZonesResource
+import pytest
+
 from netbird.models.dns_zone import (
-    DNSZoneCreate,
-    DNSZoneUpdate,
     DNSRecordCreate,
     DNSRecordUpdate,
+    DNSZoneCreate,
+    DNSZoneUpdate,
 )
+from netbird.resources.dns_zones import DNSZonesResource
 
 
 @pytest.mark.unit

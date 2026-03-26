@@ -2,15 +2,16 @@
 Unit tests for ServicesResource.
 """
 
-import pytest
 from unittest.mock import MagicMock
 
-from netbird.resources.cloud.services import ServicesResource
+import pytest
+
 from netbird.models.cloud.service import (
     ServiceCreate,
     ServiceDomainCreate,
     ServiceUpdate,
 )
+from netbird.resources.cloud.services import ServicesResource
 
 
 @pytest.mark.unit

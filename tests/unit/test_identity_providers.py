@@ -1,13 +1,14 @@
 """Tests for IdentityProvidersResource."""
 
-import pytest
 from unittest.mock import MagicMock
 
-from netbird.resources.identity_providers import IdentityProvidersResource
+import pytest
+
 from netbird.models.identity_provider import (
     IdentityProviderCreate,
     IdentityProviderUpdate,
 )
+from netbird.resources.identity_providers import IdentityProvidersResource
 
 
 @pytest.mark.unit

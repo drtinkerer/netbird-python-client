@@ -2,11 +2,12 @@
 Unit tests for MSPResource.
 """
 
-import pytest
 from unittest.mock import MagicMock
 
-from netbird.resources.cloud.msp import MSPResource
+import pytest
+
 from netbird.models.cloud.msp import MSPTenantCreate, MSPTenantUpdate
+from netbird.resources.cloud.msp import MSPResource
 
 
 @pytest.mark.unit

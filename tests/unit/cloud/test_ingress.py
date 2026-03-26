@@ -2,16 +2,17 @@
 Unit tests for IngressResource.
 """
 
-import pytest
 from unittest.mock import MagicMock
 
-from netbird.resources.cloud.ingress import IngressResource
+import pytest
+
 from netbird.models.cloud.ingress import (
     IngressPeerCreate,
     IngressPeerUpdate,
     PortAllocationCreate,
     PortAllocationUpdate,
 )
+from netbird.resources.cloud.ingress import IngressResource
 
 
 @pytest.mark.unit

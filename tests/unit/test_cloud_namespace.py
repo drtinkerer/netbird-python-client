@@ -1,9 +1,9 @@
 """Tests for CloudResources and EDRResources namespace lazy-loading."""
 
 import warnings
+from unittest.mock import MagicMock
 
 import pytest
-from unittest.mock import MagicMock
 
 from netbird.cloud import CloudResources, EDRResources
 from netbird.resources.cloud.edr_falcon import EDRFalconResource

@@ -2,11 +2,11 @@
 
 import pytest
 
+from netbird.models.account import Account, AccountSettings
 from netbird.models.common import BaseModel
-from netbird.models.account import AccountSettings, Account
 from netbird.models.peer import PeerUpdate
 from netbird.models.policy import PolicyRule
-from netbird.models.user import UserInviteCreate, UserInvite
+from netbird.models.user import UserInvite, UserInviteCreate
 
 
 @pytest.mark.unit

@@ -16,13 +16,13 @@ from .dns_zone import (
     DNSZoneUpdate,
 )
 from .event import AuditEvent, NetworkTrafficEvent
+from .group import Group, GroupCreate, GroupUpdate
 from .identity_provider import (
     IdentityProvider,
     IdentityProviderCreate,
     IdentityProviderUpdate,
 )
 from .job import Job, JobCreate
-from .group import Group, GroupCreate, GroupUpdate
 from .network import (
     Network,
     NetworkCreate,

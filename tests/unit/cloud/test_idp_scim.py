@@ -2,11 +2,12 @@
 Unit tests for IDPScimResource.
 """
 
-import pytest
 from unittest.mock import MagicMock
 
-from netbird.resources.cloud.idp_scim import IDPScimResource
+import pytest
+
 from netbird.models.cloud.idp_scim import SCIMIntegrationCreate, SCIMIntegrationUpdate
+from netbird.resources.cloud.idp_scim import IDPScimResource
 
 
 @pytest.mark.unit

@@ -1,7 +1,8 @@
 """Tests for InstanceResource."""
 
-import pytest
 from unittest.mock import MagicMock
+
+import pytest
 
 from netbird.resources.instance import InstanceResource
 

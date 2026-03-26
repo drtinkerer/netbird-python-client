@@ -1,12 +1,12 @@
 """Tests for RoutesResource deprecation warnings."""
 
 import warnings
-
-import pytest
 from unittest.mock import MagicMock
 
-from netbird.resources.routes import RoutesResource
+import pytest
+
 from netbird.models.route import RouteCreate, RouteUpdate
+from netbird.resources.routes import RoutesResource
 
 
 @pytest.mark.unit

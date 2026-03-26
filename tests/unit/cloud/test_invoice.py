@@ -2,8 +2,9 @@
 Unit tests for InvoiceResource.
 """
 
-import pytest
 from unittest.mock import MagicMock
+
+import pytest
 
 from netbird.resources.cloud.invoice import InvoiceResource
 

@@ -1,7 +1,8 @@
 """Tests for GeoLocationsResource."""
 
-import pytest
 from unittest.mock import MagicMock
+
+import pytest
 
 from netbird.resources.geo_locations import GeoLocationsResource
 
