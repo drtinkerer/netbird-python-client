@@ -423,7 +423,7 @@ class TestModelValidation:
     """Test model validation edge cases."""
 
     def test_extra_fields_allowed_in_models(self):
-        """Test that extra fields are accepted (extra='allow' for API forward-compat)."""
+        """Extra fields accepted (extra='allow' for forward-compat)."""
         user = User(
             id="user-123",
             email="test@example.com",

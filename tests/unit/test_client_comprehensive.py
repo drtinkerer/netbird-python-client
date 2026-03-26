@@ -3,10 +3,6 @@ Comprehensive client.py coverage tests to improve coverage from 68% to 80%+.
 Focuses on testing the diagram generation methods and other uncovered paths.
 """
 
-import os
-import tempfile
-from unittest.mock import MagicMock, mock_open, patch
-
 import pytest
 
 from netbird.client import APIClient

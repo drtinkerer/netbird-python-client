@@ -7,7 +7,6 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from netbird.client import APIClient
 from netbird.models.common import NetworkType, PolicyAction, Protocol
 from netbird.network_map import generate_full_network_map, get_network_topology_data
 from netbird.resources.base import BaseResource

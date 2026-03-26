@@ -80,7 +80,7 @@ class TestEventsResource:
 
     def test_get_network_traffic_events_with_reporter_and_type(self):
         self.mock_client.get.return_value = []
-        result = self.resource.get_network_traffic_events(
+        self.resource.get_network_traffic_events(
             reporter_id="peer-1", event_type="connection", search="test"
         )
         self.mock_client.get.assert_called_once_with(
@@ -104,14 +104,14 @@ class TestEventsResource:
 
     def test_get_proxy_events_with_pagination(self):
         self.mock_client.get.return_value = []
-        result = self.resource.get_proxy_events(page=2, page_size=25)
+        self.resource.get_proxy_events(page=2, page_size=25)
         self.mock_client.get.assert_called_once_with(
             "events/proxy", params={"page": 2, "page_size": 25}
         )
 
     def test_get_proxy_events_with_sorting(self):
         self.mock_client.get.return_value = []
-        result = self.resource.get_proxy_events(sort_by="timestamp", sort_order="desc")
+        self.resource.get_proxy_events(sort_by="timestamp", sort_order="desc")
         self.mock_client.get.assert_called_once_with(
             "events/proxy",
             params={"sort_by": "timestamp", "sort_order": "desc"},
@@ -157,7 +157,7 @@ class TestEventsResource:
     def test_get_proxy_events_with_status_code_zero(self):
         """Ensure status_code=0 is still sent (it is not None)."""
         self.mock_client.get.return_value = []
-        result = self.resource.get_proxy_events(status_code=0)
+        self.resource.get_proxy_events(status_code=0)
         self.mock_client.get.assert_called_once_with(
             "events/proxy", params={"status_code": 0}
         )

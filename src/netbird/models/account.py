@@ -69,7 +69,7 @@ class AccountSettings(BaseModel):
     extra_settings: Optional[Dict[str, Any]] = Field(
         None,
         alias="extra",
-        description="Extra settings (peer_approval, user_approval, traffic_logs, packet_counter)",
+        description="Extra settings (peer_approval, traffic_logs, etc.)",
     )
 
 
