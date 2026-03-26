@@ -370,7 +370,7 @@ class TestAPIClient:
         mock_response.is_success = False
         mock_response.status_code = 502
         mock_response.json.return_value = {}
-        mock_response.content = b'{}'
+        mock_response.content = b"{}"
 
         with pytest.raises(NetBirdServerError) as exc_info:
             client._handle_response(mock_response)

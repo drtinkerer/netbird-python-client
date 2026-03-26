@@ -7,9 +7,20 @@ Pydantic models for all NetBird API resources.
 from .account import Account, AccountSettings
 from .common import BaseModel, ResourceId, Timestamp
 from .dns import DNSNameserverGroup, DNSSettings
-from .dns_zone import DNSRecord, DNSRecordCreate, DNSRecordUpdate, DNSZone, DNSZoneCreate, DNSZoneUpdate
+from .dns_zone import (
+    DNSRecord,
+    DNSRecordCreate,
+    DNSRecordUpdate,
+    DNSZone,
+    DNSZoneCreate,
+    DNSZoneUpdate,
+)
 from .event import AuditEvent, NetworkTrafficEvent
-from .identity_provider import IdentityProvider, IdentityProviderCreate, IdentityProviderUpdate
+from .identity_provider import (
+    IdentityProvider,
+    IdentityProviderCreate,
+    IdentityProviderUpdate,
+)
 from .job import Job, JobCreate
 from .group import Group, GroupCreate, GroupUpdate
 from .network import (

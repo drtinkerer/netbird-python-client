@@ -42,12 +42,17 @@ class TestMSPResource:
     def test_get_tenant(self):
         self.mock_client.get.return_value = {"id": "tenant-1", "name": "Acme Corp"}
         result = self.resource.get_tenant("tenant-1")
-        self.mock_client.get.assert_called_once_with("integrations/msp/tenants/tenant-1")
+        self.mock_client.get.assert_called_once_with(
+            "integrations/msp/tenants/tenant-1"
+        )
         assert result["name"] == "Acme Corp"
 
     def test_update_tenant(self):
         update_data = MSPTenantUpdate(name="Acme Corp Updated")
-        self.mock_client.put.return_value = {"id": "tenant-1", "name": "Acme Corp Updated"}
+        self.mock_client.put.return_value = {
+            "id": "tenant-1",
+            "name": "Acme Corp Updated",
+        }
         result = self.resource.update_tenant("tenant-1", update_data)
         self.mock_client.put.assert_called_once_with(
             "integrations/msp/tenants/tenant-1",
@@ -67,7 +72,9 @@ class TestMSPResource:
     def test_verify_domain(self):
         self.mock_client.post.return_value = {"verified": True}
         result = self.resource.verify_domain("tenant-1")
-        self.mock_client.post.assert_called_once_with("integrations/msp/tenants/tenant-1/dns")
+        self.mock_client.post.assert_called_once_with(
+            "integrations/msp/tenants/tenant-1/dns"
+        )
         assert result["verified"] is True
 
     def test_create_subscription(self):
@@ -82,7 +89,9 @@ class TestMSPResource:
     def test_invite_tenant(self):
         self.mock_client.post.return_value = {"id": "tenant-1", "status": "invited"}
         result = self.resource.invite_tenant("tenant-1")
-        self.mock_client.post.assert_called_once_with("integrations/msp/tenants/tenant-1/invite")
+        self.mock_client.post.assert_called_once_with(
+            "integrations/msp/tenants/tenant-1/invite"
+        )
         assert result["status"] == "invited"
 
     def test_respond_to_invite(self):

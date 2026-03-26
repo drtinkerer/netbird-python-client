@@ -6,7 +6,11 @@ import pytest
 from unittest.mock import MagicMock
 
 from netbird.resources.cloud.services import ServicesResource
-from netbird.models.cloud.service import ServiceCreate, ServiceDomainCreate, ServiceUpdate
+from netbird.models.cloud.service import (
+    ServiceCreate,
+    ServiceDomainCreate,
+    ServiceUpdate,
+)
 
 
 @pytest.mark.unit
@@ -49,7 +53,11 @@ class TestServicesResource:
 
     def test_update(self):
         update_data = ServiceUpdate(name="updated-app", enabled=False)
-        self.mock_client.put.return_value = {"id": "svc-1", "name": "updated-app", "enabled": False}
+        self.mock_client.put.return_value = {
+            "id": "svc-1",
+            "name": "updated-app",
+            "enabled": False,
+        }
         result = self.resource.update("svc-1", update_data)
         self.mock_client.put.assert_called_once_with(
             "reverse-proxies/services/svc-1",
@@ -59,7 +67,9 @@ class TestServicesResource:
 
     def test_delete(self):
         self.resource.delete("svc-1")
-        self.mock_client.delete.assert_called_once_with("reverse-proxies/services/svc-1")
+        self.mock_client.delete.assert_called_once_with(
+            "reverse-proxies/services/svc-1"
+        )
 
     def test_list_clusters(self):
         self.mock_client.get.return_value = [
@@ -83,7 +93,10 @@ class TestServicesResource:
             domain="custom.example.com",
             target_cluster="cluster-1",
         )
-        self.mock_client.post.return_value = {"id": "domain-1", "domain": "custom.example.com"}
+        self.mock_client.post.return_value = {
+            "id": "domain-1",
+            "domain": "custom.example.com",
+        }
         result = self.resource.create_domain(domain_data)
         self.mock_client.post.assert_called_once_with(
             "reverse-proxies/domains",
@@ -93,10 +106,14 @@ class TestServicesResource:
 
     def test_delete_domain(self):
         self.resource.delete_domain("domain-1")
-        self.mock_client.delete.assert_called_once_with("reverse-proxies/domains/domain-1")
+        self.mock_client.delete.assert_called_once_with(
+            "reverse-proxies/domains/domain-1"
+        )
 
     def test_validate_domain(self):
         self.mock_client.get.return_value = {"valid": True, "status": "verified"}
         result = self.resource.validate_domain("domain-1")
-        self.mock_client.get.assert_called_once_with("reverse-proxies/domains/domain-1/validate")
+        self.mock_client.get.assert_called_once_with(
+            "reverse-proxies/domains/domain-1/validate"
+        )
         assert result["valid"] is True

@@ -4,7 +4,12 @@ DNS zones resource handler for NetBird API.
 
 from typing import Any, Dict, List
 
-from ..models.dns_zone import DNSRecordCreate, DNSRecordUpdate, DNSZoneCreate, DNSZoneUpdate
+from ..models.dns_zone import (
+    DNSRecordCreate,
+    DNSRecordUpdate,
+    DNSZoneCreate,
+    DNSZoneUpdate,
+)
 from .base import BaseResource
 
 

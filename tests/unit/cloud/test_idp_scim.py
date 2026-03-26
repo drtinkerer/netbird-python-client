@@ -41,7 +41,11 @@ class TestIDPScimResource:
         assert result["id"] == "scim-1"
 
     def test_get(self):
-        self.mock_client.get.return_value = {"id": "scim-1", "provider": "okta", "enabled": True}
+        self.mock_client.get.return_value = {
+            "id": "scim-1",
+            "provider": "okta",
+            "enabled": True,
+        }
         result = self.resource.get("scim-1")
         self.mock_client.get.assert_called_once_with("integrations/scim-idp/scim-1")
         assert result["provider"] == "okta"
@@ -63,15 +67,23 @@ class TestIDPScimResource:
     def test_regenerate_token(self):
         self.mock_client.post.return_value = {"token": "new-scim-token-xyz"}
         result = self.resource.regenerate_token("scim-1")
-        self.mock_client.post.assert_called_once_with("integrations/scim-idp/scim-1/token")
+        self.mock_client.post.assert_called_once_with(
+            "integrations/scim-idp/scim-1/token"
+        )
         assert "token" in result
 
     def test_get_logs(self):
         self.mock_client.get.return_value = [
-            {"timestamp": "2026-03-21T10:00:00Z", "action": "sync", "status": "success"},
+            {
+                "timestamp": "2026-03-21T10:00:00Z",
+                "action": "sync",
+                "status": "success",
+            },
             {"timestamp": "2026-03-21T09:00:00Z", "action": "sync", "status": "error"},
         ]
         result = self.resource.get_logs("scim-1")
-        self.mock_client.get.assert_called_once_with("integrations/scim-idp/scim-1/logs")
+        self.mock_client.get.assert_called_once_with(
+            "integrations/scim-idp/scim-1/logs"
+        )
         assert len(result) == 2
         assert result[0]["status"] == "success"

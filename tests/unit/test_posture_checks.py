@@ -14,9 +14,7 @@ class TestPostureChecksResource:
         self.resource = PostureChecksResource(self.mock_client)
 
     def test_list(self):
-        self.mock_client.get.return_value = [
-            {"id": "check-1", "name": "Version Check"}
-        ]
+        self.mock_client.get.return_value = [{"id": "check-1", "name": "Version Check"}]
         result = self.resource.list()
         self.mock_client.get.assert_called_once_with("posture-checks")
         assert len(result) == 1

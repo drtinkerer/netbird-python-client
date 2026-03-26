@@ -67,8 +67,6 @@ class TestEnumMissingMethods:
         assert result is None
 
 
-
-
 class TestNetworkMapErrorHandling:
     """Test error handling in network map generation."""
 
@@ -250,7 +248,3 @@ class TestClientTypeCheckingImports:
         # Create client instance to ensure all imports work
         test_client = client.APIClient(host="test.example.com", api_token="test-token")
         assert test_client is not None
-
-
-
-

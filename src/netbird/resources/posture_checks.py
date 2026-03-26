@@ -46,9 +46,7 @@ class PostureChecksResource(BaseResource):
         data = self.client.get(f"posture-checks/{check_id}")
         return self._parse_response(data)
 
-    def update(
-        self, check_id: str, check_data: PostureCheckUpdate
-    ) -> Dict[str, Any]:
+    def update(self, check_id: str, check_data: PostureCheckUpdate) -> Dict[str, Any]:
         """Update a posture check.
 
         Args:

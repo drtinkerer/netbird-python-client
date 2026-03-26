@@ -21,7 +21,11 @@ class TestEventsResource:
 
     def test_get_audit_events(self):
         self.mock_client.get.return_value = [
-            {"id": "evt-1", "activity": "user.login", "timestamp": "2024-01-01T00:00:00Z"},
+            {
+                "id": "evt-1",
+                "activity": "user.login",
+                "timestamp": "2024-01-01T00:00:00Z",
+            },
         ]
         result = self.resource.get_audit_events()
         self.mock_client.get.assert_called_once_with("events/audit")
@@ -107,9 +111,7 @@ class TestEventsResource:
 
     def test_get_proxy_events_with_sorting(self):
         self.mock_client.get.return_value = []
-        result = self.resource.get_proxy_events(
-            sort_by="timestamp", sort_order="desc"
-        )
+        result = self.resource.get_proxy_events(sort_by="timestamp", sort_order="desc")
         self.mock_client.get.assert_called_once_with(
             "events/proxy",
             params={"sort_by": "timestamp", "sort_order": "desc"},

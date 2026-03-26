@@ -25,8 +25,6 @@ class TestGeoLocationsResource:
             {"geoname_id": 2867714, "city_name": "Munich"},
         ]
         result = self.resource.list_cities("DE")
-        self.mock_client.get.assert_called_once_with(
-            "locations/countries/DE/cities"
-        )
+        self.mock_client.get.assert_called_once_with("locations/countries/DE/cities")
         assert len(result) == 2
         assert result[0]["city_name"] == "Berlin"

@@ -160,6 +160,3 @@ class TestClientEdgeCases:
     @pytest.fixture
     def client(self):
         return APIClient(host="test.example.com", api_token="test-token")
-
-
-

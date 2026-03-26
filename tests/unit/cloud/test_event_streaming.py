@@ -6,7 +6,10 @@ import pytest
 from unittest.mock import MagicMock
 
 from netbird.resources.cloud.event_streaming import EventStreamingResource
-from netbird.models.cloud.event_streaming import EventStreamingCreate, EventStreamingUpdate
+from netbird.models.cloud.event_streaming import (
+    EventStreamingCreate,
+    EventStreamingUpdate,
+)
 
 
 @pytest.mark.unit
@@ -40,7 +43,11 @@ class TestEventStreamingResource:
         assert result["id"] == "es-1"
 
     def test_get(self):
-        self.mock_client.get.return_value = {"id": "es-1", "platform": "datadog", "enabled": True}
+        self.mock_client.get.return_value = {
+            "id": "es-1",
+            "platform": "datadog",
+            "enabled": True,
+        }
         result = self.resource.get("es-1")
         self.mock_client.get.assert_called_once_with("event-streaming/es-1")
         assert result["enabled"] is True

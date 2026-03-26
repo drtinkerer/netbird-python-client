@@ -50,9 +50,7 @@ class TestAccountSettingsNewFields:
 
     def test_extra_settings_from_alias(self):
         """Should accept 'extra' key via alias."""
-        settings = AccountSettings.model_validate(
-            {"extra": {"user_approval": True}}
-        )
+        settings = AccountSettings.model_validate({"extra": {"user_approval": True}})
         assert settings.extra_settings == {"user_approval": True}
 
     def test_new_optional_fields(self):

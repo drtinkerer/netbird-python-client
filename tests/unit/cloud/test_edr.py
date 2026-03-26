@@ -62,7 +62,10 @@ class TestEDRFalconResource:
 
     def test_create(self):
         config = self._make_config()
-        self.mock_client.post.return_value = {"id": "falcon-1", "client_id": "falcon-client-id"}
+        self.mock_client.post.return_value = {
+            "id": "falcon-1",
+            "client_id": "falcon-client-id",
+        }
         result = self.resource.create(config)
         self.mock_client.post.assert_called_once_with(
             "integrations/edr/falcon",
@@ -78,7 +81,10 @@ class TestEDRFalconResource:
 
     def test_update(self):
         config = self._make_config()
-        self.mock_client.put.return_value = {"id": "falcon-1", "zta_score_threshold": 50}
+        self.mock_client.put.return_value = {
+            "id": "falcon-1",
+            "zta_score_threshold": 50,
+        }
         result = self.resource.update(config)
         self.mock_client.put.assert_called_once_with(
             "integrations/edr/falcon",
@@ -108,7 +114,10 @@ class TestEDRHuntressResource:
 
     def test_create(self):
         config = self._make_config()
-        self.mock_client.post.return_value = {"id": "huntress-1", "api_key": "huntress-key"}
+        self.mock_client.post.return_value = {
+            "id": "huntress-1",
+            "api_key": "huntress-key",
+        }
         result = self.resource.create(config)
         self.mock_client.post.assert_called_once_with(
             "integrations/edr/huntress",
@@ -117,14 +126,20 @@ class TestEDRHuntressResource:
         assert result["id"] == "huntress-1"
 
     def test_get(self):
-        self.mock_client.get.return_value = {"id": "huntress-1", "api_key": "huntress-key"}
+        self.mock_client.get.return_value = {
+            "id": "huntress-1",
+            "api_key": "huntress-key",
+        }
         result = self.resource.get()
         self.mock_client.get.assert_called_once_with("integrations/edr/huntress")
         assert result is not None
 
     def test_update(self):
         config = self._make_config()
-        self.mock_client.put.return_value = {"id": "huntress-1", "last_synced_interval": 24}
+        self.mock_client.put.return_value = {
+            "id": "huntress-1",
+            "last_synced_interval": 24,
+        }
         result = self.resource.update(config)
         self.mock_client.put.assert_called_once_with(
             "integrations/edr/huntress",
@@ -155,7 +170,10 @@ class TestEDRIntuneResource:
 
     def test_create(self):
         config = self._make_config()
-        self.mock_client.post.return_value = {"id": "intune-1", "client_id": "azure-client-id"}
+        self.mock_client.post.return_value = {
+            "id": "intune-1",
+            "client_id": "azure-client-id",
+        }
         result = self.resource.create(config)
         self.mock_client.post.assert_called_once_with(
             "integrations/edr/intune",
@@ -164,7 +182,10 @@ class TestEDRIntuneResource:
         assert result["id"] == "intune-1"
 
     def test_get(self):
-        self.mock_client.get.return_value = {"id": "intune-1", "tenant_id": "azure-tenant-id"}
+        self.mock_client.get.return_value = {
+            "id": "intune-1",
+            "tenant_id": "azure-tenant-id",
+        }
         result = self.resource.get()
         self.mock_client.get.assert_called_once_with("integrations/edr/intune")
         assert result["tenant_id"] == "azure-tenant-id"
@@ -201,7 +222,10 @@ class TestEDRSentinelOneResource:
 
     def test_create(self):
         config = self._make_config()
-        self.mock_client.post.return_value = {"id": "s1-1", "api_url": "https://s1.example.com"}
+        self.mock_client.post.return_value = {
+            "id": "s1-1",
+            "api_url": "https://s1.example.com",
+        }
         result = self.resource.create(config)
         self.mock_client.post.assert_called_once_with(
             "integrations/edr/sentinelone",
@@ -210,7 +234,10 @@ class TestEDRSentinelOneResource:
         assert result["id"] == "s1-1"
 
     def test_get(self):
-        self.mock_client.get.return_value = {"id": "s1-1", "api_url": "https://s1.example.com"}
+        self.mock_client.get.return_value = {
+            "id": "s1-1",
+            "api_url": "https://s1.example.com",
+        }
         result = self.resource.get()
         self.mock_client.get.assert_called_once_with("integrations/edr/sentinelone")
         assert result["api_url"] == "https://s1.example.com"

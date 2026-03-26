@@ -49,12 +49,18 @@ class TestIngressResource:
     def test_get_port(self):
         self.mock_client.get.return_value = {"id": "port-1", "name": "http"}
         result = self.resource.get_port("peer-1", "port-1")
-        self.mock_client.get.assert_called_once_with("peers/peer-1/ingress/ports/port-1")
+        self.mock_client.get.assert_called_once_with(
+            "peers/peer-1/ingress/ports/port-1"
+        )
         assert result["name"] == "http"
 
     def test_update_port(self):
         update_data = PortAllocationUpdate(name="http-updated", enabled=False)
-        self.mock_client.put.return_value = {"id": "port-1", "name": "http-updated", "enabled": False}
+        self.mock_client.put.return_value = {
+            "id": "port-1",
+            "name": "http-updated",
+            "enabled": False,
+        }
         result = self.resource.update_port("peer-1", "port-1", update_data)
         self.mock_client.put.assert_called_once_with(
             "peers/peer-1/ingress/ports/port-1",
@@ -64,7 +70,9 @@ class TestIngressResource:
 
     def test_delete_port(self):
         self.resource.delete_port("peer-1", "port-1")
-        self.mock_client.delete.assert_called_once_with("peers/peer-1/ingress/ports/port-1")
+        self.mock_client.delete.assert_called_once_with(
+            "peers/peer-1/ingress/ports/port-1"
+        )
 
     # Ingress peer tests
 
@@ -98,7 +106,11 @@ class TestIngressResource:
 
     def test_update_peer(self):
         update_data = IngressPeerUpdate(enabled=False, fallback=True)
-        self.mock_client.put.return_value = {"id": "ingress-1", "enabled": False, "fallback": True}
+        self.mock_client.put.return_value = {
+            "id": "ingress-1",
+            "enabled": False,
+            "fallback": True,
+        }
         result = self.resource.update_peer("ingress-1", update_data)
         self.mock_client.put.assert_called_once_with(
             "ingress/peers/ingress-1",

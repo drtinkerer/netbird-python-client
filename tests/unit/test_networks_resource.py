@@ -137,9 +137,7 @@ class TestNetworksResource:
             "name": "main-router",
         }
         result = self.resource.get_router("net-1", "router-1")
-        self.mock_client.get.assert_called_once_with(
-            "networks/net-1/routers/router-1"
-        )
+        self.mock_client.get.assert_called_once_with("networks/net-1/routers/router-1")
         assert result["name"] == "main-router"
 
     def test_update_router(self):

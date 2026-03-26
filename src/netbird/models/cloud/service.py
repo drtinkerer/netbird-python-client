@@ -30,7 +30,9 @@ class ServiceUpdate(BaseModel):
     enabled: Optional[bool] = Field(None, description="Service enabled status")
     pass_host_header: Optional[bool] = Field(None, description="Pass host header")
     rewrite_redirects: Optional[bool] = Field(None, description="Rewrite redirects")
-    auth: Optional[Dict[str, Any]] = Field(None, description="Authentication configuration")
+    auth: Optional[Dict[str, Any]] = Field(
+        None, description="Authentication configuration"
+    )
 
 
 class Service(BaseModel):
@@ -43,7 +45,9 @@ class Service(BaseModel):
     enabled: Optional[bool] = Field(None, description="Service enabled status")
     pass_host_header: Optional[bool] = Field(None, description="Pass host header")
     rewrite_redirects: Optional[bool] = Field(None, description="Rewrite redirects")
-    auth: Optional[Dict[str, Any]] = Field(None, description="Authentication configuration")
+    auth: Optional[Dict[str, Any]] = Field(
+        None, description="Authentication configuration"
+    )
 
 
 class ServiceDomainCreate(BaseModel):

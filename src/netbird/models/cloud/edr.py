@@ -26,9 +26,13 @@ class EDRHuntressConfig(BaseModel):
     api_key: str = Field(..., description="Huntress API key")
     api_secret: str = Field(..., description="Huntress API secret")
     groups: List[str] = Field(..., description="Groups this integration applies to")
-    last_synced_interval: int = Field(..., description="Sync interval in hours (min 24)")
+    last_synced_interval: int = Field(
+        ..., description="Sync interval in hours (min 24)"
+    )
     enabled: Optional[bool] = Field(None, description="Integration enabled status")
-    match_attributes: Optional[Dict[str, Any]] = Field(None, description="Match attributes")
+    match_attributes: Optional[Dict[str, Any]] = Field(
+        None, description="Match attributes"
+    )
 
 
 class EDRIntuneConfig(BaseModel):
@@ -38,7 +42,9 @@ class EDRIntuneConfig(BaseModel):
     tenant_id: str = Field(..., description="Azure tenant ID")
     secret: str = Field(..., description="Azure application client secret")
     groups: List[str] = Field(..., description="Groups this integration applies to")
-    last_synced_interval: int = Field(..., description="Sync interval in hours (min 24)")
+    last_synced_interval: int = Field(
+        ..., description="Sync interval in hours (min 24)"
+    )
     enabled: Optional[bool] = Field(None, description="Integration enabled status")
 
 
@@ -48,6 +54,10 @@ class EDRSentinelOneConfig(BaseModel):
     api_token: str = Field(..., description="SentinelOne API token")
     api_url: str = Field(..., description="SentinelOne API URL")
     groups: List[str] = Field(..., description="Groups this integration applies to")
-    last_synced_interval: int = Field(..., description="Sync interval in hours (min 24)")
+    last_synced_interval: int = Field(
+        ..., description="Sync interval in hours (min 24)"
+    )
     enabled: Optional[bool] = Field(None, description="Integration enabled status")
-    match_attributes: Optional[Dict[str, Any]] = Field(None, description="Match attributes")
+    match_attributes: Optional[Dict[str, Any]] = Field(
+        None, description="Match attributes"
+    )

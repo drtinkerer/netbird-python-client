@@ -15,9 +15,7 @@ class DNSZoneCreate(BaseModel):
     name: str = Field(..., description="Zone name identifier")
     domain: str = Field(..., description="Zone domain (FQDN)")
     enabled: Optional[bool] = Field(None, description="Zone status")
-    enable_search_domain: bool = Field(
-        ..., description="Enable zone as search domain"
-    )
+    enable_search_domain: bool = Field(..., description="Enable zone as search domain")
     distribution_groups: List[str] = Field(
         ..., description="Group IDs for peer resolution"
     )

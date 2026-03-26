@@ -14,14 +14,18 @@ class MSPTenantCreate(BaseModel):
 
     name: str = Field(..., description="Tenant name")
     domain: str = Field(..., description="Tenant domain")
-    groups: List[Dict[str, Any]] = Field(..., description="Groups with access and roles")
+    groups: List[Dict[str, Any]] = Field(
+        ..., description="Groups with access and roles"
+    )
 
 
 class MSPTenantUpdate(BaseModel):
     """Model for updating an MSP tenant."""
 
     name: Optional[str] = Field(None, description="Tenant name")
-    groups: Optional[List[Dict[str, Any]]] = Field(None, description="Groups with access and roles")
+    groups: Optional[List[Dict[str, Any]]] = Field(
+        None, description="Groups with access and roles"
+    )
 
 
 class MSPTenant(BaseModel):

@@ -15,7 +15,9 @@ class PortAllocationCreate(BaseModel):
     name: str = Field(..., description="Port allocation name")
     enabled: bool = Field(..., description="Enabled status")
     port_ranges: Optional[List[Dict[str, Any]]] = Field(None, description="Port ranges")
-    direct_port: Optional[Dict[str, Any]] = Field(None, description="Direct port config")
+    direct_port: Optional[Dict[str, Any]] = Field(
+        None, description="Direct port config"
+    )
 
 
 class PortAllocationUpdate(BaseModel):
@@ -24,7 +26,9 @@ class PortAllocationUpdate(BaseModel):
     name: Optional[str] = Field(None, description="Port allocation name")
     enabled: Optional[bool] = Field(None, description="Enabled status")
     port_ranges: Optional[List[Dict[str, Any]]] = Field(None, description="Port ranges")
-    direct_port: Optional[Dict[str, Any]] = Field(None, description="Direct port config")
+    direct_port: Optional[Dict[str, Any]] = Field(
+        None, description="Direct port config"
+    )
 
 
 class PortAllocation(BaseModel):
@@ -34,7 +38,9 @@ class PortAllocation(BaseModel):
     name: Optional[str] = Field(None, description="Port allocation name")
     enabled: Optional[bool] = Field(None, description="Enabled status")
     port_ranges: Optional[List[Dict[str, Any]]] = Field(None, description="Port ranges")
-    direct_port: Optional[Dict[str, Any]] = Field(None, description="Direct port config")
+    direct_port: Optional[Dict[str, Any]] = Field(
+        None, description="Direct port config"
+    )
 
 
 class IngressPeerCreate(BaseModel):

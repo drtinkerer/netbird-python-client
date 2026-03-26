@@ -44,9 +44,7 @@ class TestPeersResource:
             {"id": "peer-1", "ip": "10.0.0.1"},
         ]
         result = self.resource.list(ip="10.0.0.1")
-        self.mock_client.get.assert_called_once_with(
-            "peers", params={"ip": "10.0.0.1"}
-        )
+        self.mock_client.get.assert_called_once_with("peers", params={"ip": "10.0.0.1"})
         assert len(result) == 1
 
     def test_get(self):

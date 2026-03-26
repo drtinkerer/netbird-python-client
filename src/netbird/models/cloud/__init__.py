@@ -23,7 +23,13 @@ from .ingress import (
     PortAllocationUpdate,
 )
 from .msp import MSPTenant, MSPTenantCreate, MSPTenantUpdate
-from .service import Service, ServiceCreate, ServiceDomain, ServiceDomainCreate, ServiceUpdate
+from .service import (
+    Service,
+    ServiceCreate,
+    ServiceDomain,
+    ServiceDomainCreate,
+    ServiceUpdate,
+)
 
 __all__ = [
     "Service",

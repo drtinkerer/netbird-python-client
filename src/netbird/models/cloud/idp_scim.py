@@ -15,7 +15,9 @@ class SCIMIntegrationCreate(BaseModel):
     prefix: str = Field(..., description="Connection prefix for SCIM provider")
     provider: str = Field(..., description="SCIM identity provider name")
     group_prefixes: Optional[List[str]] = Field(None, description="Group sync patterns")
-    user_group_prefixes: Optional[List[str]] = Field(None, description="User group sync patterns")
+    user_group_prefixes: Optional[List[str]] = Field(
+        None, description="User group sync patterns"
+    )
 
 
 class SCIMIntegrationUpdate(BaseModel):
@@ -23,7 +25,9 @@ class SCIMIntegrationUpdate(BaseModel):
 
     enabled: Optional[bool] = Field(None, description="Integration enabled status")
     group_prefixes: Optional[List[str]] = Field(None, description="Group sync patterns")
-    user_group_prefixes: Optional[List[str]] = Field(None, description="User group sync patterns")
+    user_group_prefixes: Optional[List[str]] = Field(
+        None, description="User group sync patterns"
+    )
 
 
 class SCIMIntegration(BaseModel):
@@ -34,4 +38,6 @@ class SCIMIntegration(BaseModel):
     provider: Optional[str] = Field(None, description="SCIM provider name")
     enabled: Optional[bool] = Field(None, description="Integration enabled status")
     group_prefixes: Optional[List[str]] = Field(None, description="Group sync patterns")
-    user_group_prefixes: Optional[List[str]] = Field(None, description="User group sync patterns")
+    user_group_prefixes: Optional[List[str]] = Field(
+        None, description="User group sync patterns"
+    )
