@@ -36,7 +36,8 @@ class PolicyRule(BaseModel):
         None, description="Source group IDs (str for writes, objects in GET responses)"
     )
     destinations: Optional[List[Union[str, Dict[str, Any]]]] = Field(
-        None, description="Destination group IDs (str for writes, objects in GET responses)"
+        None,
+        description="Destination group IDs (str for writes, objects in GET responses)",
     )
     bidirectional: bool = Field(False, description="Bidirectional rule")
     port_ranges: Optional[List[Dict[str, Any]]] = Field(None, description="Port ranges")
