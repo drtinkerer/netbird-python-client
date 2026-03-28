@@ -2,7 +2,7 @@
 Policy models for NetBird API.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic import Field
 
@@ -32,11 +32,11 @@ class PolicyRule(BaseModel):
     action: PolicyAction = Field(..., description="Policy action")
     protocol: Protocol = Field(..., description="Network protocol")
     ports: Optional[List[str]] = Field(None, description="Port list")
-    sources: Optional[List[Dict[str, Any]]] = Field(
-        None, description="Source group objects"
+    sources: Optional[List[Union[str, Dict[str, Any]]]] = Field(
+        None, description="Source group IDs (str for writes, objects in GET responses)"
     )
-    destinations: Optional[List[Dict[str, Any]]] = Field(
-        None, description="Destination group objects"
+    destinations: Optional[List[Union[str, Dict[str, Any]]]] = Field(
+        None, description="Destination group IDs (str for writes, objects in GET responses)"
     )
     bidirectional: bool = Field(False, description="Bidirectional rule")
     port_ranges: Optional[List[Dict[str, Any]]] = Field(None, description="Port ranges")
