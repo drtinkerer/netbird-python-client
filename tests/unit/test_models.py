@@ -257,8 +257,8 @@ class TestPolicyModels:
             name="test-rule",
             action="accept",
             protocol="tcp",
-            sources=[{"id": "src"}],
-            destinations=[{"id": "dst"}],
+            sources=["src-group-id"],
+            destinations=["dst-group-id"],
         )
 
         policy = PolicyCreate(
