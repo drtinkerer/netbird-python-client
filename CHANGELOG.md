@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-03-28
+
+### Fixed
+- **PolicyRule `sources` / `destinations`** - Changed type from `List[Dict]` to `List[Union[str, Dict]]`. The NetBird API expects plain string group IDs on writes (POST/PUT) but returns full objects on reads (GET). Sending `[{"id": "..."}]` caused a `400 "couldn't parse JSON request"` error. Correct usage is `sources=["group-id"]`.
+
 ## [1.2.0] - 2026-03-27
 
 ### Added
