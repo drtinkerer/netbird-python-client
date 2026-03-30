@@ -1,0 +1,1 @@
+"""NetBird MCP server."""

@@ -48,6 +48,9 @@ dev = [
     "pyyaml>=6.0.0",
     "pre-commit>=3.0.0",
 ]
+mcp = [
+    "mcp[cli]>=1.0.0",
+]
 docs = [
     "sphinx>=7.0.0",
     "furo>=2023.9.10",
@@ -64,6 +67,9 @@ Repository = "https://github.com/drtinkerer/netbird-python-client"
 Documentation = "https://drtinkerer.github.io/netbird-python-client/"
 Issues = "https://github.com/drtinkerer/netbird-python-client/issues"
 Changelog = "https://github.com/drtinkerer/netbird-python-client/blob/main/CHANGELOG.md"
+
+[project.scripts]
+netbird-mcp = "netbird.mcp.server:main"
 
 [tool.hatch.version]
 path = "src/netbird/__init__.py"

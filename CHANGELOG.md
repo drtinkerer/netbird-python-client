@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-03-31
+
+### Added
+- **MCP Server** (`netbird.mcp.server`) - 25 NetBird management tools exposed via Model Context Protocol
+  - AI assistants (Claude Desktop, etc.) can now manage NetBird resources through natural language
+  - Tools cover: account, users, peers, groups, policies, networks, setup keys, DNS, posture checks, audit events, network diagrams
+  - Install with `pip install "netbird[mcp]"` and run with `netbird-mcp` CLI entry point
+  - Configure via `NETBIRD_HOST` and `NETBIRD_API_TOKEN` environment variables
+- **`mcp` optional dependency** - `mcp[cli]>=1.0.0` available via `pip install "netbird[mcp]"`
+- **`netbird-mcp` CLI entry point** - Start the MCP server from the command line
+
 ## [1.2.1] - 2026-03-28
 
 ### Fixed

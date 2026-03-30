@@ -23,6 +23,7 @@ This client follows the same upstream schemas as the official NetBird REST APIs,
 - ✅ **Comprehensive Error Handling** - Detailed exception classes for different error types
 - ✅ **88% Test Coverage** - 364 unit tests covering all resources
 - ✅ **PyPI Ready** - Easy installation and distribution
+- ✅ **MCP Server** - 25 tools exposing NetBird operations to AI assistants via Model Context Protocol
 
 ## Supported Resources
 
@@ -349,6 +350,72 @@ client = APIClient(
     timeout=30.0,           # Request timeout in seconds (default: 30)
     base_path="/api"        # API base path (default: "/api")
 )
+```
+
+## MCP Server (AI Assistant Integration)
+
+The NetBird Python client includes a built-in [Model Context Protocol](https://modelcontextprotocol.io) (MCP) server, exposing 25 NetBird management tools to AI assistants like Claude Desktop.
+
+### Installation
+
+```bash
+pip install "netbird[mcp]"
+```
+
+### Configuration
+
+Set environment variables before starting the server:
+
+```bash
+export NETBIRD_HOST="api.netbird.io"         # or your self-hosted host
+export NETBIRD_API_TOKEN="your-api-token"
+```
+
+### Claude Desktop Setup
+
+Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
+
+```json
+{
+  "mcpServers": {
+    "netbird": {
+      "command": "netbird-mcp",
+      "env": {
+        "NETBIRD_HOST": "api.netbird.io",
+        "NETBIRD_API_TOKEN": "your-api-token"
+      }
+    }
+  }
+}
+```
+
+Then restart Claude Desktop. You can now ask Claude to manage your NetBird network in natural language:
+
+- *"List all peers and show their connection status"*
+- *"Create a policy allowing the DevOps group to SSH into the Servers group"*
+- *"Generate a Mermaid diagram of the current network topology"*
+- *"Create a setup key for onboarding the new office location"*
+
+### Available MCP Tools
+
+| Category | Tools |
+|----------|-------|
+| **Account** | `get_account` |
+| **Users** | `get_current_user`, `list_users` |
+| **Peers** | `list_peers`, `get_peer`, `update_peer`, `delete_peer`, `get_peer_accessible_peers` |
+| **Groups** | `list_groups`, `get_group`, `create_group`, `update_group`, `delete_group` |
+| **Policies** | `list_policies`, `create_policy`, `delete_policy` |
+| **Networks** | `list_networks`, `get_network` |
+| **Setup Keys** | `list_setup_keys`, `create_setup_key` |
+| **DNS** | `list_nameservers`, `get_dns_settings` |
+| **Posture Checks** | `list_posture_checks` |
+| **Audit** | `get_audit_events` |
+| **Diagrams** | `generate_network_diagram` |
+
+### Running the Server Manually
+
+```bash
+NETBIRD_HOST=api.netbird.io NETBIRD_API_TOKEN=your-token netbird-mcp
 ```
 
 ## Development
