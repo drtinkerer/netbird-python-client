@@ -74,6 +74,18 @@ For generating network topology diagrams:
 
    # Mermaid requires no additional Python dependencies
 
+MCP Server (AI Assistants)
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To use NetBird with AI assistants via the Model Context Protocol:
+
+.. code-block:: bash
+
+   pip install "netbird[mcp]"
+
+This installs `mcp[cli] <https://pypi.org/project/mcp/>`_ and the ``netbird-mcp`` CLI entry point.
+See :doc:`user-guide/mcp-server` for setup instructions.
+
 Development Tools
 ~~~~~~~~~~~~~~~~~
 
@@ -98,7 +110,7 @@ Verification
 .. code-block:: python
 
    import netbird
-   print(netbird.__version__)  # Should print "1.2.0"
+   print(netbird.__version__)  # Should print "1.3.0"
 
 Virtual Environments
 --------------------

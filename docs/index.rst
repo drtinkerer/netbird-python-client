@@ -32,6 +32,12 @@ NetBird Python Client
 
         Installation guide and requirements
 
+    .. grid-item-card:: MCP Server
+        :link: user-guide/mcp-server
+        :link-type: doc
+
+        Use NetBird with AI assistants via Model Context Protocol
+
 Features
 --------
 
@@ -60,6 +66,10 @@ Features
     .. grid-item-card:: Modern Python
 
         Python 3.9+ (supports 3.9-3.14)
+
+    .. grid-item-card:: MCP Server
+
+        25 tools for AI assistants via Model Context Protocol
 
 Architecture
 ------------
@@ -227,6 +237,7 @@ Cloud Resources
    :caption: User Guide
 
    user-guide/authentication
+   user-guide/mcp-server
    user-guide/network-visualization
    user-guide/error-handling
 

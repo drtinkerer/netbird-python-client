@@ -6,6 +6,29 @@ All notable changes to this project will be documented in this file.
 The format is based on `Keep a Changelog <https://keepachangelog.com/en/1.0.0/>`_,
 and this project adheres to `Semantic Versioning <https://semver.org/spec/v2.0.0.html>`_.
 
+[1.3.0] - 2026-03-31
+---------------------
+
+Added
+~~~~~
+
+- **MCP Server** (``netbird.mcp.server``) — 25 NetBird management tools exposed via `Model Context Protocol <https://modelcontextprotocol.io>`_
+
+  - AI assistants (Claude Desktop, etc.) can now manage NetBird resources through natural language
+  - Tools cover: account, users, peers, groups, policies, networks, setup keys, DNS, posture checks, audit events, network diagrams
+  - See :doc:`user-guide/mcp-server` for setup instructions
+
+- **``mcp`` optional dependency** — ``mcp[cli]>=1.0.0`` via ``pip install "netbird[mcp]"``
+- **``netbird-mcp`` CLI entry point** — Start the MCP server from the command line
+
+[1.2.1] - 2026-03-28
+---------------------
+
+Fixed
+~~~~~
+
+- **PolicyRule** ``sources`` / ``destinations`` — Changed type from ``List[Dict]`` to ``List[Union[str, Dict]]``. The NetBird API expects plain string group IDs on writes (POST/PUT) but returns full objects on reads (GET).
+
 [1.2.0] - 2026-03-27
 ---------------------
 
