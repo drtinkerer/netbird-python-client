@@ -1,7 +1,7 @@
 MCP Server
 ==========
 
-The NetBird Python Client includes a built-in `Model Context Protocol <https://modelcontextprotocol.io>`_ (MCP) server that exposes 25 NetBird management tools to AI assistants like `Claude Desktop <https://claude.ai>`_.
+The NetBird Python Client includes a built-in `Model Context Protocol <https://modelcontextprotocol.io>`_ (MCP) server that exposes 25 NetBird management tools to AI assistants like Claude Code and Claude Desktop.
 
 This lets you manage your NetBird network through natural language — no scripting required.
 
@@ -30,6 +30,42 @@ The server reads credentials from environment variables:
    * - ``NETBIRD_API_TOKEN``
      - Personal Access Token from the NetBird dashboard
 
+Get your token from: **NetBird Dashboard** → **Settings** → **API Tokens**
+
+Claude Code (CLI) Setup
+-----------------------
+
+Register the MCP server with ``claude mcp add``:
+
+.. code-block:: bash
+
+   claude mcp add netbird \
+     -e NETBIRD_HOST=api.netbird.io \
+     -e NETBIRD_API_TOKEN=your-api-token \
+     -- netbird-mcp
+
+Restart Claude Code, then verify the server is connected:
+
+.. code-block:: bash
+
+   claude mcp list
+   # Should show: netbird: netbird-mcp - ✓ Connected
+
+For self-hosted NetBird:
+
+.. code-block:: bash
+
+   claude mcp add netbird \
+     -e NETBIRD_HOST=netbird.yourcompany.com \
+     -e NETBIRD_API_TOKEN=your-api-token \
+     -- netbird-mcp
+
+To remove:
+
+.. code-block:: bash
+
+   claude mcp remove netbird
+
 Claude Desktop Setup
 --------------------
 
@@ -52,7 +88,7 @@ Add the following to your Claude Desktop configuration file:
      }
    }
 
-Restart Claude Desktop after saving. You should see NetBird tools available in the conversation.
+Restart Claude Desktop after saving. You should see the hammer icon in the chat input confirming tools are loaded.
 
 Self-Hosted NetBird
 ~~~~~~~~~~~~~~~~~~~

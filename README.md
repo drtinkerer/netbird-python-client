@@ -371,9 +371,24 @@ export NETBIRD_HOST="api.netbird.io"         # or your self-hosted host
 export NETBIRD_API_TOKEN="your-api-token"
 ```
 
+### Claude Code (CLI) Setup
+
+```bash
+claude mcp add netbird \
+  -e NETBIRD_HOST=api.netbird.io \
+  -e NETBIRD_API_TOKEN=your-api-token \
+  -- netbird-mcp
+```
+
+Restart Claude Code. Verify with:
+
+```bash
+claude mcp list   # Should show: netbird: ... ✓ Connected
+```
+
 ### Claude Desktop Setup
 
-Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
+Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS, `%APPDATA%\Claude\claude_desktop_config.json` on Windows):
 
 ```json
 {
@@ -389,7 +404,11 @@ Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_
 }
 ```
 
-Then restart Claude Desktop. You can now ask Claude to manage your NetBird network in natural language:
+Restart Claude Desktop. You should see the hammer icon in the chat input confirming tools are loaded.
+
+### Usage
+
+Once connected, ask Claude to manage your NetBird network in natural language:
 
 - *"List all peers and show their connection status"*
 - *"Create a policy allowing the DevOps group to SSH into the Servers group"*
