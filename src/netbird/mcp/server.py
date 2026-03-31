@@ -11,7 +11,13 @@ Configuration (environment variables):
 import os
 from typing import Optional
 
-from mcp.server.fastmcp import FastMCP
+try:
+    from mcp.server.fastmcp import FastMCP
+except ImportError as e:
+    raise ImportError(
+        "The 'mcp' package is required to use the NetBird MCP server. "
+        "Install it with: pip install 'netbird[mcp]' (requires Python 3.10+)"
+    ) from e
 
 from netbird import APIClient
 
