@@ -6,10 +6,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-pytest.importorskip(
-    "mcp.server.fastmcp", reason="mcp package not installed (requires Python 3.10+)"
-)
-
 
 class TestMCPServerImport:
     """Test that the MCP server module imports correctly."""

@@ -19,7 +19,7 @@ This client follows the same upstream schemas as the official NetBird REST APIs,
 - ✅ **Dictionary Responses** - Clean dictionary responses for easy data access
 - ✅ **Type Safety** - Pydantic models for input validation, dictionaries for responses
 - ✅ **Network Visualization** - Built-in diagram generation (Mermaid, Graphviz, Python Diagrams)
-- ✅ **Modern Python** - Built for Python 3.9+ (supports 3.9-3.14)
+- ✅ **Modern Python** - Built for Python 3.10+ (supports 3.10-3.14)
 - ✅ **Comprehensive Error Handling** - Detailed exception classes for different error types
 - ✅ **88% Test Coverage** - 364 unit tests covering all resources
 - ✅ **PyPI Ready** - Easy installation and distribution

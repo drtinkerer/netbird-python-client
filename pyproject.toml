@@ -8,7 +8,7 @@ dynamic = ["version"]
 description = "Python client for the NetBird API"
 readme = "README.md"
 license = "MIT"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 authors = [
     {name = "Bhushan Rane", email = "eulersidentity2718@gmail.com"},
 ]
@@ -20,7 +20,6 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -79,7 +78,7 @@ packages = ["src/netbird"]
 
 [tool.black]
 line-length = 88
-target-version = ['py39']
+target-version = ['py310']
 include = '\.pyi?$'
 extend-exclude = '''
 /(
@@ -100,14 +99,14 @@ profile = "black"
 multi_line_output = 3
 line_length = 88
 known_first_party = ["netbird"]
-py_version = 39
+py_version = 310
 force_single_line = false
 combine_as_imports = true
 include_trailing_comma = true
 ensure_newline_before_comments = true
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.10"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true

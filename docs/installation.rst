@@ -4,7 +4,7 @@ Installation
 Requirements
 ------------
 
-- Python 3.9 or higher (supports Python 3.9-3.14)
+- Python 3.10 or higher (supports Python 3.10-3.14)
 - NetBird API access (cloud or self-hosted)
 
 Supported Python Versions
@@ -15,8 +15,6 @@ Supported Python Versions
 
    * - Python Version
      - Support Status
-   * - 3.9
-     - Fully Supported
    * - 3.10
      - Fully Supported
    * - 3.11
