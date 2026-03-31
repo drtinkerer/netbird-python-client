@@ -451,5 +451,5 @@ class TestDiagramTool:
         from netbird.mcp.server import generate_network_diagram
 
         self.mock_client.generate_diagram.return_value = "digraph G {}"
-        result = generate_network_diagram(format="graphviz")
+        generate_network_diagram(format="graphviz")
         self.mock_client.generate_diagram.assert_called_once_with(format="graphviz")
