@@ -50,9 +50,7 @@ class TestGetClient:
     def test_raises_missing_host(self):
         from netbird.mcp.server import _get_client
 
-        with patch.dict(
-            "os.environ", {"NETBIRD_API_TOKEN": "tok"}, clear=False
-        ):
+        with patch.dict("os.environ", {"NETBIRD_API_TOKEN": "tok"}, clear=False):
             import os
 
             os.environ.pop("NETBIRD_HOST", None)
@@ -148,7 +146,10 @@ class TestUserTools:
     def test_get_current_user(self):
         from netbird.mcp.server import get_current_user
 
-        self.mock_client.users.get_current.return_value = {"id": "u1", "email": "a@b.com"}
+        self.mock_client.users.get_current.return_value = {
+            "id": "u1",
+            "email": "a@b.com",
+        }
         result = get_current_user()
         assert result["id"] == "u1"
 
