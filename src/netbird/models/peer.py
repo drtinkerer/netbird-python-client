@@ -32,6 +32,7 @@ class PeerUpdate(BaseModel):
         None, description="Approval required (cloud-only)"
     )
     ip: Optional[str] = Field(None, description="Peer IP address")
+    ipv6: Optional[str] = Field(None, description="Peer IPv6 address")
 
 
 class Peer(BaseModel):

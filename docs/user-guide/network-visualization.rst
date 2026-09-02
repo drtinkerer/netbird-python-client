@@ -150,8 +150,5 @@ Installation for Diagrams
    # Render with any Mermaid-compatible tool (GitHub, GitLab, mermaid.live)
 
    # Graphviz
-   pip install graphviz
+   pip install "netbird[viz]"
    brew install graphviz   # macOS system package also required
-
-   # Python Diagrams
-   pip install diagrams

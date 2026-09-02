@@ -57,11 +57,38 @@ class AccountSettings(BaseModel):
         None, description="Enable routing peer DNS resolution"
     )
     network_range: Optional[str] = Field(None, description="Network range")
+    network_range_v6: Optional[str] = Field(None, description="IPv6 network range")
+    dns_domain: Optional[str] = Field(None, description="Custom DNS domain")
+    regular_users_view_blocked: Optional[bool] = Field(
+        None, description="Block regular users from viewing restricted resources"
+    )
+    groups_propagation_enabled: Optional[bool] = Field(
+        None, description="Propagate user auto-groups"
+    )
+    jwt_allow_groups: Optional[List[str]] = Field(
+        None, description="Groups allowed from JWT claims"
+    )
     peer_expose_enabled: Optional[bool] = Field(None, description="Enable peer expose")
     peer_expose_groups: Optional[List[str]] = Field(
         None, description="Peer expose groups"
     )
     auto_update_version: Optional[str] = Field(None, description="Auto update version")
+    auto_update_always: Optional[bool] = Field(
+        None, description="Install updates automatically"
+    )
+    metrics_push_enabled: Optional[bool] = Field(
+        None, description="Push client metrics"
+    )
+    agent_network_only: Optional[bool] = Field(
+        None, description="Limit account to Agent Network"
+    )
+    dashboard_features: Optional[Dict[str, Any]] = Field(
+        None, description="Dashboard feature flags"
+    )
+    local_mfa_enabled: Optional[bool] = Field(None, description="Enable local MFA")
+    ipv6_enabled_groups: Optional[List[str]] = Field(
+        None, description="Groups receiving IPv6"
+    )
     embedded_idp_enabled: Optional[bool] = Field(
         None, description="Enable embedded IDP"
     )

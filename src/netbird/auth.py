@@ -4,7 +4,9 @@ NetBird API Authentication
 Handles token-based authentication for the NetBird API.
 """
 
-from typing import Dict
+from typing import Dict, Literal
+
+AuthScheme = Literal["Token", "Bearer"]
 
 
 class TokenAuth:
@@ -23,10 +25,14 @@ class TokenAuth:
         {'Authorization': 'Token your-api-token-here'}
     """
 
-    def __init__(self, token: str) -> None:
+    def __init__(self, token: str, scheme: AuthScheme = "Token") -> None:
+        token = (token or "").strip()
         if not token:
             raise ValueError("Token cannot be empty")
-        self.token = token.strip()
+        if scheme not in ("Token", "Bearer"):
+            raise ValueError("Authentication scheme must be 'Token' or 'Bearer'")
+        self.token = token
+        self.scheme = scheme
 
     def get_auth_headers(self) -> Dict[str, str]:
         """Get authentication headers for API requests.
@@ -34,8 +40,11 @@ class TokenAuth:
         Returns:
             Dictionary containing the Authorization header
         """
-        return {"Authorization": f"Token {self.token}"}
+        return {"Authorization": f"{self.scheme} {self.token}"}
 
     def __repr__(self) -> str:
         masked_token = f"{self.token[:8]}..." if len(self.token) > 8 else "***"
+        # Preserve the historical representation for compatibility. The
+        # authentication scheme is intentionally omitted to avoid exposing
+        # more credential metadata than older callers expect.
         return f"TokenAuth(token={masked_token})"

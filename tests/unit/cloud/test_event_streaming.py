@@ -25,7 +25,7 @@ class TestEventStreamingResource:
             {"id": "es-2", "platform": "s3"},
         ]
         result = self.resource.list()
-        self.mock_client.get.assert_called_once_with("integrations/event-streaming")
+        self.mock_client.get.assert_called_once_with("event-streaming")
         assert len(result) == 2
         assert result[0]["platform"] == "datadog"
 
@@ -38,7 +38,7 @@ class TestEventStreamingResource:
         self.mock_client.post.return_value = {"id": "es-1", "platform": "datadog"}
         result = self.resource.create(create_data)
         self.mock_client.post.assert_called_once_with(
-            "integrations/event-streaming",
+            "event-streaming",
             data=create_data.model_dump(exclude_unset=True),
         )
         assert result["id"] == "es-1"

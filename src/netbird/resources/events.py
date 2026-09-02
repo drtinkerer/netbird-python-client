@@ -25,7 +25,7 @@ class EventsResource(BaseResource):
             ...     print(f"{event['timestamp']}: {event['activity']}")
         """
         data = self.client.get("events/audit")
-        return self._parse_list_response(data)
+        return self._parse_paginated_list_response(data)
 
     def get_network_traffic_events(
         self,
@@ -97,7 +97,7 @@ class EventsResource(BaseResource):
             params["end_date"] = end_date
 
         data = self.client.get("events/network-traffic", params=params or None)
-        return self._parse_list_response(data)
+        return self._parse_paginated_list_response(data)
 
     def get_proxy_events(
         self,
@@ -176,4 +176,4 @@ class EventsResource(BaseResource):
             params["end_date"] = end_date
 
         data = self.client.get("events/proxy", params=params or None)
-        return self._parse_list_response(data)
+        return self._parse_paginated_list_response(data)

@@ -21,7 +21,7 @@ This project follows the NetBird community standards. Please be respectful and i
 
 ### Prerequisites
 
-- Python 3.8 or higher
+- Python 3.10 or higher
 - Git
 - A NetBird account with API access (for integration testing)
 

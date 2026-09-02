@@ -36,3 +36,15 @@ class BaseResource:
         if not isinstance(data, list):
             raise ValueError("Expected list response")
         return data
+
+    def _parse_paginated_list_response(self, data: Any) -> List[Dict[str, Any]]:
+        """Return items from either a legacy list or a paginated response.
+
+        NetBird's event endpoints historically returned a bare list and now
+        return an object containing a ``data`` list plus pagination metadata.
+        Resource methods retain their list-returning API while accepting both
+        response shapes.
+        """
+        if isinstance(data, dict):
+            data = data.get("data", [])
+        return self._parse_list_response(data)

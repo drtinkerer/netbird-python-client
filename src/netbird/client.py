@@ -4,7 +4,7 @@ NetBird API Client
 Core client implementation for the NetBird API.
 """
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Union
 from urllib.parse import urljoin
 
 import httpx
@@ -52,6 +52,7 @@ class APIClient:
         api_token: API token for authentication
         timeout: Request timeout in seconds (default: 30)
         base_path: API base path (default: '/api')
+        auth_scheme: Authentication scheme ('Token' or 'Bearer', default: 'Token')
 
     Example:
         >>> client = APIClient(host="api.netbird.io", api_token="your-token")
@@ -71,6 +72,7 @@ class APIClient:
         api_token: str,
         timeout: float = 30.0,
         base_path: str = "/api",
+        auth_scheme: Literal["Token", "Bearer"] = "Token",
     ) -> None:
         self.host = host.strip().rstrip("/")
         self.base_path = base_path.strip()
@@ -84,7 +86,7 @@ class APIClient:
             self.base_url = f"https://{self.host}{self.base_path}"
 
         # Set up authentication
-        self.auth = TokenAuth(api_token)
+        self.auth = TokenAuth(api_token, scheme=auth_scheme)
 
         # Create HTTP client
         self.client = httpx.Client(
@@ -283,9 +285,14 @@ class APIClient:
             return data
 
         # Extract error message
-        error_msg = (
-            data.get("message") or data.get("error") or f"HTTP {response.status_code}"
-        )
+        if isinstance(data, dict):
+            error_msg = (
+                data.get("message")
+                or data.get("error")
+                or f"HTTP {response.status_code}"
+            )
+        else:
+            error_msg = f"HTTP {response.status_code}"
 
         # Map status codes to exceptions
         if response.status_code in [400, 409, 422]:
@@ -639,7 +646,7 @@ class APIClient:
     ) -> Optional[str]:
         """Create a network diagram using Graphviz with optimized connections."""
         try:
-            import graphviz  # type: ignore[import-untyped]
+            import graphviz
         except ImportError:
             print("❌ Error: graphviz library not installed. Run: pip install graphviz")
             return None
@@ -816,13 +823,13 @@ class APIClient:
     ) -> Optional[str]:
         """Create a network diagram using Python Diagrams with optimized connections."""
         try:
-            from diagrams import (  # type: ignore[import-untyped]
+            from diagrams import (
                 Cluster,
                 Diagram,
                 Edge,
             )
-            from diagrams.generic.network import Router  # type: ignore[import-untyped]
-            from diagrams.onprem.network import Internet  # type: ignore[import-untyped]
+            from diagrams.generic.network import Router
+            from diagrams.onprem.network import Internet
         except ImportError:
             print("❌ Error: diagrams library not installed. Run: pip install diagrams")
             return None

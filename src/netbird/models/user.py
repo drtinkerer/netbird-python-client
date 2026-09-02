@@ -83,6 +83,13 @@ class User(BaseModel):
         None, description="Whether this is the current user"
     )
     last_login: Optional[str] = Field(None, description="Last login timestamp")
+    password: Optional[str] = Field(
+        None, description="Returned only after user creation"
+    )
+    pending_approval: Optional[bool] = Field(
+        None, description="Pending approval status"
+    )
+    idp_id: Optional[str] = Field(None, description="Identity provider connector ID")
 
 
 class UserInviteCreate(BaseModel):
@@ -106,3 +113,9 @@ class UserInvite(BaseModel):
     token: Optional[str] = Field(None, description="Invite token")
     invited_by: Optional[str] = Field(None, description="Inviter identifier")
     valid: Optional[bool] = Field(None, description="Whether invite is still valid")
+    auto_groups: Optional[List[ResourceId]] = Field(
+        None, description="Auto-assigned groups"
+    )
+    created_at: Optional[str] = Field(None, description="Invite creation timestamp")
+    expired: Optional[bool] = Field(None, description="Whether the invite has expired")
+    invite_token: Optional[str] = Field(None, description="Current invite token")

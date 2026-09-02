@@ -25,6 +25,10 @@ class TestTokenAuth:
         auth = TokenAuth("  test-token-123  ")
         assert auth.token == "test-token-123"
 
+    def test_whitespace_only_token_raises_error(self):
+        with pytest.raises(ValueError, match="Token cannot be empty"):
+            TokenAuth("   ")
+
     def test_get_auth_headers(self):
         """Test getting authentication headers."""
         auth = TokenAuth("test-token-123")
@@ -32,6 +36,14 @@ class TestTokenAuth:
 
         expected = {"Authorization": "Token test-token-123"}
         assert headers == expected
+
+    def test_bearer_auth_headers(self):
+        auth = TokenAuth("oauth-token", scheme="Bearer")
+        assert auth.get_auth_headers() == {"Authorization": "Bearer oauth-token"}
+
+    def test_invalid_auth_scheme(self):
+        with pytest.raises(ValueError, match="scheme"):
+            TokenAuth("test-token", scheme="Basic")
 
     def test_repr(self):
         """Test string representation."""
