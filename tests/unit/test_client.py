@@ -35,6 +35,13 @@ class TestAPIClient:
         assert client.base_url == "https://api.netbird.io/api"
         assert isinstance(client.auth, TokenAuth)
 
+    def test_client_supports_bearer_authentication(self):
+        client = APIClient(
+            host="api.netbird.io", api_token="oauth-token", auth_scheme="Bearer"
+        )
+        assert client.client.headers["Authorization"] == "Bearer oauth-token"
+        client.close()
+
     def test_client_initialization_with_custom_settings(self):
         """Test client initialization with custom settings."""
         client = APIClient(

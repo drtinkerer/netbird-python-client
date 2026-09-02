@@ -43,7 +43,7 @@ Features
 
 .. grid:: 3
 
-    .. grid-item-card:: Full API Parity
+    .. grid-item-card:: Broad API Coverage
 
         30+ resources covering core, cloud, and EDR endpoints
 

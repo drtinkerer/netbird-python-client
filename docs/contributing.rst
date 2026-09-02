@@ -51,7 +51,7 @@ Run all checks:
 Testing
 -------
 
-We maintain 88% test coverage with 364+ unit tests.
+We maintain roughly 89% test coverage with 400+ automated tests; live integration tests are opt-in.
 
 .. code-block:: bash
 

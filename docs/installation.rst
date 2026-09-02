@@ -64,11 +64,8 @@ For generating network topology diagrams:
 
 .. code-block:: bash
 
-   # For Graphviz diagrams (PNG, SVG, PDF)
-   pip install graphviz
-
-   # For Python Diagrams (architectural diagrams)
-   pip install diagrams
+   # For Graphviz/Diagrams output (PNG, SVG, PDF)
+   pip install "netbird[viz]"
 
    # Mermaid requires no additional Python dependencies
 
@@ -135,7 +132,7 @@ Missing Diagram Dependencies
 
 .. code-block:: bash
 
-   pip install graphviz diagrams
+   pip install "netbird[viz]"
 
 On macOS, Graphviz also requires the system package:
 

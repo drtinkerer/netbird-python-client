@@ -47,7 +47,7 @@ Graphviz produces high-quality PNG, SVG, and PDF output.
 .. code-block:: bash
 
    # Install dependencies
-   pip install graphviz
+   pip install "netbird[viz]"
    brew install graphviz  # macOS
 
 .. code-block:: python
@@ -66,7 +66,6 @@ Python Diagrams creates architecture-style diagrams.
 
 .. code-block:: bash
 
-   pip install diagrams
 
 .. code-block:: python
 

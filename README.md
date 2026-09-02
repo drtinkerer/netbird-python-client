@@ -8,20 +8,20 @@
 
 > **⚠️ Disclaimer**: This is an **unofficial**, community-maintained client library. It is **not affiliated with, endorsed by, or officially supported** by NetBird or the NetBird team. For official NetBird tools and support, please visit [netbird.io](https://netbird.io).
 
-This client follows the same upstream schemas as the official NetBird REST APIs, ensuring full compatibility and consistency with the NetBird ecosystem.
+This client tracks the official NetBird REST API and aims to provide a convenient, stable Python interface for its core and selected cloud resources.
 
 ## Features
 
-- ✅ **Full API Parity** - 30+ resources covering core, cloud, and EDR endpoints
+- ✅ **Broad API Coverage** - 30+ resources covering core, cloud, and EDR endpoints
 - ✅ **Cloud & Self-Hosted** - Works with NetBird Cloud and self-hosted instances
 - ✅ **Forward-Compatible** - `extra="allow"` on all models accepts future API fields gracefully
-- ✅ **Upstream Schema Compliance** - Follows official NetBird REST API schemas exactly
+- ✅ **Upstream Schema Alignment** - Request models track the official NetBird REST API
 - ✅ **Dictionary Responses** - Clean dictionary responses for easy data access
 - ✅ **Type Safety** - Pydantic models for input validation, dictionaries for responses
 - ✅ **Network Visualization** - Built-in diagram generation (Mermaid, Graphviz, Python Diagrams)
-- ✅ **Modern Python** - Built for Python 3.10+ (supports 3.10-3.14)
+- ✅ **Modern Python** - Built for Python 3.10+ (tested on 3.10-3.14)
 - ✅ **Comprehensive Error Handling** - Detailed exception classes for different error types
-- ✅ **88% Test Coverage** - 364 unit tests covering all resources
+- ✅ **88% Test Coverage** - 400+ automated tests (live integration tests are opt-in)
 - ✅ **PyPI Ready** - Easy installation and distribution
 - ✅ **MCP Server** - 25 tools exposing NetBird operations to AI assistants via Model Context Protocol
 
@@ -79,7 +79,8 @@ from netbird import APIClient
 # Initialize the client
 client = APIClient(
     host="api.netbird.io",  # or "netbird.yourcompany.com" for self-hosted
-    api_token="your-api-token-here"
+    api_token="your-api-token-here",
+    # auth_scheme="Bearer",  # use OAuth2 bearer tokens when required
 )
 
 # List all peers
@@ -306,11 +307,8 @@ client.generate_diagram(
 ### Installation for Diagrams
 
 ```bash
-# For Graphviz diagrams
-pip install graphviz
-
-# For Python Diagrams
-pip install diagrams
+# For Graphviz/Diagrams output (Python packages; Graphviz binary is also required)
+pip install "netbird[viz]"
 
 # Mermaid requires no additional dependencies
 ```
@@ -466,7 +464,7 @@ flake8 src/ tests/
 ### Testing & Coverage
 
 #### Test Statistics
-- **Total Tests**: 364 unit tests
+- **Total Tests**: 400+ automated tests (live integration tests are opt-in)
 - **Coverage**: 88% (2,045 statements)
 - **All models and resources**: 100% coverage
 

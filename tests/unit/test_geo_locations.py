@@ -20,6 +20,19 @@ class TestGeoLocationsResource:
         assert len(result) == 3
         assert "DE" in result
 
+    def test_list_countries_normalises_country_objects(self):
+        self.mock_client.get.return_value = [
+            {"country_code": "AF", "country_name": "Afghanistan"},
+            {"country_code": "AL", "country_name": "Albania"},
+        ]
+        result = self.resource.list_countries()
+        assert result == ["AF", "AL"]
+
+    def test_list_countries_rejects_non_list_response(self):
+        self.mock_client.get.return_value = {"error": "boom"}
+        with pytest.raises(ValueError, match="Expected list response"):
+            self.resource.list_countries()
+
     def test_list_cities(self):
         self.mock_client.get.return_value = [
             {"geoname_id": 2950159, "city_name": "Berlin"},

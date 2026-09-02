@@ -102,6 +102,24 @@ class TestEventsResource:
         self.mock_client.get.assert_called_once_with("events/proxy", params=None)
         assert len(result) == 1
 
+    def test_get_proxy_events_accepts_paginated_response(self):
+        self.mock_client.get.return_value = {
+            "data": [{"id": "event-1"}],
+            "page": 1,
+            "total_records": 1,
+        }
+        result = self.resource.get_proxy_events()
+        assert result == [{"id": "event-1"}]
+
+    def test_get_network_traffic_events_accepts_paginated_response(self):
+        self.mock_client.get.return_value = {
+            "data": [{"flow_id": "flow-1"}],
+            "page": 1,
+            "total_records": 1,
+        }
+        result = self.resource.get_network_traffic_events()
+        assert result == [{"flow_id": "flow-1"}]
+
     def test_get_proxy_events_with_pagination(self):
         self.mock_client.get.return_value = []
         self.resource.get_proxy_events(page=2, page_size=25)

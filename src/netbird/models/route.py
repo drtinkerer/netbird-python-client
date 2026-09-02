@@ -45,6 +45,9 @@ class RouteCreate(BaseModel):
     access_control_groups: Optional[List[ResourceId]] = Field(
         None, description="Access control group IDs"
     )
+    skip_auto_apply: Optional[bool] = Field(
+        None, description="Skip automatic peer application"
+    )
 
 
 class RouteUpdate(BaseModel):
@@ -78,6 +81,9 @@ class RouteUpdate(BaseModel):
     keep_route: Optional[bool] = Field(None, description="Keep route on disconnect")
     access_control_groups: Optional[List[ResourceId]] = Field(
         None, description="Access control group IDs"
+    )
+    skip_auto_apply: Optional[bool] = Field(
+        None, description="Skip automatic peer application"
     )
 
 

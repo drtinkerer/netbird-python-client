@@ -38,6 +38,7 @@ class UserStatus(str, Enum):
 
     ACTIVE = "active"
     DISABLED = "disabled"
+    BLOCKED = "blocked"
     INVITED = "invited"
 
 
